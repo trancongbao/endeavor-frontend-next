@@ -1,6 +1,14 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import {Drawer} from "@mui/material";
+import InboxIcon from '@mui/icons-material/MoveToInbox';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import MailIcon from '@mui/icons-material/Mail';
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -15,8 +23,40 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={inter.className}>{children}</body>
-    </html>
+      <html lang="en">
+      <body className={inter.className}>
+      <div className="flex h-screen flex-col md:flex-row md:overflow-hidden">
+          <div className="w-full flex-none md:w-64">
+              <Drawer
+                  sx={{
+                      width: 240,
+                      flexShrink: 0,
+                      '& .MuiDrawer-paper': {
+                          width: 240,
+                          boxSizing: 'border-box',
+                      },
+                  }}
+                  variant="permanent"
+                  anchor="left"
+              >
+                  <List>
+                      {['All mail', 'Trash', 'Spam'].map((text, index) => (
+                          <ListItem key={text} disablePadding>
+                              <ListItemButton>
+                                  <ListItemIcon>
+                                      {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                                  </ListItemIcon>
+                                  <ListItemText primary={text} />
+                              </ListItemButton>
+                          </ListItem>
+                      ))}
+                  </List>
+              </Drawer>
+          </div>
+          <div className="flex-grow p-6 md:overflow-y-auto md:p-12">{children}</div>
+      </div>
+      </body>
+      </html>
+
   );
 }
