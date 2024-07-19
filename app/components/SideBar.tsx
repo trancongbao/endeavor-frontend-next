@@ -3,34 +3,45 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
-import MailIcon from "@mui/icons-material/Mail";
 import ListItemText from "@mui/material/ListItemText";
-import {Drawer} from "@mui/material";
+import { Drawer } from "@mui/material";
+import SchoolIcon from '@mui/icons-material/School';
+import LegendToggleIcon from "@mui/icons-material/LegendToggle";
 
 export function SideBar() {
-    return (<Drawer
-        sx={{
-            width: 240,
-            flexShrink: 0,
-            '& .MuiDrawer-paper': {
-                width: 240,
-                boxSizing: 'border-box',
-            },
-        }}
-        variant="permanent"
-        anchor="left"
+  return (
+    <Drawer
+      sx={{
+        width: 240,
+        flexShrink: 0,
+        "& .MuiDrawer-paper": {
+          width: 240,
+          boxSizing: "border-box",
+          backgroundColor: "rgb(71 85 105)",
+        },
+      }}
+      variant="permanent"
+      anchor="left"
     >
-        <List>
-            {['All mail', 'Trash', 'Spam'].map((text, index) => (
-                <ListItem key={text} disablePadding>
-                    <ListItemButton>
-                        <ListItemIcon>
-                            {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                        </ListItemIcon>
-                        <ListItemText primary={text} />
-                    </ListItemButton>
-                </ListItem>
-            ))}
-        </List>
-    </Drawer>)
+      <List>
+        {[
+          {
+            title: "Courses",
+            icon: <SchoolIcon />,
+          },
+          {
+            title: "Decks",
+            icon: <LegendToggleIcon />,
+          },
+        ].map(({ title, icon }, index) => (
+          <ListItem key={index} disablePadding>
+            <ListItemButton>
+              <ListItemIcon>{icon}</ListItemIcon>
+              <ListItemText primary={title} />
+            </ListItemButton>
+          </ListItem>
+        ))}
+      </List>
+    </Drawer>
+  );
 }
