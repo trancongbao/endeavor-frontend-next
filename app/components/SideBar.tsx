@@ -1,46 +1,17 @@
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import { Drawer } from "@mui/material";
-import SchoolIcon from '@mui/icons-material/School';
-import LegendToggleIcon from "@mui/icons-material/LegendToggle";
+import './SideBar.scss';
+import Logo from './Logo/Logo';
+// import Profile from './Profile/Profile';
+import Menu from './Menu/Menu';
 
-export function SideBar() {
+export default function SideBar({ }) {
   return (
-    <Drawer
-      sx={{
-        width: 240,
-        flexShrink: 0,
-        "& .MuiDrawer-paper": {
-          width: 240,
-          boxSizing: "border-box",
-          backgroundColor: "rgb(71 85 105)",
-        },
-      }}
-      variant="permanent"
-      anchor="left"
-    >
-      <List>
-        {[
-          {
-            title: "Courses",
-            icon: <SchoolIcon />,
-          },
-          {
-            title: "Decks",
-            icon: <LegendToggleIcon />,
-          },
-        ].map(({ title, icon }, index) => (
-          <ListItem key={index} disablePadding>
-            <ListItemButton>
-              <ListItemIcon>{icon}</ListItemIcon>
-              <ListItemText primary={title} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
-    </Drawer>
+    <div className="side-bar active">
+      <Logo />
+      {/* <Profile
+        authenticatedUser={authenticatedUser}
+        setAuthenticatedUser={setAuthenticatedUser}
+      /> */}
+      <Menu />
+    </div>
   );
 }

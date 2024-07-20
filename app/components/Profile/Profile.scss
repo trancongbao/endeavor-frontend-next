@@ -1,0 +1,20 @@
+@import "../../../mixin";
+
+.profile {
+    h3 {
+        @include titleText(2rem);
+    }
+
+    span {
+        color: var(--light-color);
+        font-size: 1.6rem;
+    }
+    .short-avatar {
+        height: 10rem;
+        width: 10rem;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-bottom: 0.5rem;
+        border: 1px solid var(--black);
+    }
+}
