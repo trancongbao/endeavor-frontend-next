@@ -1,11 +1,10 @@
 import { kysely, Lesson } from "../db/kysely";
 import DeckTile from "./DeckTile";
-import { Key } from "react";
 
 export default async function Decks() {
   const decks = await getDecks();
 
-  console.log("decks: ", decks)
+  console.log("decks: ", decks);
 
   return (
     <div className="my-decks-grid-container">
@@ -17,7 +16,11 @@ export default async function Decks() {
 }
 
 async function getDecks() {
+  /*
+   * TODO: authentication and authorization
+   */
   const username = "teacher1";
+
   return await kysely
     .selectFrom("teacher_course")
     .innerJoin("course", "course.id", "teacher_course.course_id")
@@ -66,15 +69,5 @@ async function getDecks() {
       );
 
       return courses;
-
-      //sendSuccessResponse(response, courses);
     });
-  // .catch((error) => {
-  //   console.log(error);
-  //   // sendErrorResponse(
-  //   //   response,
-  //   //   Codes.RpcMethodInvocationError,
-  //   //   error.message
-  //   // );
-  // });
 }
