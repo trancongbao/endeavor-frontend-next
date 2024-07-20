@@ -2,7 +2,7 @@ import { Pool } from "pg";
 import { Kysely, PostgresDialect, Generated, ColumnType } from "kysely";
 
 export { kysely, CourseStatus };
-export type { Admin, Teacher, Student, Course, Lesson, Card, Word };
+export type { Admin, Teacher, Student, Course, Lesson, Card, Word, TeacherCourse };
 
 const pool = new Pool({
   host: "localhost",
