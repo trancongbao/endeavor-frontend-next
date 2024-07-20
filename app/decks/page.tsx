@@ -3,21 +3,21 @@ import DeckTile from "./DeckTile";
 import { Key } from "react";
 
 export default async function Decks() {
-  const myDecks = await getDecks();
+  const decks = await getDecks();
+
+  console.log("decks: ", decks)
 
   return (
     <div className="my-decks-grid-container">
-      <div>Decks</div>
-      <div>{myDecks[0].id}</div>
-      {/* {myDecks.map((deck: { id: Key | null | undefined }) => {
-        <DeckTile key={deck.id} deck={deck} />;
-      })} */}
+      {decks.map((deck) => {
+        return <DeckTile key={deck.id} deck={deck} />;
+      })}
     </div>
   );
 }
 
 async function getDecks() {
-  const username = 'teacher1'
+  const username = "teacher1";
   return await kysely
     .selectFrom("teacher_course")
     .innerJoin("course", "course.id", "teacher_course.course_id")
@@ -37,7 +37,7 @@ async function getDecks() {
         id: number;
         level: number;
         title: string;
-        subDecks: { order: number; title: string }[];
+        subdecks: { order: number; title: string }[];
       }[] = [];
       rows.forEach(
         ({
@@ -57,10 +57,10 @@ async function getDecks() {
               id: course_id,
               level: course_level,
               title: course_title,
-              subDecks: [lesson],
+              subdecks: [lesson],
             });
           } else {
-            course.subDecks.push(lesson);
+            course.subdecks.push(lesson);
           }
         }
       );
@@ -68,13 +68,13 @@ async function getDecks() {
       return courses;
 
       //sendSuccessResponse(response, courses);
-    })
-    // .catch((error) => {
-    //   console.log(error);
-    //   // sendErrorResponse(
-    //   //   response,
-    //   //   Codes.RpcMethodInvocationError,
-    //   //   error.message
-    //   // );
-    // });
+    });
+  // .catch((error) => {
+  //   console.log(error);
+  //   // sendErrorResponse(
+  //   //   response,
+  //   //   Codes.RpcMethodInvocationError,
+  //   //   error.message
+  //   // );
+  // });
 }
