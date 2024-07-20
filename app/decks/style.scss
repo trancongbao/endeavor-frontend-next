@@ -1,0 +1,5 @@
+@import "../mixin";
+
+.my-decks-grid-container {
+  @include grid(35rem);
+}

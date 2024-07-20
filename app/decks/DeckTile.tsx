@@ -1,4 +1,5 @@
 import React from "react";
+import './DeckTile.scss';
 
 export default function DeckTile({ deck }: { deck: any }) {
   console.log("deck.subdecks: ", deck.subdecks);

@@ -1,0 +1,17 @@
+@mixin grid($minTrackSize) {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax($minTrackSize, 1fr));
+    gap: 1.5rem;
+}
+
+@mixin titleText($titleSize) {
+    font-size: $titleSize;
+    text-transform: capitalize;
+    color: var(--black);
+}
+
+@mixin graphText($graphSize) {
+    font-size: $graphSize;
+    line-height: 2;
+    color: var(--light-color);
+}

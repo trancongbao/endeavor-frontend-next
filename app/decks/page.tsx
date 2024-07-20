@@ -1,5 +1,7 @@
 import { kysely, Lesson } from "../db/kysely";
 import DeckTile from "./DeckTile";
+import './style.scss';
+
 
 export default async function Decks() {
   const decks = await getDecks();
