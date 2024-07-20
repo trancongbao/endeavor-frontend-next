@@ -5,169 +5,169 @@
 html,
 body,
 #root {
-    height: 100%;
+  height: 100%;
 }
 
 html {
-    --main-color: #25c9d0;
-    --main-color-light: rgba(37, 201, 208, 0.1);
-    --main-color-bold: #0bb4ba;
-    --light-blue: #aeddfe;
-    --blue: #357edd;
-    --red: #e52d2d;
-    --orange: #f5a623;
-    --green: #39d279;
-    --white: #fff;
-    --light-white: #eff2f6;
-    --black: #2c3e50;
-    --light-color: #888;
-    --light-bg: #eee;
-    --light-bg-4: #f7f7f7;
-    --light-bg-5: #fcfcfc;
-    --border: 0.1rem solid rgba(0, 0, 0, 0.2);
-    --light-bg-2: #ddd6f3;
-    --light-bg-3: #f7ffff;
-    --media-border: 1px solid #ccf4f3;
-    --font-color: #a9a9a9;
+  --main-color: #25c9d0;
+  --main-color-light: rgba(37, 201, 208, 0.1);
+  --main-color-bold: #0bb4ba;
+  --light-blue: #aeddfe;
+  --blue: #357edd;
+  --red: #e52d2d;
+  --orange: #f5a623;
+  --green: #39d279;
+  --white: #fff;
+  --light-white: #eff2f6;
+  --black: #2c3e50;
+  --light-color: #888;
+  --light-bg: #eee;
+  --light-bg-4: #f7f7f7;
+  --light-bg-5: #fcfcfc;
+  --border: 0.1rem solid rgba(0, 0, 0, 0.2);
+  --light-bg-2: #ddd6f3;
+  --light-bg-3: #f7ffff;
+  --media-border: 1px solid #ccf4f3;
+  --font-color: #a9a9a9;
 
-    // user-agent browser
-    * {
-        margin: 0;
-        padding: 0;
+  // user-agent browser
+  * {
+    margin: 0;
+    padding: 0;
+  }
+
+  // default font-size
+  font-size: 10px;
+
+  body {
+    display: flex;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
+      "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
+      "Helvetica Neue", sans-serif;
+
+    background-color: var(--light-blue);
+
+    // center outlet
+    display: flex;
+    align-items: center;
+
+    a {
+      text-decoration: none;
     }
 
-    // default font-size
-    font-size: 10px;
+    .side-bar {
+      position: fixed;
+      left: 0;
+      top: 0;
+      z-index: 1;
+    }
 
-    body {
-        #root {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell",
-                "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+    &:has(.side-bar.active) {
+      padding-left: 30rem;
+    }
 
-            background-color: var(--light-blue);
+    .nm-btn,
+    .option-btn,
+    .delete-btn,
+    .inline-btn,
+    .inline-nm-btn,
+    .inline-option-btn,
+    .inline-delete-btn {
+      border-radius: 0.5rem;
+      padding: 1rem 3rem;
+      font-size: 1.8rem;
+      color: var(--white);
+      margin-top: 1rem;
+      text-transform: capitalize;
+      cursor: pointer;
+      text-align: center;
+      opacity: 0.8;
 
-            // center outlet
-            display: flex;
-            align-items: center;
+      &:hover {
+        opacity: 1;
+        color: var(--white);
+      }
+    }
 
-            a {
-                text-decoration: none;
-            }
+    .nm-btn,
+    .option-btn,
+    .delete-btn {
+      display: block;
+      width: 100%;
+    }
 
-            .side-bar {
-                position: fixed;
-                left: 0;
-                top: 0;
-                z-index: 1;
-            }
+    .inline-btn,
+    .inline-nm-btn,
+    .inline-nm-btn,
+    .inline-option-btn,
+    .inline-delete-btn {
+      display: inline-block;
+    }
 
-            &:has(.side-bar.active) {
-                padding-left: 30rem;
-            }
+    .nm-btn,
+    .inline-btn {
+      background-color: var(--main-color);
+    }
 
-            .nm-btn,
-            .option-btn,
-            .delete-btn,
-            .inline-btn,
-            .inline-nm-btn,
-            .inline-option-btn,
-            .inline-delete-btn {
-                border-radius: 0.5rem;
-                padding: 1rem 3rem;
-                font-size: 1.8rem;
-                color: var(--white);
-                margin-top: 1rem;
-                text-transform: capitalize;
-                cursor: pointer;
-                text-align: center;
-                opacity: 0.8;
+    .option-btn,
+    .inline-option-btn {
+      background-color: var(--orange);
+    }
 
-                &:hover {
-                    opacity: 1;
-                    color: var(--white);
-                }
-            }
+    .inline-nm-btn {
+      background-color: var(--green);
+    }
 
-            .nm-btn,
-            .option-btn,
-            .delete-btn {
-                display: block;
-                width: 100%;
-            }
+    .inline-nm-btn {
+      background-color: var(--green);
+    }
 
-            .inline-btn,
-            .inline-nm-btn,
-            .inline-nm-btn,
-            .inline-option-btn,
-            .inline-delete-btn {
-                display: inline-block;
-            }
+    .delete-btn,
+    .inline-delete-btn {
+      background-color: var(--red);
+    }
 
-            .nm-btn,
-            .inline-btn {
-                background-color: var(--main-color);
-            }
+    .flex-btn {
+      display: flex;
+      gap: 1rem;
+    }
 
-            .option-btn,
-            .inline-option-btn {
-                background-color: var(--orange);
-            }
+    // reponsive
+    @media (max-width: 1200px) {
+      body {
+        padding-left: 0;
+      }
 
-            .inline-nm-btn {
-                background-color: var(--green);
-            }
+      .side-bar {
+        transition: 0.2s linear;
+        left: -30rem;
 
-            .inline-nm-btn {
-                background-color: var(--green);
-            }
-
-            .delete-btn,
-            .inline-delete-btn {
-                background-color: var(--red);
-            }
-
-            .flex-btn {
-                display: flex;
-                gap: 1rem;
-            }
-
-            // reponsive
-            @media (max-width: 1200px) {
-                body {
-                    padding-left: 0;
-                }
-
-                .side-bar {
-                    transition: 0.2s linear;
-                    left: -30rem;
-
-                    &.active {
-                        left: 0;
-                        box-shadow: 0 0 0 100vw rgba(0, 0, 0, 0.7);
-                    }
-
-                    .close-side-bar {
-                        display: block !important;
-                    }
-                }
-            }
-
-            @media (max-width: 991px) {
-                html {
-                    font-size: 55%;
-                }
-            }
-
-            @media (max-width: 450px) {
-                html {
-                    font-size: 50%;
-                }
-
-                .flex-btn {
-                    flex-flow: column;
-                    gap: 0;
-                }
-            }
+        &.active {
+          left: 0;
+          box-shadow: 0 0 0 100vw rgba(0, 0, 0, 0.7);
         }
+
+        .close-side-bar {
+          display: block !important;
+        }
+      }
     }
+
+    @media (max-width: 991px) {
+      html {
+        font-size: 55%;
+      }
+    }
+
+    @media (max-width: 450px) {
+      html {
+        font-size: 50%;
+      }
+
+      .flex-btn {
+        flex-flow: column;
+        gap: 0;
+      }
+    }
+  }
 }
