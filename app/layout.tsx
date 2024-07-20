@@ -18,7 +18,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <div className="flex h-screen flex-col md:flex-row md:overflow-hidden">
+        <div className="flex">
           <SideBar />
           {children}
         </div>
