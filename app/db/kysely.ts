@@ -63,7 +63,7 @@ interface Teacher {
   phone: string;
   date_of_birth: Date;
   address: string;
-  avatar: string;
+  avatar?: string;
 }
 
 interface TeacherCourse {
