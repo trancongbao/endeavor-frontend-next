@@ -7,8 +7,7 @@ export default function DeckTile({ deck }: { deck: any }) {
     <div className="deck-card">
       <h2 className="title">{deck.title}</h2>
       <table className="sub-decks-table">
-        <thead className="table-head"></thead>
-        <tbody className="table-body">
+        <tbody>
           {deck.subdecks.map((subdeck: any) => (
             <tr className="body-row" key={subdeck.order}>
               <td className="row-title">{subdeck.title}</td>
