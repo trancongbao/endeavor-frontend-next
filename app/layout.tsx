@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import SideBar from "@/app/components/SideBar";
-import "./decks/index.scss";
+import "./app.scss";
 
 const inter = Inter({ subsets: ["latin"] });
 

@@ -1,6 +1,5 @@
 import { kysely, Lesson } from "../db/kysely";
 import DeckTile from "./DeckTile";
-import './index.scss'
 import './style.scss';
 
 
