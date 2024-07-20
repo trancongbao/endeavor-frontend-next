@@ -1,8 +1,7 @@
-import "scope-extensions-js";
 import { Pool } from "pg";
 import { Kysely, PostgresDialect, Generated, ColumnType } from "kysely";
 
-export { endeavorDB, CourseStatus };
+export { kysely, CourseStatus };
 export type { Admin, Teacher, Student, Course, Lesson, Card, Word };
 
 const pool = new Pool({
@@ -16,7 +15,7 @@ const pool = new Pool({
 
 const postgresDialect = new PostgresDialect({ pool });
 
-const endeavorDB = new Kysely<EndeavorDB>({ dialect: postgresDialect });
+const kysely = new Kysely<EndeavorDB>({ dialect: postgresDialect });
 
 interface EndeavorDB {
   admin: Admin;
