@@ -44,11 +44,14 @@ const teachers: Insertable<Teacher>[] = [
   },
 ];
 
-const courses: Insertable<Course & { lessons?: Updateable<Lesson>[] }>[] = [
+// const courses: Insertable<Course & { lessons?: Updateable<Lesson>[] }>[] = [
+const courses: {courseId?: number, courseInsertable: Insertable<Course>, lessons?: Updateable<Lesson>[]}[] = [
   {
-    level: 1,
-    title: "School",
-    status: CourseStatus.PUBLISHED,
+    courseInsertable: {
+      level: 1,
+      title: "School",
+      status: CourseStatus.PUBLISHED,
+    },
     lessons: [
       {
         title: "Introduction",
@@ -120,9 +123,11 @@ const courses: Insertable<Course & { lessons?: Updateable<Lesson>[] }>[] = [
     ],
   },
   {
-    level: 1,
-    title: "In the Sky",
-    status: CourseStatus.PUBLISHED,
+    courseInsertable: {
+      level: 1,
+      title: "In the Sky",
+      status: CourseStatus.PUBLISHED,
+    },
     lessons: [
       {
         title: "Introduction",
@@ -205,19 +210,25 @@ const courses: Insertable<Course & { lessons?: Updateable<Lesson>[] }>[] = [
     ],
   },
   {
-    level: 1,
-    title: "Fruit",
-    status: CourseStatus.PUBLISHED,
+    courseInsertable: {
+      level: 1,
+      title: "Fruit",
+      status: CourseStatus.PUBLISHED,
+    },
   },
   {
-    level: 1,
-    title: "Tree",
-    status: CourseStatus.PUBLISHED,
+    courseInsertable: {
+      level: 1,
+      title: "Tree",
+      status: CourseStatus.PUBLISHED,
+    },
   },
   {
-    level: 1,
-    title: "Young Animals",
-    status: CourseStatus.PUBLISHED,
+    courseInsertable: {
+      level: 1,
+      title: "Young Animals",
+      status: CourseStatus.PUBLISHED,
+    },
   },
 ];
 
