@@ -2,43 +2,33 @@ import { Insertable, sql } from "kysely";
 import { Course, EndeavorDB, kysely, Lesson, Teacher } from "../kysely";
 import { teachers, courses } from "./data";
 
+/*
+ * We insert rows individually in several places, instead of using PostgreSQL bulk insertion.
+ * This approach more closely mimics actual user operations and makes working with foreign keys easier.
+ * So, for the sake of readability and maintainability, we sacrifice some performance gain.
+ */
+
 truncateTables()
   .then(() => {
-    return insertTeachers(teachers);
+    insertTeachers(teachers);
   })
   .then(() => {
-    const courseInsertables: Insertable<Course>[] = courses.map(
-      ({ lessons, ...courseInsertable }) => courseInsertable
-    );
-
-    return insertCourses(courseInsertables);
-  })
-  .then((insertedCourses) => {
-    console.log("Courses: ", insertedCourses);
-    const courseIds = insertedCourses.map((course) => course.id);
-    console.log("Course ids: ", courseIds);
-
-    courses.forEach((course, index) => {
-      course.id = courseIds[index];
-      course.lessons?.forEach((lesson, lessonIndex) => {
-        lesson.course_id = course.id;
-        lesson.lesson_order = lessonIndex;
+    courses.forEach((course) => {
+      const { lessons, ...courseInsertable } = course;
+      insertCourse(courseInsertable).then((insertedCourse) => {
+        console.log("insertedCourse: ", insertedCourse);
+        //TODO: remove id, use {level, title} composite key instead
+        course.id = insertedCourse.id;
+        lessons?.forEach((lesson, index) => {
+          lesson.course_id = course.id;
+          lesson.lesson_order = index; //TODO: rename to `chapter`
+          insertLesson(lesson as Insertable<Lesson>).then((insertedLesson) => {
+            console.log("insertLesson: ", insertedLesson);
+            lesson.id = insertedLesson.id;
+          });
+        });
       });
     });
-
-    console.log("Updated courses: ", courses);
-
-    const lessonInsertables = courses
-      .map((course) => course.lessons)
-      .flat()
-      .filter((lesson) => lesson !== undefined) as Insertable<Lesson>[];
-
-    console.log("lessonInsertables: ", lessonInsertables);
-
-    return insertLessons(lessonInsertables);
-  })
-  .then((insertedLessons) => {
-    console.log("Inserted lessons: ", insertedLessons);
   });
 
 function truncateTables() {
@@ -50,26 +40,26 @@ function truncateTables() {
   return snippet.execute(kysely);
 }
 
-function insertTeachers(teacherInsertables: Insertable<Teacher>[]) {
+function insertTeachers(teacherInsertable: Insertable<Teacher>[]) {
   return kysely
     .insertInto("teacher")
-    .values(teacherInsertables)
+    .values(teacherInsertable)
     .returningAll()
-    .execute();
+    .executeTakeFirstOrThrow();
 }
 
-function insertCourses(courseInsertables: Insertable<Course>[]) {
+function insertCourse(courseInsertable: Insertable<Course>) {
   return kysely
     .insertInto("course")
-    .values(courseInsertables)
+    .values(courseInsertable)
     .returningAll()
-    .execute();
+    .executeTakeFirstOrThrow();
 }
 
-function insertLessons(lessonInsertables: Insertable<Lesson>[]) {
+function insertLesson(lessonInsertable: Insertable<Lesson>) {
   return kysely
     .insertInto("lesson")
-    .values(lessonInsertables)
+    .values(lessonInsertable)
     .returningAll()
-    .execute();
+    .executeTakeFirstOrThrow();
 }
