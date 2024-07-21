@@ -38,7 +38,7 @@ truncateTables()
           (course) => course.level === teacherCourse.level && course.title === teacherCourse.title
         )?.id!
 
-        console.log("courseId: ", course_id)
+        console.log('courseId: ', course_id)
         return kysely
           .insertInto('teacher_course')
           .values({ teacher_username, course_id })
@@ -50,9 +50,8 @@ truncateTables()
 
 function truncateTables() {
   const snippet = sql`
-    TRUNCATE TABLE lesson CASCADE;
-    TRUNCATE TABLE course CASCADE;
-    TRUNCATE TABLE teacher CASCADE;
+    TRUNCATE TABLE course RESTART IDENTITY CASCADE;
+    TRUNCATE TABLE teacher RESTART IDENTITY CASCADE;
   `
   return snippet.execute(kysely)
 }
