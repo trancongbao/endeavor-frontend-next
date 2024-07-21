@@ -10,7 +10,7 @@ import { teachers, courses } from "./data";
 
 truncateTables()
   .then(() => {
-    insertTeachers(teachers);
+    insertTeacher(teachers);
   })
   .then(() => {
     courses.forEach((course) => {
@@ -40,7 +40,7 @@ function truncateTables() {
   return snippet.execute(kysely);
 }
 
-function insertTeachers(teacherInsertable: Insertable<Teacher>[]) {
+function insertTeacher(teacherInsertable: Insertable<Teacher>[]) {
   return kysely
     .insertInto("teacher")
     .values(teacherInsertable)
