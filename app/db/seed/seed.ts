@@ -10,9 +10,8 @@ import { teachers, courses } from "./data";
 
 truncateTables()
   .then(() => {
-    insertTeacher(teachers);
-  })
-  .then(() => {
+    const teacherPromise = insertTeacher(teachers); // Promise of `insertTeacher`
+    // Promises of `insertCourse`s
     const coursePromises = courses.map((course) => {
       const { lessons, ...courseInsertable } = course;
       return insertCourse(courseInsertable).then((insertedCourse) => {
@@ -32,7 +31,8 @@ truncateTables()
         return Promise.all(lessonPromises || []);
       });
     });
-    return Promise.all(coursePromises || []);
+    // Combine teacherPromise with coursePromises
+    return Promise.all([teacherPromise, ...coursePromises]);
   })
   .then(() => {
     console.log(
