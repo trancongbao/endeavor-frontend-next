@@ -228,25 +228,16 @@ const courses: CourseData[] = [
   },
 ];
 
-const teacherCourses: Insertable<TeacherCourse>[] = [
-  {
-    teacher_username: "teacher1",
-    course_id: 1,
-  },
-  {
-    teacher_username: "teacher1",
-    course_id: 2,
-  },
-  {
-    teacher_username: "teacher1",
-    course_id: 3,
-  },
-  {
-    teacher_username: "teacher1",
-    course_id: 4,
-  },
-  {
-    teacher_username: "teacher1",
-    course_id: 5,
-  },
-];
+const teacherCourses = new Map([
+  [
+    "teacher1",
+    [
+      { level: 1, title: "School" },
+      { level: 1, title: "In the Sky" },
+      { level: 1, title: "Fruit" },
+      { level: 1, title: "Tree" },
+      { level: 1, title: "Young Animals" },
+    ],
+  ],
+  ["teacher2", [{ level: 1, title: "School" }]],
+]);

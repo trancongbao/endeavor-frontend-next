@@ -1,6 +1,6 @@
-import { Generated, Insertable, sql } from "kysely";
-import { Course, EndeavorDB, kysely, Lesson, Teacher } from "../kysely";
-import { teachers, courses } from "./data";
+import { Generated, Insertable, sql } from 'kysely'
+import { Course, EndeavorDB, kysely, Lesson, Teacher } from '../kysely'
+import { teachers, courses, teacherCourses } from './data'
 
 /*
  * We insert rows individually in several places, instead of using PostgreSQL bulk insertion.
@@ -10,63 +10,61 @@ import { teachers, courses } from "./data";
 
 truncateTables()
   .then(() => {
-    const teacherPromise = insertTeachers(teachers); // Promise of `insertTeachers`
+    const teacherPromise = insertTeachers(teachers) // Promise of `insertTeachers`
     // Promises of `insertCourse`s
     const coursePromises = courses.map((course) => {
-      const { lessons, ...courseInsertable } = course;
+      const { lessons, ...courseInsertable } = course
       return insertCourse(courseInsertable).then((insertedCourse) => {
-        console.log("insertedCourse: ", insertedCourse);
+        console.log('insertedCourse: ', insertedCourse)
         //TODO: remove id, use {level, title} composite key instead
-        course.id = insertedCourse.id;
+        course.id = insertedCourse.id
         lessons?.forEach((lesson, index) => {
-          lesson.course_id = course.id;
-          lesson.lesson_order = index; //TODO: rename to `chapter`
+          lesson.course_id = course.id
+          lesson.lesson_order = index //TODO: rename to `chapter`
           insertLesson(lesson as Insertable<Lesson>).then((insertedLesson) => {
-            console.log("insertedLesson: ", insertedLesson);
-            lesson.id = insertedLesson.id as unknown as Generated<number>;
-          });
-        });
-      });
-    });
+            console.log('insertedLesson: ', insertedLesson)
+            lesson.id = insertedLesson.id as unknown as Generated<number>
+          })
+        })
+      })
+    })
     // Combine teacherPromise with coursePromises
-    return Promise.all([teacherPromise, ...coursePromises]);
+    return Promise.all([teacherPromise, ...coursePromises])
   })
   .then(() => {
-    console.log(
-      "lessons: ",
-      courses.map((course) => course.lessons)
-    );
-  });
+    teacherCourses.forEach((teacherCourses, teacher_username) => {
+      teacherCourses.forEach((teacherCourse) => {
+        const course_id = courses.find(
+          (course) => course.level === teacherCourse.level && course.title === teacherCourse.title
+        )?.id!
+
+        console.log("courseId: ", course_id)
+        return kysely
+          .insertInto('teacher_course')
+          .values({ teacher_username, course_id })
+          .returningAll()
+          .executeTakeFirstOrThrow()
+      })
+    })
+  })
 
 function truncateTables() {
   const snippet = sql`
     TRUNCATE TABLE lesson CASCADE;
     TRUNCATE TABLE course CASCADE;
     TRUNCATE TABLE teacher CASCADE;
-  `;
-  return snippet.execute(kysely);
+  `
+  return snippet.execute(kysely)
 }
 
 function insertTeachers(teacherInsertables: Insertable<Teacher>[]) {
-  return kysely
-    .insertInto("teacher")
-    .values(teacherInsertables)
-    .returningAll()
-    .execute();
+  return kysely.insertInto('teacher').values(teacherInsertables).returningAll().execute()
 }
 
 function insertCourse(courseInsertable: Insertable<Course>) {
-  return kysely
-    .insertInto("course")
-    .values(courseInsertable)
-    .returningAll()
-    .executeTakeFirstOrThrow();
+  return kysely.insertInto('course').values(courseInsertable).returningAll().executeTakeFirstOrThrow()
 }
 
 function insertLesson(lessonInsertable: Insertable<Lesson>) {
-  return kysely
-    .insertInto("lesson")
-    .values(lessonInsertable)
-    .returningAll()
-    .executeTakeFirstOrThrow();
+  return kysely.insertInto('lesson').values(lessonInsertable).returningAll().executeTakeFirstOrThrow()
 }
