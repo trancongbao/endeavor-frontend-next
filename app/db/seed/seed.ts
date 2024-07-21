@@ -18,17 +18,14 @@ truncateTables()
         console.log("insertedCourse: ", insertedCourse);
         //TODO: remove id, use {level, title} composite key instead
         course.id = insertedCourse.id;
-        const lessonPromises = lessons?.map((lesson, index) => {
+        const lessonPromises = lessons?.forEach((lesson, index) => {
           lesson.course_id = course.id;
           lesson.lesson_order = index; //TODO: rename to `chapter`
-          return insertLesson(lesson as Insertable<Lesson>).then(
-            (insertedLesson) => {
-              console.log("insertLesson: ", insertedLesson);
-              lesson.id = insertedLesson.id as unknown as Generated<number>;
-            }
-          );
+          insertLesson(lesson as Insertable<Lesson>).then((insertedLesson) => {
+            console.log("insertedLesson: ", insertedLesson);
+            lesson.id = insertedLesson.id as unknown as Generated<number>;
+          });
         });
-        return Promise.all(lessonPromises || []);
       });
     });
     // Combine teacherPromise with coursePromises
