@@ -1,4 +1,4 @@
-import { Insertable, sql } from "kysely";
+import { Generated, Insertable, sql } from "kysely";
 import { Course, EndeavorDB, kysely, Lesson, Teacher } from "../kysely";
 import { teachers, courses } from "./data";
 
@@ -13,22 +13,32 @@ truncateTables()
     insertTeacher(teachers);
   })
   .then(() => {
-    courses.forEach((course) => {
+    const coursePromises = courses.map((course) => {
       const { lessons, ...courseInsertable } = course;
-      insertCourse(courseInsertable).then((insertedCourse) => {
+      return insertCourse(courseInsertable).then((insertedCourse) => {
         console.log("insertedCourse: ", insertedCourse);
         //TODO: remove id, use {level, title} composite key instead
         course.id = insertedCourse.id;
-        lessons?.forEach((lesson, index) => {
+        const lessonPromises = lessons?.map((lesson, index) => {
           lesson.course_id = course.id;
           lesson.lesson_order = index; //TODO: rename to `chapter`
-          insertLesson(lesson as Insertable<Lesson>).then((insertedLesson) => {
-            console.log("insertLesson: ", insertedLesson);
-            lesson.id = insertedLesson.id;
-          });
+          return insertLesson(lesson as Insertable<Lesson>).then(
+            (insertedLesson) => {
+              console.log("insertLesson: ", insertedLesson);
+              lesson.id = insertedLesson.id as unknown as Generated<number>;
+            }
+          );
         });
+        return Promise.all(lessonPromises || []);
       });
     });
+    return Promise.all(coursePromises || []);
+  })
+  .then(() => {
+    console.log(
+      "lessons: ",
+      courses.map((course) => course.lessons)
+    );
   });
 
 function truncateTables() {

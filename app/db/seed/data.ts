@@ -1,5 +1,6 @@
 import { Insertable, Updateable } from "kysely";
 import {
+  Card,
   Course,
   CourseStatus,
   Lesson,
@@ -44,9 +45,13 @@ const teachers: Insertable<Teacher>[] = [
   },
 ];
 
-const courses: ({ id?: number } & Insertable<Course> & {
-    lessons?: Partial<Insertable<Lesson>>[];
-  })[] = [
+type LessonData = Partial<Lesson> & { cards?: Insertable<Card>[] };
+
+type CourseData = { id?: number } & Insertable<Course> & {
+    lessons?: LessonData[];
+  };
+
+const courses: CourseData[] = [
   {
     level: 1,
     title: "School",
