@@ -10,7 +10,7 @@ import { teachers, courses } from "./data";
 
 truncateTables()
   .then(() => {
-    const teacherPromise = insertTeacher(teachers); // Promise of `insertTeacher`
+    const teacherPromise = insertTeachers(teachers); // Promise of `insertTeachers`
     // Promises of `insertCourse`s
     const coursePromises = courses.map((course) => {
       const { lessons, ...courseInsertable } = course;
@@ -18,7 +18,7 @@ truncateTables()
         console.log("insertedCourse: ", insertedCourse);
         //TODO: remove id, use {level, title} composite key instead
         course.id = insertedCourse.id;
-        const lessonPromises = lessons?.forEach((lesson, index) => {
+        lessons?.forEach((lesson, index) => {
           lesson.course_id = course.id;
           lesson.lesson_order = index; //TODO: rename to `chapter`
           insertLesson(lesson as Insertable<Lesson>).then((insertedLesson) => {
@@ -47,12 +47,12 @@ function truncateTables() {
   return snippet.execute(kysely);
 }
 
-function insertTeacher(teacherInsertable: Insertable<Teacher>[]) {
+function insertTeachers(teacherInsertables: Insertable<Teacher>[]) {
   return kysely
     .insertInto("teacher")
-    .values(teacherInsertable)
+    .values(teacherInsertables)
     .returningAll()
-    .executeTakeFirstOrThrow();
+    .execute();
 }
 
 function insertCourse(courseInsertable: Insertable<Course>) {
