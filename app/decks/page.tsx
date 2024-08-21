@@ -1,15 +1,12 @@
 import { kysely, Lesson } from "../db/kysely";
 import DeckTile from "./DeckTile";
-import './style.scss';
-
 
 export default async function Decks() {
   const decks = await getDecks();
-
   console.log("decks: ", decks);
 
   return (
-    <div className="my-decks-grid-container">
+    <div className="grid">
       {decks.map((deck) => {
         return <DeckTile key={deck.id} deck={deck} />;
       })}
