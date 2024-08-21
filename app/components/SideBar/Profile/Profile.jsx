@@ -1,14 +1,12 @@
-import './Profile.scss';
+import './Profile.scss'
+import Image from 'next/image'
+
 // import { rpc } from '../../../rpc/rpc';
 
 export default function Profile({ authenticatedUser, setAuthenticatedUser }) {
   return (
-    <div className="profile active">
-      <img
-        className="short-avatar"
-        src="https://i.seadn.io/gae/IZEEg3gIDw-zlV7Z8l1_-OgEkYKnFXJXYjEKY6Ue-Nuhfk-cv0FnRA5eOC2lM8EdEHKHNWljh_7pUmxXNtKKlzqqeZwWmNhGCoCMtew?auto=format&dpr=1&w=1000"
-        alt=""
-      />
+    <div className="profile active flex flex-col items-center">
+      <Image className="short-avatar" src="/sidebar/avatar.webp" alt="" width={100} height={100} />
       <h3>authenticatedUser.username</h3>
       <div>authenticatedUser.userType.toUpperCase()</div>
       {authenticatedUser?.level && <div>Level: ${authenticatedUser.level}</div>}
@@ -22,7 +20,7 @@ export default function Profile({ authenticatedUser, setAuthenticatedUser }) {
         </div>
       </div>
     </div>
-  );
+  )
 
   function logout() {
     // rpc('auth', 'logout', {}).then((result) => {

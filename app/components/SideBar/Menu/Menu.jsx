@@ -1,6 +1,13 @@
+// import { NavLink } from 'react-router-dom';
+
 const Menu = () => {
   return (
-    <div>Menu</div>
+    <nav className="flex flex-col">
+      <a href='/decks'>My Courses</a>
+      <a href='/decks'>My Decks</a>
+      <a href='/decks'>Contact us</a>
+    </nav>
+
     // <nav className="navbar">
     //   <NavLink
     //     className={({ isActive, isPending }) =>
@@ -36,6 +43,6 @@ const Menu = () => {
     //     </div>
     //   </NavLink>
     // </nav>
-  );
-};
-export default Menu;
+  )
+}
+export default Menu
