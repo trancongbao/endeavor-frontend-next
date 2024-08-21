@@ -1,4 +1,3 @@
-import './Profile.scss'
 import Image from 'next/image'
 
 // import { rpc } from '../../../rpc/rpc';
@@ -6,11 +5,11 @@ import Image from 'next/image'
 export default function Profile({ authenticatedUser, setAuthenticatedUser }) {
   return (
     <div className="profile active flex flex-col items-center gap-3">
-      <Image className="short-avatar" src="/sidebar/avatar.webp" alt="" width={100} height={100} />
+      <Image className="rounded-full border border-zinc-950" src="/sidebar/avatar.webp" alt="" width={100} height={100} />
       {/* <h3>{authenticatedUser.username}</h3> */}
-      <h3>Tran Cong Bao</h3>
+      <p className="text-3xl">Tran Cong Bao</p>
       {/* <div>{authenticatedUser.userType.toUpperCase()}</div> */}
-      <p className="text-2xl">ADMIN</p>
+      <p className="text-2xl">TEACHER</p>
       {authenticatedUser?.level && <div>Level: ${authenticatedUser.level}</div>}
 
       <div className="flex items-center gap-4">
