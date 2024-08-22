@@ -5,15 +5,15 @@ const Menu = () => {
   return (
     <nav className="self-start p-10 flex flex-col gap-7 text-[18px]">
       <a href="/decks" className="flex gap-3 items-center">
-        <Book color="hsl(180, 90%, 50%)" />
+        <Book color="var(--main-color)" />
         My Courses
       </a>
       <a href="/decks" className="flex gap-3 items-center">
-        <Layers color="hsl(180, 90%, 50%)" />
+        <Layers color="var(--main-color)" />
         My Decks
       </a>
       <a href="/decks" className="flex gap-3 items-center">
-        <Phone color="hsl(180, 90%, 50%)" />
+        <Phone color="var(--main-color)" />
         Contact us
       </a>
     </nav>
