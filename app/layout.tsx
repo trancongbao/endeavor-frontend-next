@@ -2,7 +2,6 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import SideBar from '@/app/components/SideBar/SideBar'
-import './app.scss'
 import { useState } from 'react'
 import './globals.css'
 
