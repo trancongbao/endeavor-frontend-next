@@ -11,7 +11,7 @@ export default function Menu() {
     <nav className="self-start p-10 flex flex-col gap-7 text-[18px]">
       {items.map((item, index) => (
         <a href={item.href} key={index} className="flex gap-3 items-center">
-          <item.icon color="var(--main-color)" />
+          <item.icon color="hsl(180, 70%, 50%)" />
           {item.text}
         </a>
       ))}
