@@ -1,22 +1,18 @@
-import React from "react";
+import React from 'react'
 
 export default function DeckTile({ deck }: { deck: any }) {
-  console.log("deck.subdecks: ", deck.subdecks);
+  console.log('deck.subdecks: ', deck.subdecks)
   return (
-    <div className="deck-card p-2">
-      <p className="title">{deck.title}</p>
-      <table className="sub-decks-table">
-        <tbody>
-          {deck.subdecks.map((subdeck: any) => (
-            <tr className="body-row" key={subdeck.order}>
-              <td className="row-title">{subdeck.title}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      <div className="action-btns">
-        Browse
+    <div className="w-60 h-72 p-2 shadow flex flex-col gap-6">
+      <p className="text-xl font-bold border-b-2">{deck.title}</p>
+      <div className='flex flex-col gap-2'>
+        {deck.subdecks.map((subdeck: any) => (
+          <p key={subdeck.order} className="">
+            {subdeck.title}
+          </p>
+        ))}
       </div>
+      <button className="w-28 h-12 rounded-lg bg-green-400 flex justify-center items-center text-white text-lg">Browse</button>
     </div>
-  );
+  )
 }
