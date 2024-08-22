@@ -3,7 +3,7 @@ import Image from 'next/image'
 // import { rpc } from '../../../rpc/rpc';
 
 export default function Profile({ authenticatedUser, setAuthenticatedUser }) {
-  const buttonClass = 'w-52 h-16 rounded-lg bg-orange-300 flex justify-center items-center text-white text-2xl'
+  const buttonClass = 'w-52 h-16 rounded-lg bg-orange-300 flex justify-center items-center text-white text-[18px]'
 
   return (
     <div className="profile active flex flex-col items-center gap-3">
