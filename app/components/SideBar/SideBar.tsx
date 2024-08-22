@@ -5,7 +5,7 @@ import Menu from './Menu/Menu'
 
 export default function SideBar({ authenticatedUser, setAuthenticatedUser }) {
   return (
-    <div className="flex flex-col justify-between items-center gap-4 side-bar active">
+    <div className="w-96 h-full bg-white flex flex-col justify-between items-center gap-4">
       <Profile
         authenticatedUser={authenticatedUser}
         setAuthenticatedUser={setAuthenticatedUser}
