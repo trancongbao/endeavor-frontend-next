@@ -3,7 +3,7 @@ import React from 'react'
 export default function DeckTile({ deck }: { deck: any }) {
   console.log('deck.subdecks: ', deck.subdecks)
   return (
-    <div className="w-60 h-72 p-2 shadow flex flex-col gap-6">
+    <div className="w-60 h-72 p-2 shadow-md flex flex-col gap-3">
       <p className="text-xl font-bold border-b-2">{deck.title}</p>
       <div className='flex flex-col gap-2'>
         {deck.subdecks.map((subdeck: any) => (
