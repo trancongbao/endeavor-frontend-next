@@ -3,10 +3,10 @@ import Image from 'next/image'
 // import { rpc } from '../../../rpc/rpc';
 
 export default function Profile({ authenticatedUser, setAuthenticatedUser }) {
-  const buttonClass = 'w-32 h-12 rounded-lg bg-orange-300 flex justify-center items-center text-white text-lg'
+  const buttonClass = 'w-28 h-12 rounded-lg bg-orange-300 flex justify-center items-center text-white text-lg'
 
   return (
-    <div className="w-full flex flex-col items-center gap-3">
+    <div className="w-full flex flex-col items-center gap-2">
       <Image
         className="rounded-full border border-zinc-950"
         src="/sidebar/avatar.webp"
