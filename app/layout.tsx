@@ -16,16 +16,9 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
-
-  // TODO: redirect('/login')
   return (
     <html lang="en">
-      <body className={`${inter.className} flex`}>
-        <SideBar />
-        <div className="p-3 flex-1 bg-green-200">
-          <div className="w-full h-full bg-white p-3">{children}</div>
-        </div>
-      </body>
+      <body className={inter.className}>{children}</body>
     </html>
   )
 }
