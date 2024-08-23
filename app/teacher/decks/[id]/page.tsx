@@ -13,8 +13,8 @@ export default async function Page({ params }: { params: { id: string } }) {
         {subdecks.map((subdeck) => {
           const { lessonId, lessonOrder, lessonTitle } = subdeck
           return (
-            <div key={lessonId} className="flex flex-col justify-between">
-              <p>{`${lessonOrder}. ${lessonTitle}`}</p>
+            <div key={lessonId} className="flex flex-col">
+              <p>{`${lessonTitle}`}</p>
             </div>
           )
         })}
