@@ -7,9 +7,9 @@ export default function Menu() {
   const pathname = usePathname()
 
   const items = [
-    { text: 'My Courses', icon: Book, href: '/courses' },
-    { text: 'My Decks', icon: Layers, href: '/decks' },
-    { text: 'Contact Us', icon: Phone, href: '/contact' },
+    { text: 'My Courses', icon: Book, href: '/teacher/courses' },
+    { text: 'My Decks', icon: Layers, href: '/teacher/decks' },
+    { text: 'Contact Us', icon: Phone, href: '/teacher/contact' },
   ]
   return (
     <nav className="self-start p-10 flex flex-col gap-7 text-[18px]">
