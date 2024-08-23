@@ -9,7 +9,15 @@ export default async function Page({ params }: { params: { id: string } }) {
   return (
     <div className="flex gap-4">
       <div className="basis-80 border-r-4 grid grid-rows-3">
-        <p>{`Level ${courseLevel} - ${courseTitle}`}</p>
+        <p className="text-xl font-bold">{`Level ${courseLevel} - ${courseTitle}`}</p>
+        {subdecks.map((subdeck) => {
+          const { lessonId, lessonOrder, lessonTitle } = subdeck
+          return (
+            <div key={lessonId} className="flex flex-col justify-between">
+              <p>{`${lessonOrder}. ${lessonTitle}`}</p>
+            </div>
+          )
+        })}
         <button className="w-36 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
           Add Sub-deck
         </button>
