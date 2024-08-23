@@ -8,11 +8,9 @@ export default function RootLayout({
 }>) {
   // TODO: redirect('/login')
   return (
-    <div>
+    <div className='w-full h-full flex gap-2'>
       <SideBar />
-      <div className="p-3 flex-1 bg-green-200">
-        <div className="w-full h-full bg-white p-3">{children}</div>
-      </div>
+      <div className="w-full h-full bg-white p-3">{children}</div>
     </div>
   )
 }
