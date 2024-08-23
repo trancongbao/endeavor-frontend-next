@@ -1,5 +1,3 @@
 export default function Home() {
-  return (
-    "Hello Word"
-  );
+  return <div className="w-full h-full bg-white p-3">Hello Word</div>
 }
