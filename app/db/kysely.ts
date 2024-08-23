@@ -71,6 +71,7 @@ interface TeacherCourse {
   course_id: number;
 }
 
+//TODO: We should use level + title as a composite key
 interface Course {
   id: Generated<number>;
   level: number;
