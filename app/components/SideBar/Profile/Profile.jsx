@@ -1,8 +1,6 @@
 import Image from 'next/image'
 
-// import { rpc } from '../../../rpc/rpc';
-
-export default function Profile({ authenticatedUser, setAuthenticatedUser }) {
+export default function Profile() {
   const buttonClass = 'w-28 h-12 rounded-lg bg-orange-300 flex justify-center items-center text-white text-lg'
 
   return (
@@ -18,30 +16,16 @@ export default function Profile({ authenticatedUser, setAuthenticatedUser }) {
       <p className="text-xl">Tran Cong Bao</p>
       {/* <div>{authenticatedUser.userType.toUpperCase()}</div> */}
       <p className="text-lg">TEACHER</p>
-      {authenticatedUser?.level && <div>Level: ${authenticatedUser.level}</div>}
+      {/* {authenticatedUser?.level && <div>Level: ${authenticatedUser.level}</div>} */}
 
       <div className="self-stretch flex items-center justify-evenly">
-        <button className={buttonClass} onClick={profile}>
+        <button className={buttonClass}>
           Profile
         </button>
-        <button className={buttonClass} onClick={logout}>
+        <button className={buttonClass}>
           Logout
         </button>
       </div>
     </div>
   )
-
-  function logout() {
-    // rpc('auth', 'logout', {}).then((result) => {
-    //   if (result) {
-    //     setAuthenticatedUser({});
-    //   } else {
-    //     alert('Logout error.');
-    //   }
-    // });
-  }
-
-  function profile() {
-    //TODO
-  }
 }

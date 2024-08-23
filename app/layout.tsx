@@ -1,4 +1,3 @@
-'use client'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import SideBar from '@/app/components/SideBar/SideBar'
@@ -17,17 +16,10 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  /**
-   * `authenticatedUser` equals `null` means authentication has not been checked
-   * `authenticatedUser` equals `{}` means there is no authenticated session
-   *  if there is a session, `authenticatedUser` is set to the authenticated user
-   * */
-  const [authenticatedUser, setAuthenticatedUser] = useState(null)
-
   return (
     <html lang="en">
       <body className={`${inter.className} flex`}>
-        <SideBar authenticatedUser={authenticatedUser} setAuthenticatedUser={setAuthenticatedUser} />
+        <SideBar />
         <div className="p-3 flex-1 bg-green-200">
           <div className="w-full h-full bg-white p-3">{children}</div>
         </div>
