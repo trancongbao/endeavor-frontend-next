@@ -7,17 +7,15 @@ export default async function Page({ params }: { params: { id: string } }) {
   const { courseId, courseLevel, courseTitle } = subdecks[0]
 
   return (
-    <div className="flex gap-4">
-      <div className="basis-80 border-r-4 grid grid-rows-3">
-        <p className="text-xl font-bold">{`Level ${courseLevel} - ${courseTitle}`}</p>
-        {subdecks.map((subdeck) => {
-          const { lessonId, lessonOrder, lessonTitle } = subdeck
-          return (
-            <div key={lessonId} className="flex flex-col">
-              <p>{`${lessonTitle}`}</p>
-            </div>
-          )
-        })}
+    <div className="grid grid-cols-[1fr_2fr_4fr] grid-rows-[1fr_10fr] gap-4">
+      <p className="col-span-full border-b-2 text-xl font-bold">{`Level ${courseLevel} - ${courseTitle}`}</p>
+      <div className="basis-80 border-r-4 flex flex-col gap-4">
+        <div className="flex flex-col gap-4">
+          {subdecks.map((subdeck) => {
+            const { lessonId, lessonOrder, lessonTitle } = subdeck
+            return <p key={lessonId} className="hover:bg-blue-200">{`${lessonTitle}`}</p>
+          })}
+        </div>
         <button className="w-36 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
           Add Sub-deck
         </button>
