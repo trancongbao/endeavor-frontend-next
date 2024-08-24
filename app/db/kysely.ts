@@ -76,6 +76,7 @@ interface Course {
   id: Generated<number>;
   level: number;
   title: string;
+  version: string;
   status: CourseStatus;
   summary?: string;
   description?: string;

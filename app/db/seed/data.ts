@@ -1,65 +1,59 @@
-import { Insertable, Updateable } from "kysely";
-import {
-  Card,
-  Course,
-  CourseStatus,
-  Lesson,
-  Teacher,
-  TeacherCourse,
-} from "../kysely";
+import { Insertable, Updateable } from 'kysely'
+import { Card, Course, CourseStatus, Lesson, Teacher, TeacherCourse } from '../kysely'
 
-export { teachers, courses, teacherCourses };
+export { teachers, courses, teacherCourses }
 
 const teachers: Insertable<Teacher>[] = [
   {
-    username: "teacher1",
-    password: "password1",
-    surname: "Garcia",
-    given_name: "Carlos",
-    email: "carlos.garcia@example.com",
-    phone: "+1112223333",
-    date_of_birth: new Date("1980-07-10"),
-    address: "111 Walnut St, City, Country",
-    avatar: "https://example.com/avatar6.jpg",
+    username: 'teacher1',
+    password: 'password1',
+    surname: 'Garcia',
+    given_name: 'Carlos',
+    email: 'carlos.garcia@example.com',
+    phone: '+1112223333',
+    date_of_birth: new Date('1980-07-10'),
+    address: '111 Walnut St, City, Country',
+    avatar: 'https://example.com/avatar6.jpg',
   },
   {
-    username: "teacher2",
-    password: "password2",
-    surname: "Martinez",
-    given_name: "Luisa",
-    email: "luisa.martinez@example.com",
-    phone: "+4445556666",
-    date_of_birth: new Date("1972-09-12"),
-    address: "222 Maple St, City, Country",
-    avatar: "https://example.com/avatar7.jpg",
+    username: 'teacher2',
+    password: 'password2',
+    surname: 'Martinez',
+    given_name: 'Luisa',
+    email: 'luisa.martinez@example.com',
+    phone: '+4445556666',
+    date_of_birth: new Date('1972-09-12'),
+    address: '222 Maple St, City, Country',
+    avatar: 'https://example.com/avatar7.jpg',
   },
   {
-    username: "teacher3",
-    password: "password3",
-    surname: "Lopez",
-    given_name: "Maria",
-    email: "maria.lopez@example.com",
-    phone: "+7778889999",
-    date_of_birth: new Date("1983-04-18"),
-    address: "333 Oak St, City, Country",
+    username: 'teacher3',
+    password: 'password3',
+    surname: 'Lopez',
+    given_name: 'Maria',
+    email: 'maria.lopez@example.com',
+    phone: '+7778889999',
+    date_of_birth: new Date('1983-04-18'),
+    address: '333 Oak St, City, Country',
   },
-];
+]
 
-type LessonData = Partial<Lesson> & { cards?: Insertable<Card>[] };
+type LessonData = Partial<Lesson> & { cards?: Insertable<Card>[] }
 
 type CourseData = { id?: number } & Insertable<Course> & {
-    lessons?: LessonData[];
-  };
+    lessons?: LessonData[]
+  }
 
 const courses: CourseData[] = [
   {
     level: 1,
-    title: "School",
+    title: 'School',
+    version: '1.0.0',
     status: CourseStatus.PUBLISHED,
     lessons: [
       {
-        title: "Introduction",
-        audio: "audio/intro_sql.mp3",
+        title: 'Introduction',
+        audio: 'audio/intro_sql.mp3',
         content: `There are schools all around the world. There are big schools and little schools, new schools and old schools.
         Is your school big or little?
         Is your school new or old?
@@ -68,7 +62,7 @@ const courses: CourseData[] = [
       },
       {
         title: "Chapter 1: Let's Go to School",
-        audio: "audio/intro_sql.mp3",
+        audio: 'audio/intro_sql.mp3',
         content: `All around the world, students go to school.
         Some students walk to school, and some go by bus or by train.
         Some students go by bicycle, and some go by car.
@@ -78,8 +72,8 @@ const courses: CourseData[] = [
         How do you go to school?`,
       },
       {
-        title: "Chapter 2: Buildings",
-        audio: "audio/intro_sql.mp3",
+        title: 'Chapter 2: Buildings',
+        audio: 'audio/intro_sql.mp3',
         content: `Let's look at school buildings around the world.
         This school is in Australia.
         It's in the countryside.
@@ -92,8 +86,8 @@ const courses: CourseData[] = [
         For these students in Nepal, the countryside is their school!`,
       },
       {
-        title: "Chapter 3: At School",
-        audio: "audio/intro_sql.mp3",
+        title: 'Chapter 3: At School',
+        audio: 'audio/intro_sql.mp3',
         content: `These students are at school.
         They meet their friends.
         They talk and they are happy.
@@ -109,8 +103,8 @@ const courses: CourseData[] = [
         One school in China is in a cave.`,
       },
       {
-        title: "Chapter 4: In Class",
-        audio: "audio/intro_sql.mp3",
+        title: 'Chapter 4: In Class',
+        audio: 'audio/intro_sql.mp3',
         content: `In the classroom, the teacher says, 'Sit down, please’.
         Open your English books.
         It's an English class.
@@ -128,12 +122,13 @@ const courses: CourseData[] = [
   },
   {
     level: 1,
-    title: "In the Sky",
+    title: 'In the Sky',
+    version: '1.0.0',
     status: CourseStatus.PUBLISHED,
     lessons: [
       {
-        title: "Introduction",
-        audio: "audio/intro_sql.mp3",
+        title: 'Introduction',
+        audio: 'audio/intro_sql.mp3',
         content: `Go outside and look up.
           What can you see?
           You can see the sky.
@@ -145,8 +140,8 @@ const courses: CourseData[] = [
           Now read and discover more about the sky!`,
       },
       {
-        title: "Chapter 1: The Sky",
-        audio: "audio/intro_sql.mp3",
+        title: 'Chapter 1: The Sky',
+        audio: 'audio/intro_sql.mp3',
         content: `Look at the sky in the day.
           What color is it?
           Can you see clouds?
@@ -161,8 +156,8 @@ const courses: CourseData[] = [
           Space is dark and very big.`,
       },
       {
-        title: "Chapter 2: At Night",
-        audio: "audio/intro_sql.mp3",
+        title: 'Chapter 2: At Night',
+        audio: 'audio/intro_sql.mp3',
         content: `At night the sky is dark.
           You can see the moon.
           The moon is a big ball of rock.
@@ -176,8 +171,8 @@ const courses: CourseData[] = [
           Sometimes you can see planets, too.`,
       },
       {
-        title: "Chapter 3: The Sun",
-        audio: "audio/intro_sql.mp3",
+        title: 'Chapter 3: The Sun',
+        audio: 'audio/intro_sql.mp3',
         content: `Do you know the sun is a star?
           It's our star.
           We live on a planet called Earth.
@@ -194,8 +189,8 @@ const courses: CourseData[] = [
           This makes electricity.`,
       },
       {
-        title: "Chapter 4: Day and Night",
-        audio: "audio/intro_sql.mp3",
+        title: 'Chapter 4: Day and Night',
+        audio: 'audio/intro_sql.mp3',
         content: `Sometimes it's day and sometimes it's night.
           That's because Earth turns.
           When your place on Earth turns toward the sun, you see light from the sun.
@@ -213,31 +208,34 @@ const courses: CourseData[] = [
   },
   {
     level: 1,
-    title: "Fruit",
+    title: 'Fruit',
+    version: '1.0.0',
     status: CourseStatus.PUBLISHED,
   },
   {
     level: 1,
-    title: "Tree",
+    version: "1.0.0",
+    title: 'Tree',
     status: CourseStatus.PUBLISHED,
   },
   {
     level: 1,
-    title: "Young Animals",
+    version: "1.0.0",
+    title: 'Young Animals',
     status: CourseStatus.PUBLISHED,
   },
-];
+]
 
 const teacherCourses = new Map([
   [
-    "teacher1",
+    'teacher1',
     [
-      { level: 1, title: "School" },
-      { level: 1, title: "In the Sky" },
-      { level: 1, title: "Fruit" },
-      { level: 1, title: "Tree" },
-      { level: 1, title: "Young Animals" },
+      { level: 1, title: 'School' },
+      { level: 1, title: 'In the Sky' },
+      { level: 1, title: 'Fruit' },
+      { level: 1, title: 'Tree' },
+      { level: 1, title: 'Young Animals' },
     ],
   ],
-  ["teacher2", [{ level: 1, title: "School" }]],
-]);
+  ['teacher2', [{ level: 1, title: 'School' }]],
+])

@@ -1,5 +1,5 @@
 import { Generated, Insertable, sql } from 'kysely'
-import { Course, EndeavorDB, kysely, Lesson, Teacher } from '../kysely'
+import { Course, kysely, Lesson, Teacher } from '../kysely'
 import { teachers, courses, teacherCourses } from './data'
 
 /*
@@ -16,7 +16,6 @@ truncateTables()
       const { lessons, ...courseInsertable } = course
       return insertCourse(courseInsertable).then((insertedCourse) => {
         console.log('insertedCourse: ', insertedCourse)
-        //TODO: remove id, use {level, title} composite key instead
         course.id = insertedCourse.id
         lessons?.forEach((lesson, index) => {
           lesson.course_id = course.id

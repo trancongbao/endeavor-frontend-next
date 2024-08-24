@@ -52,17 +52,23 @@ CREATE TABLE STUDENT
 -- Define custom enumeration type for course status
 CREATE TYPE COURSE_STATUS AS ENUM ('DRAFT', 'IN_REVIEW', 'APPROVED', 'PUBLISHED', 'ARCHIVED');
 -- Define table structure for courses
+/* 
+    (level, title, version, status) can be used as a primary composite key.
+    But, using as a foreign key (in other tables) would be highly cubersome.
+    So here, we opt to use `id` as the primary key and add a unique constraint on the composite key.
+*/
 CREATE TABLE COURSE
 (
     id          SERIAL PRIMARY KEY,                  -- Unique identifier for the course
     level       INT          NOT NULL,               -- Level of the course
     title       VARCHAR(255) NOT NULL,               -- Title of the course
+    version     VARCHAR(255) NOT NULL,               -- Version of the course
     status      COURSE_STATUS,                       -- Status of the course
     summary     VARCHAR(255),                        -- Summary of the course
     description TEXT,                                -- Detailed description of the course
     thumbnail   VARCHAR(255),                        -- URL/path to the course thumbnail
     updated_at  timestamp default current_timestamp, -- Timestamp of the last update
-    CONSTRAINT unique_status_title_level UNIQUE (status, title, level)
+    CONSTRAINT unique_level_title_version_status UNIQUE(level, title, version, status)
 );
 
 CREATE TABLE TEACHER_COURSE
