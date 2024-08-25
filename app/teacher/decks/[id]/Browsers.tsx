@@ -12,10 +12,10 @@ export default function Browser({ subdecks }: { subdecks: Subdecks }) {
   const [selectedSubdeck, setSelectedSubdeck] = useState(subdecks[_.min(Object.keys(subdecks).map(Number)) as number])
 
   /*
-   * Extract subdeck list as a separate component would introduce tight coupling regarding the state management of selectedSubdeck.
+   * Extract subdeck list to a separate component would introduce tight coupling regarding the state management of selectedSubdeck.
    */
   return (
-    <div className="grid grid-cols-[1fr_2fr_4fr] grid-rows-[1fr_10fr] gap-4">
+    <div className="grid grid-cols-[1fr_6fr] grid-rows-[1fr_10fr] gap-4">
       <div className="basis-80 border-r-4 flex flex-col gap-4">
         <div className="flex flex-col gap-4">
           {Object.keys(subdecks).map((subdeckOrder) => {
@@ -33,7 +33,7 @@ export default function Browser({ subdecks }: { subdecks: Subdecks }) {
         </button>
       </div>
       <CardList cards={_.groupBy(selectedSubdeck, 'cardOrder')} />
-      <div>Preview/Edit Toggle</div>
+      
     </div>
   )
 }
