@@ -1,9 +1,9 @@
 import { kysely } from '../../../db/kysely'
 import _ from 'lodash'
-import Subdecks from './Subdecks'
+import Browser from './Browsers'
 
 export default async function Page({ params }: { params: { id: string } }) {
-  const data = await getData(params.id)
+  const data = await queryData(params.id)
   console.log('data: ', data)
   const { courseId, courseLevel, courseTitle } = data[0]
 
@@ -11,18 +11,14 @@ export default async function Page({ params }: { params: { id: string } }) {
   console.log('subdecks: ', subdecks)
 
   return (
-    <div className="grid grid-cols-[1fr_2fr_4fr] grid-rows-[1fr_10fr] gap-4">
+    <div className="flex flex-col gap-4">
       <p className="col-span-full border-b-2 text-xl font-bold">{`Level ${courseLevel} - ${courseTitle}`}</p>
-      <Subdecks subdecks={subdecks} />
-      <div className="basis-80 border-r-4">
-        <button className="w-36 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Add card</button>
-      </div>
-      <div>Preview/Edit Toggle</div>
+      <Browser subdecks={subdecks} />
     </div>
   )
 }
 
-async function getData(id: string) {
+async function queryData(id: string) {
   /*
    * TODO: authentication and authorization
    */
