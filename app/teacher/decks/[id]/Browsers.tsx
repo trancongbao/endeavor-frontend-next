@@ -32,8 +32,7 @@ export default function Browser({ subdecks }: { subdecks: Subdecks }) {
           Add Sub-deck
         </button>
       </div>
-      <CardList cards={_.groupBy(selectedSubdeck, 'cardOrder')} />
-      
+      <CardList cards={_.groupBy(selectedSubdeck, 'cardOrder')} />     
     </div>
   )
 }
