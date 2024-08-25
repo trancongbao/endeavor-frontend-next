@@ -1,9 +1,9 @@
 'use client'
 
 import _ from 'lodash'
-import Cards from './Cards'
+import CardList from './CardList'
 import { useState } from 'react'
-import { Subdecks } from './page'
+import { Row, Subdecks } from './page'
 
 export default function Browser({ subdecks }: { subdecks: Subdecks }) {
   /*
@@ -32,8 +32,12 @@ export default function Browser({ subdecks }: { subdecks: Subdecks }) {
           Add Sub-deck
         </button>
       </div>
-      <Cards />
+      <CardList cards={_.groupBy(selectedSubdeck, 'cardOrder')} />
       <div>Preview/Edit Toggle</div>
     </div>
   )
+}
+
+export type Cards = {
+  [key: string]: Row[]
 }
