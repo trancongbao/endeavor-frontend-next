@@ -6,12 +6,11 @@ export default function Preview({ card }: { card: Row[] }) {
   return (
     <div className="pl-3 flex flex-col">
       <p
-        className="self-center text-lg"
+        className="self-center text-center text-lg"
         dangerouslySetInnerHTML={{
           __html: card ? styleNewWord(card[0].cardText) : '',
         }}
       ></p>
-      <hr></hr>
       {/* {card &&
         card.map((word, index) => (
           <div key={index} className="back-section item">
