@@ -10,10 +10,10 @@ export default function CardList({ cards }: { cards: Cards }) {
   console.log('cards: ', cards)
   return (
     <div className="basis-80 border-r-4">
-      <ul className='flex flex-col gap-4'>
+      <ul className="flex flex-col gap-4">
         {Object.keys(cards).map((cardOrder) => (
           <li
-            className={parseInt(cardOrder) === selectedCard[0].cardOrder ? 'selected' : ''}
+            className={`p-2 rounded cursor-pointer  hover:bg-blue-100 ${parseInt(cardOrder) === selectedCard[0].cardOrder ? 'bg-blue-300' : ''}`}
             key={cardOrder}
             onClick={() => setSelectedCard(cards[cardOrder])}
             dangerouslySetInnerHTML={{
