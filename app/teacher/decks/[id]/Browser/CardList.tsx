@@ -1,11 +1,15 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import _ from 'lodash'
 import { Cards } from './Browser'
 import Preview from './Preview'
 import { styleNewWord } from './styleNewWord'
 
 export default function CardList({ cards }: { cards: Cards }) {
-  const [selectedCard, setSelectedCard] = useState(cards[_.min(Object.keys(cards).map(Number)) as number])
+  const [selectedCard, setSelectedCard] = useState(getFirstCard(cards))
+
+  useEffect(() => {
+    setSelectedCard(getFirstCard(cards))
+  }, [cards])
 
   console.log('cards: ', cards)
 
@@ -32,4 +36,8 @@ export default function CardList({ cards }: { cards: Cards }) {
       <Preview card={selectedCard} />
     </div>
   )
+}
+
+function getFirstCard(cards: Cards) {
+  return cards[_.min(Object.keys(cards).map(Number)) as number]
 }
