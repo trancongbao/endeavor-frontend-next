@@ -1,19 +1,21 @@
 import { kysely } from '../../../db/kysely'
+import _ from 'lodash'
 
 export default async function Page({ params }: { params: { id: string } }) {
-  const subdecks = await getSubdecks(params.id)
-  console.log('subdecks: ', subdecks)
+  const joinedRows = await getSubdecks(params.id)
+  console.log('rows: ', joinedRows)
+  const { courseId, courseLevel, courseTitle } = joinedRows[0]
 
-  const { courseId, courseLevel, courseTitle } = subdecks[0]
+  const subdecks = _.groupBy(joinedRows, 'lessonOrder')
+  console.log('subdecks: ', subdecks)
 
   return (
     <div className="grid grid-cols-[1fr_2fr_4fr] grid-rows-[1fr_10fr] gap-4">
       <p className="col-span-full border-b-2 text-xl font-bold">{`Level ${courseLevel} - ${courseTitle}`}</p>
       <div className="basis-80 border-r-4 flex flex-col gap-4">
         <div className="flex flex-col gap-4">
-          {subdecks.map((subdeck) => {
-            const { lessonOrder, lessonTitle } = subdeck
-            return <p key={lessonOrder} className="hover:bg-blue-200">{`${lessonTitle}`}</p>
+          {Object.entries(subdecks).map(([subdeckOrder, rows]) => {
+            return <p key={subdeckOrder} className="hover:bg-blue-200">{`${rows[0].lessonTitle}`}</p>
           })}
         </div>
         <button className="w-36 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
@@ -38,7 +40,9 @@ async function getSubdecks(id: string) {
     .selectFrom('teacher_course')
     .innerJoin('course', 'course.id', 'teacher_course.course_id')
     .innerJoin('lesson', 'lesson.course_id', 'course.id')
-    // .innerJoin('card', 'card.lesson_id', 'lesson.id')
+    .innerJoin('card', (join) =>
+      join.onRef('card.course_id', '=', 'lesson.course_id').onRef('card.lesson_order', '=', 'lesson.order')
+    )
     // .innerJoin('card_word', 'card_word.card_id', 'card.id')
     // .innerJoin('word', 'word.id', 'card_word.word_id')
     .select([
@@ -47,9 +51,9 @@ async function getSubdecks(id: string) {
       'course.title as courseTitle',
       'lesson.order as lessonOrder',
       'lesson.title as lessonTitle',
-      //   'card.id as card_id',
-      //   'card.card_order as card_order',
-      //   'card.front_text as card_front_text',
+      'card.id as card_id',
+      'card.order as card_order',
+      'card.text as card_text',
       //   'card_word.word_order as word_order',
       //   'word.id as word_id',
       //   'word.word as word_word',
@@ -65,4 +69,19 @@ async function getSubdecks(id: string) {
     .then((rows) => {
       return rows
     })
+}
+
+async function Subdecks({ subdecks }) {
+  return (
+    <div className="basis-80 border-r-4 flex flex-col gap-4">
+        <div className="flex flex-col gap-4">
+          {Object.entries(subdecks).map(([subdeckOrder, rows]) => {
+            return <p key={subdeckOrder} className="hover:bg-blue-200">{`${rows[0].lessonTitle}`}</p>
+          })}
+        </div>
+        <button className="w-36 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+          Add Sub-deck
+        </button>
+      </div>
+  )
 }

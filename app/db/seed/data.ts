@@ -122,6 +122,24 @@ const courses: CourseData[] = [
         This school is in South Korea.
         *** Discover
         For these students in Nepal, the countryside is their school!`,
+        cards: [
+          {
+            text: `Let's look at school buildings around the world.`,
+            audio_uri: 'audio/intro_sql.mp3',
+          },
+          {
+            text: 'This school is in Australia.',
+            audio_uri: 'audio/intro_sql.mp3',
+          },
+          {
+            text: `It's in the countryside.`,
+            audio_uri: 'audio/intro_sql.mp3',
+          },
+          {
+            text: `It's a little school, but many schools in Australia are big.`,
+            audio_uri: 'audio/intro_sql.mp3',
+          },
+        ],
       },
       {
         title: 'Chapter 3: At School',
