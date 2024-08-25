@@ -1,27 +1,19 @@
 import { kysely } from '../../../db/kysely'
 import _ from 'lodash'
+import Subdecks from './Subdecks'
 
 export default async function Page({ params }: { params: { id: string } }) {
-  const joinedRows = await getSubdecks(params.id)
-  console.log('rows: ', joinedRows)
-  const { courseId, courseLevel, courseTitle } = joinedRows[0]
+  const data = await getData(params.id)
+  console.log('data: ', data)
+  const { courseId, courseLevel, courseTitle } = data[0]
 
-  const subdecks = _.groupBy(joinedRows, 'lessonOrder')
+  const subdecks = _.groupBy(data, 'lessonOrder')
   console.log('subdecks: ', subdecks)
 
   return (
     <div className="grid grid-cols-[1fr_2fr_4fr] grid-rows-[1fr_10fr] gap-4">
       <p className="col-span-full border-b-2 text-xl font-bold">{`Level ${courseLevel} - ${courseTitle}`}</p>
-      <div className="basis-80 border-r-4 flex flex-col gap-4">
-        <div className="flex flex-col gap-4">
-          {Object.entries(subdecks).map(([subdeckOrder, rows]) => {
-            return <p key={subdeckOrder} className="hover:bg-blue-200">{`${rows[0].lessonTitle}`}</p>
-          })}
-        </div>
-        <button className="w-36 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-          Add Sub-deck
-        </button>
-      </div>
+      <Subdecks subdecks={subdecks} />
       <div className="basis-80 border-r-4">
         <button className="w-36 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Add card</button>
       </div>
@@ -30,7 +22,7 @@ export default async function Page({ params }: { params: { id: string } }) {
   )
 }
 
-async function getSubdecks(id: string) {
+async function getData(id: string) {
   /*
    * TODO: authentication and authorization
    */
@@ -69,19 +61,4 @@ async function getSubdecks(id: string) {
     .then((rows) => {
       return rows
     })
-}
-
-async function Subdecks({ subdecks }) {
-  return (
-    <div className="basis-80 border-r-4 flex flex-col gap-4">
-        <div className="flex flex-col gap-4">
-          {Object.entries(subdecks).map(([subdeckOrder, rows]) => {
-            return <p key={subdeckOrder} className="hover:bg-blue-200">{`${rows[0].lessonTitle}`}</p>
-          })}
-        </div>
-        <button className="w-36 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-          Add Sub-deck
-        </button>
-      </div>
-  )
 }
