@@ -78,10 +78,15 @@ CREATE TABLE TEACHER_COURSE
     CONSTRAINT unique_teacher_id_course_id UNIQUE (course_id, teacher_username)
 );
 
+/* 
+    (course_id, lesson_order) is used as the primary composite key.
+    Even though using it as a foreign key (in other tables) is more cubersome than `id`, it is deemed tolerable.
+    Another important benefit of this approach is that we can use course_id direcly for authorization when dealing with `lesson` or `card`.
+*/
 CREATE TABLE LESSON
 (
-    id           SERIAL PRIMARY KEY,                 -- Unique identifier for the lesson, auto-incremented
     course_id    INTEGER REFERENCES COURSE (id),     -- Foreign key referencing the course that the lesson belongs to
+    -- TODO: rename lesson_order to order_in_course
     lesson_order INTEGER      NOT NULL,              -- Order of the lesson within the course, cannot be null
     title        VARCHAR(255) NOT NULL,              -- Title of the lesson, cannot be null
     audio        VARCHAR(255) NOT NULL,              -- Path to the audio file for the lesson, cannot be null
@@ -90,18 +95,20 @@ CREATE TABLE LESSON
     thumbnail    VARCHAR(255),                       -- Path to the thumbnail image for the lesson
     content      TEXT,                               -- Content of the lesson
     updated_at   timestamp default current_timestamp,-- Timestamp of the last update
-    CONSTRAINT unique_course_id_lesson_order UNIQUE (course_id, lesson_order)
+    PRIMARY KEY (course_id, lesson_order)
 );
 
 -- Table definition for CARD
 CREATE TABLE CARD
 (
     id              SERIAL PRIMARY KEY,             -- Unique identifier for the card
-    lesson_id       INTEGER REFERENCES LESSON (id), -- Foreign key referencing lesson
+    course_id       INTEGER,                        -- Foreign key referencing course_id in LESSON
+    lesson_order    INTEGER,                        -- Foreign key referencing lesson_order in LESSON
     card_order      INTEGER NOT NULL,               -- Relative order of the word in the card
-    front_text      TEXT    NOT NULL,               -- Text on the front side of the card
-    front_audio_uri TEXT,                           -- URI for audio associated with the front side
-    CONSTRAINT unique_lesson_id_card_order UNIQUE (lesson_id, card_order)
+    text            TEXT    NOT NULL,               -- Text (of the front side of the card)
+    audio_uri TEXT,                                 -- URI for audio (associated with the front side)
+    CONSTRAINT fk_lesson FOREIGN KEY (course_id, lesson_order) REFERENCES LESSON (course_id, lesson_order),
+    CONSTRAINT unique_lesson_id_card_order UNIQUE (course_id, lesson_order, card_order)
 );
 
 -- Table definition for WORD

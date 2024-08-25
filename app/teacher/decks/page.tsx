@@ -28,7 +28,6 @@ async function getDecks() {
       'course.id as course_id',
       'course.level as course_level',
       'course.title as course_title',
-      'lesson.id as lesson_id',
       'lesson.lesson_order',
       'lesson.title as lesson_title',
     ])

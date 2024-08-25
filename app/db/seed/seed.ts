@@ -1,5 +1,5 @@
-import { Generated, Insertable, sql } from 'kysely'
-import { Course, kysely, Lesson, Teacher } from '../kysely'
+import { Insertable, sql } from 'kysely'
+import { Card, Course, kysely, Lesson, Teacher } from '../kysely'
 import { teachers, courses, teacherCourses } from './data'
 
 /*
@@ -19,10 +19,22 @@ truncateTables()
         course.id = insertedCourse.id
         lessons?.forEach((lesson, index) => {
           lesson.course_id = course.id
-          lesson.lesson_order = index //TODO: rename to `chapter`
-          insertLesson(lesson as Insertable<Lesson>).then((insertedLesson) => {
+          lesson.lesson_order = index
+          const { cards, ...lesson1 } = lesson
+          insertLesson(lesson1 as Insertable<Lesson>).then((insertedLesson) => {
             console.log('insertedLesson: ', insertedLesson)
-            lesson.id = insertedLesson.id as unknown as Generated<number>
+            if (lesson.cards !== undefined) {
+              lesson.cards.forEach((card, index) => {
+                insertCard({
+                  course_id: insertedCourse.id,
+                  lesson_order: insertedLesson.lesson_order,
+                  card_order: index,
+                  ...card,
+                }).then((insertedCard) => {
+                  console.log('insertedCard: ', insertedCard)
+                })
+              })
+            }
           })
         })
       })
@@ -65,4 +77,8 @@ function insertCourse(courseInsertable: Insertable<Course>) {
 
 function insertLesson(lessonInsertable: Insertable<Lesson>) {
   return kysely.insertInto('lesson').values(lessonInsertable).returningAll().executeTakeFirstOrThrow()
+}
+
+function insertCard(cardInsertable: Insertable<Card>) {
+  return kysely.insertInto('card').values(cardInsertable).returningAll().executeTakeFirstOrThrow()
 }

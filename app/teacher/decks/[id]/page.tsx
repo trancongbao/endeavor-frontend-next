@@ -12,8 +12,8 @@ export default async function Page({ params }: { params: { id: string } }) {
       <div className="basis-80 border-r-4 flex flex-col gap-4">
         <div className="flex flex-col gap-4">
           {subdecks.map((subdeck) => {
-            const { lessonId, lessonOrder, lessonTitle } = subdeck
-            return <p key={lessonId} className="hover:bg-blue-200">{`${lessonTitle}`}</p>
+            const { lessonOrder, lessonTitle } = subdeck
+            return <p key={lessonOrder} className="hover:bg-blue-200">{`${lessonTitle}`}</p>
           })}
         </div>
         <button className="w-36 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
@@ -45,7 +45,6 @@ async function getSubdecks(id: string) {
       'course.id as courseId',
       'course.level as courseLevel',
       'course.title as courseTitle',
-      'lesson.id as lessonId',
       'lesson.lesson_order as lessonOrder',
       'lesson.title as lessonTitle',
       //   'card.id as card_id',

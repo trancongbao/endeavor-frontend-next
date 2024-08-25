@@ -38,7 +38,9 @@ const teachers: Insertable<Teacher>[] = [
   },
 ]
 
-type LessonData = Partial<Lesson> & { cards?: Insertable<Card>[] }
+type CardData = { text: string; audio_uri: string }
+
+type LessonData = Partial<Lesson> & { cards?: CardData[] }
 
 type CourseData = { id?: number } & Insertable<Course> & {
     lessons?: LessonData[]
@@ -59,6 +61,24 @@ const courses: CourseData[] = [
         Is your school new or old?
         *** Discover
         Now read and discover more about school!`,
+        cards: [
+          {
+            text: 'There are schools all around the world. There are big schools and little schools, new schools and old schools.',
+            audio_uri: 'audio/intro_sql.mp3',
+          },
+          {
+            text: 'Is your school big or little?',
+            audio_uri: 'audio/intro_sql.mp3',
+          },
+          {
+            text: 'Is your school new or old?',
+            audio_uri: 'audio/intro_sql.mp3',
+          },
+          {
+            text: 'Now read and discover more about school!',
+            audio_uri: 'audio/intro_sql.mp3',
+          },
+        ],
       },
       {
         title: "Chapter 1: Let's Go to School",
@@ -70,6 +90,24 @@ const courses: CourseData[] = [
         In the snow in Canada, some students go to school by sled.
         In India, some students go to school by rickshaw.
         How do you go to school?`,
+        cards: [
+          {
+            text: 'All around the world, students go to school.',
+            audio_uri: 'audio/intro_sql.mp3',
+          },
+          {
+            text: 'Some students walk to school, and some go by bus or by train.',
+            audio_uri: 'audio/intro_sql.mp3',
+          },
+          {
+            text: 'Some students go by bicycle, and some go by car.',
+            audio_uri: 'audio/intro_sql.mp3',
+          },
+          {
+            text: 'These students are in the USA. They go to school by bus.',
+            audio_uri: 'audio/intro_sql.mp3',
+          },
+        ],
       },
       {
         title: 'Chapter 2: Buildings',
@@ -214,13 +252,13 @@ const courses: CourseData[] = [
   },
   {
     level: 1,
-    version: "1.0.0",
+    version: '1.0.0',
     title: 'Tree',
     status: CourseStatus.PUBLISHED,
   },
   {
     level: 1,
-    version: "1.0.0",
+    version: '1.0.0',
     title: 'Young Animals',
     status: CourseStatus.PUBLISHED,
   },

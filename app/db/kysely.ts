@@ -93,7 +93,6 @@ enum CourseStatus {
 }
 
 interface Lesson {
-  id: Generated<number>;
   course_id: number;
   lesson_order: number;
   title: string;
@@ -107,10 +106,11 @@ interface Lesson {
 
 interface Card {
   id: Generated<number>;
-  lesson_id: number;
+  course_id: number;
+  lesson_order: number;
   card_order: number;
-  front_text: string;
-  front_audio_uri?: string;
+  text: string;
+  audio_uri?: string;
 }
 
 interface Word {
