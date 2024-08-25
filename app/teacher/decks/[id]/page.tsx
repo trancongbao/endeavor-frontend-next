@@ -7,7 +7,7 @@ export default async function Page({ params }: { params: { id: string } }) {
   console.log('data: ', data)
   const { courseId, courseLevel, courseTitle } = data[0]
 
-  const subdecks = _.groupBy(data, 'lessonOrder')
+  const subdecks: Subdecks = _.groupBy(data, 'lessonOrder')
   console.log('subdecks: ', subdecks)
 
   return (
@@ -39,9 +39,9 @@ async function queryData(id: string) {
       'course.title as courseTitle',
       'lesson.order as lessonOrder',
       'lesson.title as lessonTitle',
-      'card.id as card_id',
-      'card.order as card_order',
-      'card.text as card_text',
+      'card.id as cardId',
+      'card.order as cardOrder',
+      'card.text as cardText',
       //   'card_word.word_order as word_order',
       //   'word.id as word_id',
       //   'word.word as word_word',
@@ -58,3 +58,26 @@ async function queryData(id: string) {
       return rows
     })
 }
+
+export type Row = {
+  courseId: number
+  courseLevel: number
+  courseTitle: string
+  lessonOrder: number
+  lessonTitle: string
+  cardId: number
+  cardOrder: number
+  cardText: string
+  //   word_order: number
+  //   word_id: number
+  //   word_word: string
+  //   word_definition: string
+  //   word_phonetic: string
+  //   word_part_of_speech: string
+  //   word_audio_uri: string
+  //   word_image_uri: string
+}
+
+export type Subdecks = {
+  [key: string]: Row[];
+};
