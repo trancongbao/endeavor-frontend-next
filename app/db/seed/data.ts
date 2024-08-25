@@ -63,19 +63,23 @@ const courses: CourseData[] = [
         Now read and discover more about school!`,
         cards: [
           {
-            text: 'There are schools all around the world. There are big schools and little schools, new schools and old schools.',
+            text: 'There are schools #all around the world#.',
             audio_uri: 'audio/intro_sql.mp3',
           },
           {
-            text: 'Is your school big or little?',
+            text: '#There are# big schools and little schools, new schools and old schools.',
             audio_uri: 'audio/intro_sql.mp3',
           },
           {
-            text: 'Is your school new or old?',
+            text: 'Is your school #big# or #little#?',
             audio_uri: 'audio/intro_sql.mp3',
           },
           {
-            text: 'Now read and discover more about school!',
+            text: 'Is your school #new# or #old#?',
+            audio_uri: 'audio/intro_sql.mp3',
+          },
+          {
+            text: 'Now read and discover #more# about school!',
             audio_uri: 'audio/intro_sql.mp3',
           },
         ],

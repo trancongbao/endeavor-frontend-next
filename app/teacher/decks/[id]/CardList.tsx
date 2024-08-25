@@ -2,6 +2,7 @@ import { useState } from 'react'
 import _ from 'lodash'
 import { Cards } from './Browsers'
 import Preview from './Preview'
+import { styleNewWord } from './styleNewWord'
 
 export default function CardList({ cards }: { cards: Cards }) {
   const [selectedCard, setSelectedCard] = useState(cards[_.min(Object.keys(cards).map(Number)) as number])
@@ -21,7 +22,7 @@ export default function CardList({ cards }: { cards: Cards }) {
               key={cardOrder}
               onClick={() => setSelectedCard(cards[cardOrder])}
               dangerouslySetInnerHTML={{
-                __html: boldNewWord(cards[cardOrder][0].cardText),
+                __html: styleNewWord(cards[cardOrder][0].cardText),
               }}
             ></li>
           ))}
@@ -31,20 +32,4 @@ export default function CardList({ cards }: { cards: Cards }) {
       <Preview />
     </div>
   )
-}
-
-export function boldNewWord(newWord) {
-  let result = newWord
-  let startIndex = result.indexOf('#')
-  while (startIndex !== -1) {
-    let endIndex = result.indexOf('#', startIndex + 1)
-    if (endIndex !== -1) {
-      const boldText = result.slice(startIndex + 1, endIndex)
-      result = result.replace('#' + boldText + '#', `<b class="bold-text">${boldText}</b>`)
-      startIndex = result.indexOf('#', endIndex + 1)
-    } else {
-      startIndex = -1
-    }
-  }
-  return result
 }

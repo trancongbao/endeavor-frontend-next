@@ -94,7 +94,7 @@ CREATE TABLE LESSON
     thumbnail    VARCHAR(255),                       -- Path to the thumbnail image for the lesson
     content      TEXT,                               -- Content of the lesson
     updated_at   timestamp default current_timestamp,-- Timestamp of the last update
-    PRIMARY KEY (course_id, "order")
+    PRIMARY KEY (course_id, "order"),                -- Composite primary key
     CONSTRAINT unique_course_id_lesson_order_title UNIQUE (course_id, "order", title)
 );
 
