@@ -29,7 +29,7 @@ export default function CardList({ cards }: { cards: Cards }) {
         </ul>
         <button className="w-36 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Add card</button>
       </div>
-      <Preview />
+      <Preview card={selectedCard} />
     </div>
   )
 }
