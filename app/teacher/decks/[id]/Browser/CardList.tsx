@@ -18,7 +18,7 @@ export default function CardList({ cards }: { cards: Cards }) {
         <ul className="flex flex-col gap-4">
           {Object.keys(cards).map((cardOrder) => (
             <li
-              className={`p-2 rounded cursor-pointer  hover:bg-blue-100 ${parseInt(cardOrder) === selectedCard[0].cardOrder ? 'bg-blue-300' : ''}`}
+              className={`p-2 rounded cursor-pointer  hover:bg-orange-50 ${parseInt(cardOrder) === selectedCard[0].cardOrder ? 'bg-orange-200' : ''}`}
               key={cardOrder}
               onClick={() => setSelectedCard(cards[cardOrder])}
               dangerouslySetInnerHTML={{
@@ -27,7 +27,7 @@ export default function CardList({ cards }: { cards: Cards }) {
             ></li>
           ))}
         </ul>
-        <button className="w-36 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Add card</button>
+        <button className="w-36 bg-orange-400 hover:bg-orange-300 text-white py-2 px-4 rounded">Add card</button>
       </div>
       <Preview card={selectedCard} />
     </div>
