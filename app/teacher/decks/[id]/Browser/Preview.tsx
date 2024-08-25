@@ -11,6 +11,7 @@ export default function Preview({ card }: { card: Row[] }) {
           __html: card ? styleNewWord(card[0].cardText) : '',
         }}
       ></p>
+      <hr></hr>
       {/* {card &&
         card.map((word, index) => (
           <div key={index} className="back-section item">

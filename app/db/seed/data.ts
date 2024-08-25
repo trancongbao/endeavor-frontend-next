@@ -96,19 +96,19 @@ const courses: CourseData[] = [
         How do you go to school?`,
         cards: [
           {
-            text: 'All around the world, students go to school.',
+            text: '#All around the world#, students go to school.',
             audio_uri: 'audio/intro_sql.mp3',
           },
           {
-            text: 'Some students walk to school, and some go by bus or by train.',
+            text: 'Some students walk to school, and some go #by# bus or by train.',
             audio_uri: 'audio/intro_sql.mp3',
           },
           {
-            text: 'Some students go by bicycle, and some go by car.',
+            text: 'Some students go #by# bicycle, and some go by car.',
             audio_uri: 'audio/intro_sql.mp3',
           },
           {
-            text: 'These students are in the USA. They go to school by bus.',
+            text: 'These students are in #the USA#. They go to school by bus.',
             audio_uri: 'audio/intro_sql.mp3',
           },
         ],
@@ -128,19 +128,19 @@ const courses: CourseData[] = [
         For these students in Nepal, the countryside is their school!`,
         cards: [
           {
-            text: `Let's look at school buildings around the world.`,
+            text: `Let's look at school buildings #around the world#.`,
             audio_uri: 'audio/intro_sql.mp3',
           },
           {
-            text: 'This school is in Australia.',
+            text: 'This school is in #Australia#.',
             audio_uri: 'audio/intro_sql.mp3',
           },
           {
-            text: `It's in the countryside.`,
+            text: `It's in the #countryside#.`,
             audio_uri: 'audio/intro_sql.mp3',
           },
           {
-            text: `It's a little school, but many schools in Australia are big.`,
+            text: `It's a little school, but #many# schools in Australia are big.`,
             audio_uri: 'audio/intro_sql.mp3',
           },
         ],

@@ -31,7 +31,9 @@ export default function CardList({ cards }: { cards: Cards }) {
             ></li>
           ))}
         </ul>
-        <button className="w-36 bg-orange-400 hover:bg-orange-300 text-white py-2 px-4 rounded">Add card</button>
+        <button className="w-36 bg-orange-400 text-white  hover:bg-orange-300 hover:text-black py-2 px-4 rounded">
+          Add card
+        </button>
       </div>
       <Preview card={selectedCard} />
     </div>
