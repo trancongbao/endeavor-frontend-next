@@ -19,7 +19,7 @@ truncateTables()
         course.id = insertedCourse.id
         lessons?.forEach((lesson, index) => {
           lesson.course_id = course.id
-          lesson.lesson_order = index
+          lesson.order = index
           const { cards, ...lesson1 } = lesson
           insertLesson(lesson1 as Insertable<Lesson>).then((insertedLesson) => {
             console.log('insertedLesson: ', insertedLesson)
@@ -27,8 +27,8 @@ truncateTables()
               lesson.cards.forEach((card, index) => {
                 insertCard({
                   course_id: insertedCourse.id,
-                  lesson_order: insertedLesson.lesson_order,
-                  card_order: index,
+                  lesson_order: insertedLesson.order,
+                  order: index,
                   ...card,
                 }).then((insertedCard) => {
                   console.log('insertedCard: ', insertedCard)

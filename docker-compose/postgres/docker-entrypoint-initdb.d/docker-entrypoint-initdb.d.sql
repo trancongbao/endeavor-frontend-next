@@ -79,15 +79,14 @@ CREATE TABLE TEACHER_COURSE
 );
 
 /* 
-    (course_id, lesson_order) is used as the primary composite key.
+    (course_id, order) is used as the primary composite key.
     Even though using it as a foreign key (in other tables) is more cubersome than `id`, it is deemed tolerable.
     Another important benefit of this approach is that we can use course_id direcly for authorization when dealing with `lesson` or `card`.
 */
 CREATE TABLE LESSON
 (
     course_id    INTEGER REFERENCES COURSE (id),     -- Foreign key referencing the course that the lesson belongs to
-    -- TODO: rename lesson_order to order_in_course
-    lesson_order INTEGER      NOT NULL,              -- Order of the lesson within the course, cannot be null
+    "order"      INTEGER      NOT NULL,              -- Order of the lesson within the course, cannot be null
     title        VARCHAR(255) NOT NULL,              -- Title of the lesson, cannot be null
     audio        VARCHAR(255) NOT NULL,              -- Path to the audio file for the lesson, cannot be null
     summary      TEXT,                               -- Summary of the lesson
@@ -95,23 +94,28 @@ CREATE TABLE LESSON
     thumbnail    VARCHAR(255),                       -- Path to the thumbnail image for the lesson
     content      TEXT,                               -- Content of the lesson
     updated_at   timestamp default current_timestamp,-- Timestamp of the last update
-    PRIMARY KEY (course_id, lesson_order)
+    PRIMARY KEY (course_id, "order")
 );
 
 -- Table definition for CARD
 CREATE TABLE CARD
 (
-    id              SERIAL PRIMARY KEY,             -- Unique identifier for the card
-    course_id       INTEGER,                        -- Foreign key referencing course_id in LESSON
-    lesson_order    INTEGER,                        -- Foreign key referencing lesson_order in LESSON
-    card_order      INTEGER NOT NULL,               -- Relative order of the word in the card
-    text            TEXT    NOT NULL,               -- Text (of the front side of the card)
-    audio_uri TEXT,                                 -- URI for audio (associated with the front side)
-    CONSTRAINT fk_lesson FOREIGN KEY (course_id, lesson_order) REFERENCES LESSON (course_id, lesson_order),
-    CONSTRAINT unique_lesson_id_card_order UNIQUE (course_id, lesson_order, card_order)
+    id                      SERIAL  PRIMARY KEY,    -- Unique identifier for the card
+    course_id               INTEGER,                -- Foreign key referencing course_id in LESSON
+    lesson_order            INTEGER,                -- Foreign key referencing "order" in LESSON
+    "order"                 INTEGER NOT NULL,       -- Relative order of the card in the lesson
+    text                    TEXT    NOT NULL,       -- Text (of the front side of the card)
+    audio_uri               TEXT,                   -- URI for audio (associated with the front side)
+    CONSTRAINT fk_lesson FOREIGN KEY (course_id, lesson_order) REFERENCES LESSON (course_id, "order"),
+    CONSTRAINT unique_course_id_lesson_order_order UNIQUE (course_id, lesson_order, "order")
 );
 
 -- Table definition for WORD
+/* 
+    (word, definition) could be used as a primary composite key.
+    But, using as a foreign key (in other tables) would be highly cubersome.
+    So here, we opt to use `id` as the primary key and add a unique constraint on the composite key.
+*/
 CREATE TABLE WORD
 (
     id             SERIAL PRIMARY KEY,    -- Unique identifier for the word
@@ -120,7 +124,9 @@ CREATE TABLE WORD
     phonetic       VARCHAR(255),          -- Phonetic pronunciation of the word
     part_of_speech VARCHAR(255),          -- Part of speech of the word
     audio_uri      TEXT,                  -- URI for audio associated with the word
-    image_uri      TEXT                   -- URI for image associated with the word
+    image_uri      TEXT,                  -- URI for image associated with the word
+    CONSTRAINT unique_level_word_definition UNIQUE (word, definition)
+
 );
 
 -- Table definition for CARD_WORD
