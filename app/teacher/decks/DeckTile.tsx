@@ -15,7 +15,7 @@ export default function DeckTile({ deck }: { deck: any }) {
       </div>
       <Link
         href={`/teacher/decks/${deck.id}`}
-        className="w-28 h-12 rounded-lg bg-green-300 flex justify-center items-center text-white text-lg"
+        className="w-28 h-12 rounded-lg bg-primary flex justify-center items-center text-white text-lg"
       >
         Browse
       </Link>
