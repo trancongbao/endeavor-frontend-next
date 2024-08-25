@@ -1,6 +1,6 @@
 import { kysely } from '../../../db/kysely'
 import _ from 'lodash'
-import Browser from './Browsers'
+import Browser from './Browser/Browser'
 
 export default async function Page({ params }: { params: { id: string } }) {
   const data = await queryData(params.id)
@@ -79,5 +79,5 @@ export type Row = {
 }
 
 export type Subdecks = {
-  [key: string]: Row[];
-};
+  [key: string]: Row[]
+}

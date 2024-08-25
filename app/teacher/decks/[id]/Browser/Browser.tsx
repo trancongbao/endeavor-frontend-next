@@ -3,7 +3,7 @@
 import _ from 'lodash'
 import CardList from './CardList'
 import { useState } from 'react'
-import { Row, Subdecks } from './page'
+import { Row, Subdecks } from '../page'
 
 export default function Browser({ subdecks }: { subdecks: Subdecks }) {
   /*
@@ -32,7 +32,7 @@ export default function Browser({ subdecks }: { subdecks: Subdecks }) {
           Add Sub-deck
         </button>
       </div>
-      <CardList cards={_.groupBy(selectedSubdeck, 'cardOrder')} />     
+      <CardList cards={_.groupBy(selectedSubdeck, 'cardOrder')} />
     </div>
   )
 }

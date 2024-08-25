@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import _ from 'lodash'
-import { Cards } from './Browsers'
+import { Cards } from './Browser'
 import Preview from './Preview'
 import { styleNewWord } from './styleNewWord'
 

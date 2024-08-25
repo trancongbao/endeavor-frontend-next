@@ -1,4 +1,4 @@
-import { Row, Subdecks } from './page'
+import { Row, Subdecks } from '../page'
 
 export default function SubdeckList({ subdecks, selectedSubdeck, setSelectedSubdeck }: SubdecksProps) {
   return (
