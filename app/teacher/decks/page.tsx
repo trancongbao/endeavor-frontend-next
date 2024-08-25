@@ -28,7 +28,7 @@ async function getDecks() {
       'course.id as course_id',
       'course.level as course_level',
       'course.title as course_title',
-      'lesson.lesson_order',
+      'lesson.order',
       'lesson.title as lesson_title',
     ])
     .where('teacher_course.teacher_username', '=', username)

@@ -45,7 +45,7 @@ async function getSubdecks(id: string) {
       'course.id as courseId',
       'course.level as courseLevel',
       'course.title as courseTitle',
-      'lesson.lesson_order as lessonOrder',
+      'lesson.order as lessonOrder',
       'lesson.title as lessonTitle',
       //   'card.id as card_id',
       //   'card.card_order as card_order',
