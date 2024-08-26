@@ -12,15 +12,13 @@ export default function Preview({ card }: { card: Row[] }) {
         }}
       ></p>
       <hr></hr>
-      {/* {card &&
+      {card &&
         card.map((word, index) => (
-          <div key={index} className="back-section item">
-            <div>
-              <span className="word bold-text">{word.word_word} </span>
-              <span className="definition">:: {word.word_definition}</span>
-            </div>
+          <div key={index} className="">
+            <span className="">{word.wordText} </span>
+            <span className="">:: {word.wordDefinition}</span>
           </div>
-        ))} */}
+        ))}
     </div>
   )
 }

@@ -31,8 +31,8 @@ async function queryData(id: string) {
     .innerJoin('card', (join) =>
       join.onRef('card.course_id', '=', 'lesson.course_id').onRef('card.lesson_order', '=', 'lesson.order')
     )
-    // .innerJoin('card_word', 'card_word.card_id', 'card.id')
-    // .innerJoin('word', 'word.id', 'card_word.word_id')
+    .innerJoin('card_word', 'card_word.card_id', 'card.id')
+    .innerJoin('word', 'word.id', 'card_word.word_id')
     .select([
       'course.id as courseId',
       'course.level as courseLevel',
@@ -42,14 +42,14 @@ async function queryData(id: string) {
       'card.id as cardId',
       'card.order as cardOrder',
       'card.text as cardText',
-      //   'card_word.word_order as word_order',
-      //   'word.id as word_id',
-      //   'word.word as word_word',
-      //   'word.definition as word_definition',
-      //   'word.phonetic as word_phonetic',
-      //   'word.part_of_speech as word_part_of_speech',
-      //   'word.audio_uri as word_audio_uri',
-      //   'word.image_uri as word_image_uri',
+      'card_word.word_order as wordOrder',
+      'word.id as wordId',
+      'word.text as wordText',
+      'word.definition as wordDefinition',
+      'word.phonetic as wordPhonetic',
+      'word.part_of_speech as wordPartOfSpeech',
+      'word.audio_uri as wordAudioUri',
+      'word.image_uri as wordImageUri',
     ])
     .where('teacher_course.teacher_username', '=', username)
     .where('teacher_course.course_id', '=', parseInt(id))
@@ -68,14 +68,14 @@ export type Row = {
   cardId: number
   cardOrder: number
   cardText: string
-  //   word_order: number
-  //   word_id: number
-  //   word_word: string
-  //   word_definition: string
-  //   word_phonetic: string
-  //   word_part_of_speech: string
-  //   word_audio_uri: string
-  //   word_image_uri: string
+  wordOrder: number
+  wordId: number
+  wordText: string
+  wordDefinition: string
+  wordPhonetic: string
+  wordPartOfSpeech: string
+  wordAudioUri: string
+  wordImageUri: string
 }
 
 export type Subdecks = {
