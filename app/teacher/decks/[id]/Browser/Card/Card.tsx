@@ -1,5 +1,5 @@
-import { Row } from '../page'
-import Toggle from './Toggle'
+import { Row } from '../../page'
+import Toggle from '../Toggle'
 import { useState } from 'react'
 import Preview from './Preview'
 import Edit from './Edit'

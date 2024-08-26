@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import _ from 'lodash'
 import { Cards } from './Browser'
 import { styleNewWord } from './styleNewWord'
-import Card from './Card'
+import Card from './Card/Card'
 
 export default function CardList({ cards }: { cards: Cards }) {
   const [selectedCard, setSelectedCard] = useState(getFirstCard(cards))

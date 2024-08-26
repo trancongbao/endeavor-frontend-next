@@ -1,7 +1,6 @@
-import { Row } from '../page'
-import { styleNewWord } from './styleNewWord'
+import { Row } from '../../page'
+import { styleNewWord } from '../styleNewWord'
 import Image from 'next/image'
-import Toggle from './Toggle'
 
 export default function Preview({ card }: { card: Row[] }) {
   console.log('card: ', card)
