@@ -15,12 +15,12 @@ const ToggleSwitch: React.FC<ToggleSwitchProps> = ({ isChecked, onChange }) => {
 
   return (
     <label
-      className="toggleSwitch inline-block relative cursor-pointer w-52 h-9 bg-gray-100 border border-gray-300 rounded-md"
+      className="relative cursor-pointer w-52 h-12 bg-gray-100 border border-gray-300 rounded-md"
       onClick={handleToggle}
     >
       <input type="checkbox" className="hidden" checked={checked} readOnly />
       <a
-        className={`block absolute top-[3px] bottom-[3px] bg-gray-600 rounded-md transition-all ease-out duration-200 ${
+        className={`block absolute top-[3px] bottom-[3px] bg-orange-400 rounded-md transition-all ease-out duration-200 ${
           checked ? "left-[calc(50%-3px)] right-[3px]" : "left-[3px] right-[calc(50%-3px)]"
         }`}
       ></a>
@@ -34,7 +34,7 @@ const ToggleSwitch: React.FC<ToggleSwitchProps> = ({ isChecked, onChange }) => {
         </span>
         <span
           className={`absolute top-[-1px] right-0 text-gray-400 text-center leading-9 transition-all ease-out duration-200 w-[50%] ${
-            checked ? "text-white" : "text-gray-400"
+            checked ? "text-white" : "text-white"
           }`}
         >
           Edit
