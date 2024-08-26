@@ -19,6 +19,9 @@ export default function CardList({ cards }: { cards: Cards }) {
   return (
     <div className="grid grid-cols-[1fr_2fr]">
       <div className="border-r-4">
+        <button className="w-36 bg-orange-400 text-white  hover:bg-orange-300 hover:text-black py-2 px-4 rounded">
+          Add card
+        </button>
         <ul className="flex flex-col gap-4">
           {Object.keys(cards).map((cardOrder) => (
             <li
@@ -31,9 +34,6 @@ export default function CardList({ cards }: { cards: Cards }) {
             ></li>
           ))}
         </ul>
-        <button className="w-36 bg-orange-400 text-white  hover:bg-orange-300 hover:text-black py-2 px-4 rounded">
-          Add card
-        </button>
       </div>
       <Preview card={selectedCard} />
     </div>

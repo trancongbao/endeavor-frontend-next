@@ -17,6 +17,9 @@ export default function Browser({ subdecks }: { subdecks: Subdecks }) {
   return (
     <div className="grid grid-cols-[1fr_6fr] grid-rows-[1fr_10fr] gap-4">
       <div className="basis-80 border-r-4 flex flex-col gap-4">
+        <button className="w-36 bg-orange-400  text-white hover:bg-orange-300 hover:text-black py-2 px-4 rounded">
+          Add Sub-deck
+        </button>
         <div className="flex flex-col gap-4">
           {Object.keys(subdecks).map((subdeckOrder) => {
             return (
@@ -28,9 +31,6 @@ export default function Browser({ subdecks }: { subdecks: Subdecks }) {
             )
           })}
         </div>
-        <button className="w-36 bg-orange-400  text-white hover:bg-orange-300 hover:text-black py-2 px-4 rounded">
-          Add Sub-deck
-        </button>
       </div>
       <CardList cards={_.groupBy(selectedSubdeck, 'cardOrder')} />
     </div>
