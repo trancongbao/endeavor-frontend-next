@@ -211,7 +211,7 @@ VALUES (1, 1, 0, '#There are# schools #all around the world#.', null),
 -- Sample data for WORD table
 INSERT INTO WORD (text, definition, phonetic, part_of_speech, audio_uri, image_uri)
 VALUES ('there are', 'có', null, null, null, null),
-       ('all the around the word', 'khắp thế giới', null, null, null, null),
+       ('all the around the word', 'khắp thế giới', null, null, null, '/words/globe.png'),
        ('big', 'to, lớn', null, null, null, null),
        ('little', 'nhỏ', null, null, null, null),
        ('new', 'mới', null, null, null, null),
