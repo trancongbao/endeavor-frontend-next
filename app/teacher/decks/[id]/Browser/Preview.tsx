@@ -7,10 +7,9 @@ export default function Preview({ card }: { card: Row[] }) {
   console.log('card: ', card)
   return (
     <div className="pl-3 flex flex-col items-center gap-3">
-      <button className="self-end w-36 bg-orange-400 text-white  hover:bg-orange-300 hover:text-black py-2 px-4 rounded">
-        Preview
-      </button>
-      <Toggle isChecked={true} onChange={() => {}} />
+      <div className="self-end">
+        <Toggle isChecked={true} onChange={() => {}} />
+      </div>
       <p
         className="text-center text-lg"
         dangerouslySetInnerHTML={{
