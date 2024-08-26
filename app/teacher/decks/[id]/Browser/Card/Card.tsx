@@ -8,7 +8,7 @@ export default function Card({ card }: { card: Row[] }) {
   const [isEdit, setIsEdit] = useState(false)
   console.log('card: ', card)
   return (
-    <div className="pl-3 flex flex-col items-center gap-3">
+    <div className="flex flex-col items-center gap-3">
       <div className="self-end">
         <Toggle
           isChecked={isEdit}

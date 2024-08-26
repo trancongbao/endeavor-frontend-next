@@ -5,7 +5,7 @@ import Image from 'next/image'
 export default function Preview({ card }: { card: Row[] }) {
   console.log('card: ', card)
   return (
-    <div className="pl-3 flex flex-col items-center gap-3">
+    <div className="w-full pl-3 flex flex-col items-center gap-3">
       <p
         className="text-center text-lg"
         dangerouslySetInnerHTML={{
