@@ -1,6 +1,7 @@
 import { Insertable, sql } from 'kysely'
-import { Card, Course, kysely, Lesson, Teacher } from '../kysely'
-import { teachers, courses, teacherCourses } from './data'
+import { Card, Course, kysely, Lesson, Teacher, Word } from '../kysely'
+import { teachers, courses, teacherCourses, words } from './data'
+import { wrap } from 'module'
 
 /*
  * We insert rows individually in several places, instead of using PostgreSQL bulk insertion.
@@ -58,6 +59,11 @@ truncateTables()
       })
     })
   })
+  .then(() => {
+    words.forEach((wordInsertable) => {
+      insertWord(wordInsertable)
+    })
+  })
 
 function truncateTables() {
   const snippet = sql`
@@ -81,4 +87,8 @@ function insertLesson(lessonInsertable: Insertable<Lesson>) {
 
 function insertCard(cardInsertable: Insertable<Card>) {
   return kysely.insertInto('card').values(cardInsertable).returningAll().executeTakeFirstOrThrow()
+}
+
+function insertWord(wordInsertable: Insertable<Word>) {
+  return kysely.insertInto('word').values(wordInsertable).returningAll().executeTakeFirstOrThrow()
 }

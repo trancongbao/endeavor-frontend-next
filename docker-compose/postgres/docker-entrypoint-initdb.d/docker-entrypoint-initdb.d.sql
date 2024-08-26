@@ -113,20 +113,20 @@ CREATE TABLE CARD
 
 -- Table definition for WORD
 /* 
-    (word, definition) could be used as a primary composite key.
+    (text, definition) could be used as a primary composite key.
     But, using as a foreign key (in other tables) would be highly cubersome.
     So here, we opt to use `id` as the primary key and add a unique constraint on the composite key.
 */
 CREATE TABLE WORD
 (
     id             SERIAL PRIMARY KEY,    -- Unique identifier for the word
-    word           VARCHAR(255) NOT NULL, -- The word itself
+    text           VARCHAR(255) NOT NULL, -- Text of the word
     definition     TEXT         NOT NULL, -- Definition of the word
     phonetic       VARCHAR(255),          -- Phonetic pronunciation of the word
     part_of_speech VARCHAR(255),          -- Part of speech of the word
     audio_uri      TEXT,                  -- URI for audio associated with the word
     image_uri      TEXT,                  -- URI for image associated with the word
-    CONSTRAINT unique_level_word_definition UNIQUE (word, definition)
+    CONSTRAINT unique_text_definition UNIQUE (text, definition)
 
 );
 
@@ -135,6 +135,7 @@ CREATE TABLE CARD_WORD
 (
     card_id    INTEGER REFERENCES CARD (id), -- Foreign key referencing card
     word_id    INTEGER REFERENCES WORD (id), -- Foreign key referencing word
+    -- TODO: Check if is necessary to use a linked-list-like structure (i.e. a nullable prev_word_id column) for (re-)ordering 
     word_order INTEGER NOT NULL,             -- Relative order of the word in the card
     PRIMARY KEY (card_id, word_id)           -- Composite primary key
 );

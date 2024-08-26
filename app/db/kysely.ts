@@ -115,12 +115,12 @@ interface Card {
 
 interface Word {
   id: Generated<number>;
-  word: string;
+  text: string;
   definition: string;
   phonetic: string;
   part_of_speech: string;
-  audio_uri: string;
-  image_uri: string;
+  audio_uri?: string;
+  image_uri?: string;
 }
 
 interface CardWord {

@@ -1,5 +1,5 @@
 import { Insertable, Updateable } from 'kysely'
-import { Card, Course, CourseStatus, Lesson, Teacher, TeacherCourse } from '../kysely'
+import { Card, Course, CourseStatus, Lesson, Teacher, TeacherCourse, Word } from '../kysely'
 
 export { teachers, courses, teacherCourses }
 
@@ -299,3 +299,54 @@ const teacherCourses = new Map([
   ],
   ['teacher2', [{ level: 1, title: 'School' }]],
 ])
+
+export const words: Insertable<Word>[] = [
+  {
+    text: 'school',
+    definition: 'an institution for educating children',
+    phonetic: 'skuːl',
+    part_of_speech: 'noun',
+  },
+  {
+    text: 'around',
+    definition: 'in a circular direction',
+    phonetic: 'əˈraʊnd',
+    part_of_speech: 'adverb',
+  },
+  {
+    text: 'big',
+    definition: 'large in size',
+    phonetic: 'bɪɡ',
+    part_of_speech: 'adjective',
+  },
+  {
+    text: 'little',
+    definition: 'small in size',
+    phonetic: 'ˈlɪtl',
+    part_of_speech: 'adjective',
+  },
+  {
+    text: 'new',
+    definition: 'recently made or brought into existence',
+    phonetic: 'njuː',
+    part_of_speech: 'adjective',
+  },
+  {
+    text: 'old',
+    definition: 'having lived for a long time',
+    phonetic: 'oʊld',
+    part_of_speech: 'adjective',
+  },
+  {
+    text: 'discover',
+    definition: 'find something out',
+    phonetic: 'dɪˈskʌvər',
+    part_of_speech: 'verb',
+  },
+  {
+    text: 'more',
+    definition: 'a greater or additional amount',
+    phonetic: 'mɔːr',
+    part_of_speech: 'adverb',
+  },
+]
