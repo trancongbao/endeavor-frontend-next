@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import _ from 'lodash'
 import { Cards } from './Browser'
-import Preview from './Preview'
 import { styleNewWord } from './styleNewWord'
+import Card from './Card'
 
 export default function CardList({ cards }: { cards: Cards }) {
   const [selectedCard, setSelectedCard] = useState(getFirstCard(cards))
@@ -35,7 +35,7 @@ export default function CardList({ cards }: { cards: Cards }) {
           ))}
         </ul>
       </div>
-      <Preview card={selectedCard} />
+      <Card card={selectedCard} />
     </div>
   )
 }
