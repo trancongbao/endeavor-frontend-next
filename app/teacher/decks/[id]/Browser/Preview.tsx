@@ -2,13 +2,20 @@ import { Row } from '../page'
 import { styleNewWord } from './styleNewWord'
 import Image from 'next/image'
 import Toggle from './Toggle'
+import { useState } from 'react'
 
 export default function Preview({ card }: { card: Row[] }) {
+  const [isEdit, setIsEdit] = useState(false)
   console.log('card: ', card)
   return (
     <div className="pl-3 flex flex-col items-center gap-3">
       <div className="self-end">
-        <Toggle isChecked={true} onChange={() => {}} />
+        <Toggle
+          isChecked={isEdit}
+          onChange={() => {
+            setIsEdit(!isEdit)
+          }}
+        />
       </div>
       <p
         className="text-center text-lg"
