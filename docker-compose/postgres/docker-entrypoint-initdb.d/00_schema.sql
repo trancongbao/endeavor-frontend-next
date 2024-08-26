@@ -73,9 +73,9 @@ CREATE TABLE COURSE
 
 CREATE TABLE TEACHER_COURSE
 (
-    course_id        INT          NOT NULL REFERENCES COURSE (id),        -- Reference to the id column of COURSE table
     teacher_username VARCHAR(255) NOT NULL REFERENCES TEACHER (username), -- Reference to the username column of TEACHER table
-    CONSTRAINT unique_teacher_id_course_id UNIQUE (course_id, teacher_username)
+    course_id        INT          NOT NULL REFERENCES COURSE (id),        -- Reference to the id column of COURSE table
+    CONSTRAINT unique_teacher_username_course_id UNIQUE (teacher_username, course_id)
 );
 
 /* 

@@ -302,51 +302,65 @@ const teacherCourses = new Map([
 
 export const words: Insertable<Word>[] = [
   {
-    text: 'school',
-    definition: 'an institution for educating children',
-    phonetic: 'skuːl',
-    part_of_speech: 'noun',
+    text: 'there are',
+    definition: 'a phrase used to indicate the existence of something',
+    phonetic: 'ðɛr ɑːr',
+    part_of_speech: 'phrase',
   },
   {
-    text: 'around',
-    definition: 'in a circular direction',
-    phonetic: 'əˈraʊnd',
-    part_of_speech: 'adverb',
+    text: 'all the around the word',
+    definition: 'a phrase used to indicate something happening in all directions',
+    phonetic: 'ɔːl ðə əˈraʊnd ðə wɜːrd',
+    part_of_speech: 'phrase',
   },
   {
     text: 'big',
-    definition: 'large in size',
+    definition: 'large in size or amount',
     phonetic: 'bɪɡ',
     part_of_speech: 'adjective',
   },
   {
     text: 'little',
-    definition: 'small in size',
+    definition: 'small in size or amount',
     phonetic: 'ˈlɪtl',
     part_of_speech: 'adjective',
   },
   {
     text: 'new',
-    definition: 'recently made or brought into existence',
+    definition: 'recently created, discovered, or introduced',
     phonetic: 'njuː',
     part_of_speech: 'adjective',
   },
   {
     text: 'old',
-    definition: 'having lived for a long time',
+    definition: 'having lived for a long time; not new',
     phonetic: 'oʊld',
     part_of_speech: 'adjective',
   },
   {
-    text: 'discover',
-    definition: 'find something out',
-    phonetic: 'dɪˈskʌvər',
+    text: 'walk',
+    definition: 'to move at a regular pace by lifting and setting down each foot in turn',
+    phonetic: 'wɔːk',
     part_of_speech: 'verb',
   },
   {
     text: 'more',
-    definition: 'a greater or additional amount',
+    definition: 'a greater quantity or degree',
     phonetic: 'mɔːr',
     part_of_speech: 'adverb',
   },
 ]
+
+export const cardWords = new Map([
+  [
+    'teacher1',
+    [
+      { level: 1, title: 'School' },
+      { level: 1, title: 'In the Sky' },
+      { level: 1, title: 'Fruit' },
+      { level: 1, title: 'Tree' },
+      { level: 1, title: 'Young Animals' },
+    ],
+  ],
+  ['teacher2', [{ level: 1, title: 'School' }]],
+])
