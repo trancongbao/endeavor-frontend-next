@@ -4,6 +4,7 @@ import _ from 'lodash'
 import CardList from './CardList'
 import { useState } from 'react'
 import { Row, SubdeckRows } from '../page'
+import AddSubdeck from './AddSubdeck'
 
 export default function Browser({ subdeckRows }: { subdeckRows: SubdeckRows }) {
   /*
@@ -20,9 +21,7 @@ export default function Browser({ subdeckRows }: { subdeckRows: SubdeckRows }) {
   return (
     <div className="grid grid-cols-[1fr_6fr] grid-rows-[1fr_10fr] gap-4">
       <div className="basis-80 border-r-4 flex flex-col gap-4">
-        <button className="w-36 bg-orange-400  text-white hover:bg-orange-300 hover:text-black py-2 px-4 rounded">
-          Add Sub-deck
-        </button>
+        <AddSubdeck />
         <div className="flex flex-col gap-4">
           {Object.keys(subdeckRows).map((subdeckOrder) => {
             return (

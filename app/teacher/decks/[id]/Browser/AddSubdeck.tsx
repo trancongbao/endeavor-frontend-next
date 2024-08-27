@@ -1,4 +1,4 @@
-// import { Button } from "@/components/ui/button"
+import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
@@ -7,7 +7,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
+} from '@/components/ui/dialog'
 // import { Input } from "@/components/ui/input"
 // import { Label } from "@/components/ui/label"
 
@@ -15,15 +15,17 @@ export default function AddSubdeck() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <button>TestButton</button>
-        {/* <Button variant="outline">Edit Profile</Button> */}
+        <Button
+          variant="outline"
+          className="w-36 bg-orange-400  text-white text-md hover:bg-orange-300 hover:text-black py-2 px-4 rounded"
+        >
+          Add Subdeck
+        </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Edit profile</DialogTitle>
-          <DialogDescription>
-            Make changes to your profile here. Click save when you're done.
-          </DialogDescription>
+          <DialogDescription>Make changes to your profile here. Click save when you're done.</DialogDescription>
         </DialogHeader>
         <p>Hello</p>
         <div className="grid gap-4 py-4">
@@ -48,9 +50,7 @@ export default function AddSubdeck() {
             /> */}
           </div>
         </div>
-        <DialogFooter>
-          {/* <Button type="submit">Save changes</Button> */}
-        </DialogFooter>
+        <DialogFooter>{/* <Button type="submit">Save changes</Button> */}</DialogFooter>
       </DialogContent>
     </Dialog>
   )
