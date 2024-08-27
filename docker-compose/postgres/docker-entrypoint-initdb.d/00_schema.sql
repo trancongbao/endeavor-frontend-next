@@ -88,7 +88,7 @@ CREATE TABLE LESSON
     course_id    INTEGER REFERENCES COURSE (id),     -- Foreign key referencing the course that the lesson belongs to
     "order"      INTEGER      NOT NULL,              -- Order of the lesson within the course, cannot be null
     title        VARCHAR(255) NOT NULL,              -- Title of the lesson, cannot be null
-    audio        VARCHAR(255) NOT NULL,              -- Path to the audio file for the lesson, cannot be null
+    audio        VARCHAR(255),                       -- Path to the audio file for the lesson, cannot be null
     summary      TEXT,                               -- Summary of the lesson
     description  TEXT,                               -- Description of the lesson
     thumbnail    VARCHAR(255),                       -- Path to the thumbnail image for the lesson

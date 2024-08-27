@@ -11,7 +11,7 @@ import {
 // import { Input } from "@/components/ui/input"
 // import { Label } from "@/components/ui/label"
 
-export default function AddSubdeck() {
+export default function AddSubdeckDialog() {
   return (
     <Dialog>
       <DialogTrigger asChild>
