@@ -1,6 +1,7 @@
 import { kysely } from '../../../db/kysely'
 import _ from 'lodash'
 import Browser from './Browser/Browser'
+import AddSubdeck from './Browser/AddSubdeck'
 
 export default async function Page({ params }: { params: { id: string } }) {
   const data: Row[] = await queryData(params.id)
@@ -12,6 +13,7 @@ export default async function Page({ params }: { params: { id: string } }) {
 
   return (
     <div className="flex flex-col gap-4">
+      <AddSubdeck />
       <p className="col-span-full border-b-2 text-xl font-bold">{`Level ${courseLevel} - ${courseTitle}`}</p>
       <Browser subdeckRows={subdeckRows} />
     </div>
