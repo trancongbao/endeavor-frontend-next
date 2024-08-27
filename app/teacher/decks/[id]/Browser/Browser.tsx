@@ -6,6 +6,7 @@ import { useState } from 'react'
 import { Row, SubdeckRows } from '../page'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
+import { useRef, useEffect } from 'react'
 
 export default function Browser({ subdeckRows }: { subdeckRows: SubdeckRows }) {
   /*
@@ -16,6 +17,13 @@ export default function Browser({ subdeckRows }: { subdeckRows: SubdeckRows }) {
   )
 
   const [isAddingSubdeck, setIsAddingSubdeck] = useState(false)
+  const addSubdeckInputRef = useRef(null)
+
+  useEffect(() => {
+    if (isAddingSubdeck && addSubdeckInputRef.current) {
+      addSubdeckInputRef.current.focus()
+    }
+  }, [isAddingSubdeck])
 
   console.log('subdeckRows: ', subdeckRows)
   /*
@@ -37,13 +45,20 @@ export default function Browser({ subdeckRows }: { subdeckRows: SubdeckRows }) {
         </div>
         {isAddingSubdeck && (
           <div>
-            <Input />
+            <Input ref={addSubdeckInputRef} placeholder="Enter a subdeck title" />
             <Button
               variant="outline"
               className="w-36 bg-orange-400  text-white text-md hover:bg-orange-300 hover:text-black py-2 px-4 rounded"
               onClick={() => setIsAddingSubdeck(false)}
             >
               Cancel
+            </Button>
+            <Button
+              variant="outline"
+              className="w-36 bg-orange-400  text-white text-md hover:bg-orange-300 hover:text-black py-2 px-4 rounded"
+              onClick={() => setIsAddingSubdeck(false)}
+            >
+              Save
             </Button>
           </div>
         )}
