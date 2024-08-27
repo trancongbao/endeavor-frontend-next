@@ -7,6 +7,7 @@ import { Row, SubdeckRows } from '../page'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { useRef, useEffect } from 'react'
+import { addSubdeck } from '@/app/actions'
 
 export default function Browser({ subdeckRows }: { subdeckRows: SubdeckRows }) {
   /*
@@ -17,7 +18,7 @@ export default function Browser({ subdeckRows }: { subdeckRows: SubdeckRows }) {
   )
 
   const [isAddingSubdeck, setIsAddingSubdeck] = useState(false)
-  const addSubdeckInputRef = useRef(null)
+  const addSubdeckInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     if (isAddingSubdeck && addSubdeckInputRef.current) {
@@ -43,25 +44,6 @@ export default function Browser({ subdeckRows }: { subdeckRows: SubdeckRows }) {
             )
           })}
         </div>
-        {isAddingSubdeck && (
-          <div>
-            <Input ref={addSubdeckInputRef} placeholder="Enter a subdeck title" />
-            <Button
-              variant="outline"
-              className="w-36 bg-orange-400  text-white text-md hover:bg-orange-300 hover:text-black py-2 px-4 rounded"
-              onClick={() => setIsAddingSubdeck(false)}
-            >
-              Cancel
-            </Button>
-            <Button
-              variant="outline"
-              className="w-36 bg-orange-400  text-white text-md hover:bg-orange-300 hover:text-black py-2 px-4 rounded"
-              onClick={() => setIsAddingSubdeck(false)}
-            >
-              Save
-            </Button>
-          </div>
-        )}
         {!isAddingSubdeck && (
           <Button
             variant="outline"
@@ -70,6 +52,20 @@ export default function Browser({ subdeckRows }: { subdeckRows: SubdeckRows }) {
           >
             Add Subdeck
           </Button>
+        )}
+        {isAddingSubdeck && (
+          <div>
+            <form action={addSubdeck} onSubmit={() => setIsAddingSubdeck(false)}>
+              <Input ref={addSubdeckInputRef} placeholder="Enter the subdeck title and press Return." />
+            </form>
+            <Button
+              variant="outline"
+              className="w-36 bg-orange-400  text-white text-md hover:bg-orange-300 hover:text-black py-2 px-4 rounded"
+              onClick={() => setIsAddingSubdeck(false)}
+            >
+              Cancel
+            </Button>
+          </div>
         )}
       </div>
       <CardList cards={_.groupBy(selectedSubdeck, 'cardOrder')} />
