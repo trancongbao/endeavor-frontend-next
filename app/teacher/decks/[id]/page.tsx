@@ -75,6 +75,6 @@ export type Row = {
   wordImageUri?: string | null
 }
 
-export type Subdecks = {
+export type GroupedSubdeckRows = {
   [key: string]: Row[]
 }

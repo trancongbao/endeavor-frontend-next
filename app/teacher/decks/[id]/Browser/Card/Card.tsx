@@ -1,3 +1,4 @@
+'use client'
 import { Row } from '../../page'
 import Toggle from '../Toggle'
 import { useState } from 'react'

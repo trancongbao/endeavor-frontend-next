@@ -3,20 +3,20 @@
 import _ from 'lodash'
 import CardList from './CardList'
 import { useState } from 'react'
-import { Row, Subdecks } from '../page'
+import { Row, GroupedSubdeckRows } from '../page'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { useRef, useEffect } from 'react'
 import { addSubdeck } from '@/app/actions'
 
 export default function Browser({ deckRows }: { deckRows: Row[] }) {
-  const subdecks: Subdecks = _.groupBy(deckRows, 'lessonOrder')
-  console.log('subdeckRows: ', subdecks)
+  const groupedSubdeckRows: GroupedSubdeckRows = _.groupBy(deckRows, 'lessonOrder')
+  console.log('groupedSubdeckRows: ', groupedSubdeckRows)
   /*
    * Subdeck with the lowest order is selected by default.
    */
-  const minLessonOrder = _.min(Object.keys(subdecks).map(Number)) as number
-  const [selectedSubdeckRows, setSelectedSubdeckRows] = useState(subdecks[minLessonOrder])
+  const minLessonOrder = _.min(Object.keys(groupedSubdeckRows).map(Number)) as number
+  const [selectedSubdeckRows, setSelectedSubdeckRows] = useState(groupedSubdeckRows[minLessonOrder])
   console.log('selectedSubdeckRows: ', selectedSubdeckRows)
 
   const [isAddingSubdeck, setIsAddingSubdeck] = useState(false)
@@ -28,7 +28,6 @@ export default function Browser({ deckRows }: { deckRows: Row[] }) {
     }
   }, [isAddingSubdeck])
 
-  console.log('subdeckRows: ', subdecks)
   /*
    * Extract subdeck list to a separate component would introduce tight coupling regarding the state management of selectedSubdeck.
    */
@@ -36,13 +35,13 @@ export default function Browser({ deckRows }: { deckRows: Row[] }) {
     <div className="grid grid-cols-[1fr_6fr] grid-rows-[1fr_10fr] gap-4">
       <div className="basis-80 border-r-4 flex flex-col gap-4">
         <div className="flex flex-col gap-4">
-          {Object.keys(subdecks).map((subdeckOrder) => {
+          {Object.keys(groupedSubdeckRows).map((subdeckOrder) => {
             return (
               <p
                 key={subdeckOrder}
-                onClick={() => setSelectedSubdeckRows(subdecks[subdeckOrder])}
+                onClick={() => setSelectedSubdeckRows(groupedSubdeckRows[subdeckOrder])}
                 className={`hover:bg-orange-100 ${selectedSubdeckRows[0].lessonOrder === parseInt(subdeckOrder) ? 'bg-orange-200' : ''} cursor-pointer p-2 rounded`}
-              >{`${subdecks[subdeckOrder][0].lessonTitle}`}</p>
+              >{`${groupedSubdeckRows[subdeckOrder][0].lessonTitle}`}</p>
             )
           })}
         </div>
@@ -59,7 +58,7 @@ export default function Browser({ deckRows }: { deckRows: Row[] }) {
           <div>
             <form action={addSubdeck} onSubmit={() => setIsAddingSubdeck(false)}>
               <Input type="hidden" name="courseId" value={selectedSubdeckRows[0].courseId} />
-              <Input type="hidden" name="order" value={Object.keys(subdecks).length} />
+              <Input type="hidden" name="order" value={Object.keys(groupedSubdeckRows).length} />
               <Input name="title" ref={addSubdeckInputRef} placeholder="Enter the subdeck title and press Return." />
             </form>
             <Button
@@ -72,7 +71,7 @@ export default function Browser({ deckRows }: { deckRows: Row[] }) {
           </div>
         )}
       </div>
-      <CardList cards={_.groupBy(selectedSubdeckRows, 'cardOrder')} />
+      <CardList selectedSubdeckRows={selectedSubdeckRows} />
     </div>
   )
 }
