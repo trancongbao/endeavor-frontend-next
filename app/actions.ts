@@ -1,9 +1,8 @@
 'use server'
+import { revalidatePath } from 'next/cache'
 import { kysely } from './db/kysely'
 
 export async function addSubdeck(formData: FormData) {
-  console.log('addSubdeck: ', formData.get('title') as string)
-
   const addedSubdeck = await kysely
     .insertInto('lesson')
     .values({
@@ -15,4 +14,5 @@ export async function addSubdeck(formData: FormData) {
     .executeTakeFirstOrThrow()
 
   console.log('Added subdeck: ', addedSubdeck)
+  revalidatePath('/teacher/decks/[id]')
 }

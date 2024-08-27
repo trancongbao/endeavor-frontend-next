@@ -9,12 +9,14 @@ import { Button } from '@/components/ui/button'
 import { useRef, useEffect } from 'react'
 import { addSubdeck } from '@/app/actions'
 
-export default function Browser({ subdeckRows }: { subdeckRows: SubdeckRows }) {
+export default function Browser({ deckRows }: { deckRows: Row[] }) {
+  const subdecks: SubdeckRows = _.groupBy(deckRows, 'lessonOrder')
+  console.log('subdeckRows: ', subdecks)
   /*
    * Subdeck with the lowest order is selected by default.
    */
   const [selectedSubdeck, setSelectedSubdeck] = useState(
-    subdeckRows[_.min(Object.keys(subdeckRows).map(Number)) as number]
+    subdecks[_.min(Object.keys(subdecks).map(Number)) as number]
   )
 
   const [isAddingSubdeck, setIsAddingSubdeck] = useState(false)
@@ -26,7 +28,7 @@ export default function Browser({ subdeckRows }: { subdeckRows: SubdeckRows }) {
     }
   }, [isAddingSubdeck])
 
-  console.log('subdeckRows: ', subdeckRows)
+  console.log('subdeckRows: ', subdecks)
   /*
    * Extract subdeck list to a separate component would introduce tight coupling regarding the state management of selectedSubdeck.
    */
@@ -34,13 +36,13 @@ export default function Browser({ subdeckRows }: { subdeckRows: SubdeckRows }) {
     <div className="grid grid-cols-[1fr_6fr] grid-rows-[1fr_10fr] gap-4">
       <div className="basis-80 border-r-4 flex flex-col gap-4">
         <div className="flex flex-col gap-4">
-          {Object.keys(subdeckRows).map((subdeckOrder) => {
+          {Object.keys(subdecks).map((subdeckOrder) => {
             return (
               <p
                 key={subdeckOrder}
-                onClick={() => setSelectedSubdeck(subdeckRows[subdeckOrder])}
+                onClick={() => setSelectedSubdeck(subdecks[subdeckOrder])}
                 className={`hover:bg-orange-100 ${selectedSubdeck[0].lessonOrder === parseInt(subdeckOrder) ? 'bg-orange-200' : ''} cursor-pointer p-2 rounded`}
-              >{`${subdeckRows[subdeckOrder][0].lessonTitle}`}</p>
+              >{`${subdecks[subdeckOrder][0].lessonTitle}`}</p>
             )
           })}
         </div>
@@ -57,7 +59,7 @@ export default function Browser({ subdeckRows }: { subdeckRows: SubdeckRows }) {
           <div>
             <form action={addSubdeck} onSubmit={() => setIsAddingSubdeck(false)}>
               <Input type="hidden" name="courseId" value={selectedSubdeck[0].courseId} />
-              <Input type="hidden" name="order" value={Object.keys(subdeckRows).length} />
+              <Input type="hidden" name="order" value={Object.keys(subdecks).length} />
               <Input name="title" ref={addSubdeckInputRef} placeholder="Enter the subdeck title and press Return." />
             </form>
             <Button

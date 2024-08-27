@@ -3,17 +3,14 @@ import _ from 'lodash'
 import Browser from './Browser/Browser'
 
 export default async function Page({ params }: { params: { id: string } }) {
-  const data: Row[] = await queryData(params.id)
-  console.log('data: ', data)
-  const { courseId, courseLevel, courseTitle } = data[0]
-
-  const subdeckRows: SubdeckRows = _.groupBy(data, 'lessonOrder')
-  console.log('subdeckRows: ', subdeckRows)
+  const deckRows: Row[] = await queryData(params.id)
+  console.log('data: ', deckRows)
+  const { courseId, courseLevel, courseTitle } = deckRows[0]
 
   return (
     <div className="flex flex-col gap-4">
       <p className="col-span-full border-b-2 text-xl font-bold">{`Level ${courseLevel} - ${courseTitle}`}</p>
-      <Browser subdeckRows={subdeckRows} />
+      <Browser deckRows={deckRows} />
     </div>
   )
 }
