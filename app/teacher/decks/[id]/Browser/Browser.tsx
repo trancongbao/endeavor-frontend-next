@@ -56,11 +56,9 @@ export default function Browser({ subdeckRows }: { subdeckRows: SubdeckRows }) {
         {isAddingSubdeck && (
           <div>
             <form action={addSubdeck} onSubmit={() => setIsAddingSubdeck(false)}>
-              <Input
-                name="addSubdeckInput"
-                ref={addSubdeckInputRef}
-                placeholder="Enter the subdeck title and press Return."
-              />
+              <Input type="hidden" name="courseId" value={selectedSubdeck[0].courseId} />
+              <Input type="hidden" name="order" value={Object.keys(subdeckRows).length} />
+              <Input name="title" ref={addSubdeckInputRef} placeholder="Enter the subdeck title and press Return." />
             </form>
             <Button
               variant="outline"

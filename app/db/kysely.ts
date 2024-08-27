@@ -96,7 +96,7 @@ interface Lesson {
   course_id: number;
   order: number;
   title: string;
-  audio: string;
+  audio?: string;
   summary?: string;
   description?: string;
   thumbnail?: string;
