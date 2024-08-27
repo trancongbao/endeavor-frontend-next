@@ -1,4 +1,4 @@
-import { Row, SubdeckRows } from '../page'
+import { Row, Subdecks } from '../page'
 
 export default function SubdeckList({ subdecks, selectedSubdeck, setSelectedSubdeck }: SubdecksProps) {
   return (
@@ -23,7 +23,7 @@ export default function SubdeckList({ subdecks, selectedSubdeck, setSelectedSubd
 
 // Type for Subdecks props
 interface SubdecksProps {
-  subdecks: SubdeckRows
+  subdecks: Subdecks
   selectedSubdeck: Row[]
   setSelectedSubdeck: React.Dispatch<React.SetStateAction<Row[]>> // State setter function type
 }
