@@ -4,7 +4,7 @@ import _ from 'lodash'
 import CardList from './CardList'
 import { useState } from 'react'
 import { Row, SubdeckRows } from '../page'
-import AddSubdeckDialog from './AddSubdeckDialog'
+import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 
 export default function Browser({ subdeckRows }: { subdeckRows: SubdeckRows }) {
@@ -14,6 +14,8 @@ export default function Browser({ subdeckRows }: { subdeckRows: SubdeckRows }) {
   const [selectedSubdeck, setSelectedSubdeck] = useState(
     subdeckRows[_.min(Object.keys(subdeckRows).map(Number)) as number]
   )
+
+  const [isAddingSubdeck, setIsAddingSubdeck] = useState(false)
 
   console.log('subdeckRows: ', subdeckRows)
   /*
@@ -33,12 +35,27 @@ export default function Browser({ subdeckRows }: { subdeckRows: SubdeckRows }) {
             )
           })}
         </div>
-        <Button
-          variant="outline"
-          className="w-36 bg-orange-400  text-white text-md hover:bg-orange-300 hover:text-black py-2 px-4 rounded"
-        >
-          Add Subdeck
-        </Button>
+        {isAddingSubdeck && (
+          <div>
+            <Input />
+            <Button
+              variant="outline"
+              className="w-36 bg-orange-400  text-white text-md hover:bg-orange-300 hover:text-black py-2 px-4 rounded"
+              onClick={() => setIsAddingSubdeck(false)}
+            >
+              Cancel
+            </Button>
+          </div>
+        )}
+        {!isAddingSubdeck && (
+          <Button
+            variant="outline"
+            className="w-36 bg-orange-400  text-white text-md hover:bg-orange-300 hover:text-black py-2 px-4 rounded"
+            onClick={() => setIsAddingSubdeck(true)}
+          >
+            Add Subdeck
+          </Button>
+        )}
       </div>
       <CardList cards={_.groupBy(selectedSubdeck, 'cardOrder')} />
     </div>
