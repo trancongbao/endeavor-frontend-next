@@ -27,12 +27,12 @@ async function queryData(id: string) {
   return await kysely
     .selectFrom('teacher_course')
     .innerJoin('course', 'course.id', 'teacher_course.course_id')
-    .innerJoin('lesson', 'lesson.course_id', 'course.id')
-    .innerJoin('card', (join) =>
+    .leftJoin('lesson', 'lesson.course_id', 'course.id')
+    .leftJoin('card', (join) =>
       join.onRef('card.course_id', '=', 'lesson.course_id').onRef('card.lesson_order', '=', 'lesson.order')
     )
-    .innerJoin('card_word', 'card_word.card_id', 'card.id')
-    .innerJoin('word', 'word.id', 'card_word.word_id')
+    .leftJoin('card_word', 'card_word.card_id', 'card.id')
+    .leftJoin('word', 'word.id', 'card_word.word_id')
     .select([
       'course.id as courseId',
       'course.level as courseLevel',
@@ -63,19 +63,19 @@ export type Row = {
   courseId: number
   courseLevel: number
   courseTitle: string
-  lessonOrder: number
-  lessonTitle: string
-  cardId: number
-  cardOrder: number
-  cardText: string
-  wordOrder: number
-  wordId: number
-  wordText: string
-  wordDefinition: string
-  wordPhonetic: string
-  wordPartOfSpeech: string
-  wordAudioUri?: string
-  wordImageUri?: string
+  lessonOrder: number | null
+  lessonTitle: string | null
+  cardId: number | null
+  cardOrder: number | null
+  cardText: string | null
+  wordOrder: number | null
+  wordId: number | null
+  wordText: string | null
+  wordDefinition: string | null
+  wordPhonetic: string | null
+  wordPartOfSpeech: string | null
+  wordAudioUri?: string | null
+  wordImageUri?: string | null
 }
 
 export type SubdeckRows = {
