@@ -8,6 +8,11 @@ import { Row } from '../page'
 
 export default function CardList({ selectedSubdeckRows }: { selectedSubdeckRows: Row[] }) {
   console.log('CardList selectedSubdeckRows: ', selectedSubdeckRows)
+  /*
+   * Even though this is a client component, it is still pre-rendered on the server side.
+   * Therefore, the useEffect hook would not be executed on the client side because selectedSubdeckRows would not have changed.
+   * Therefore, the initial state of selectedCardRows must not be set to an empty array.
+   */
   const [selectedCardRows, setSelectedCardRows] = useState<Row[]>(getFirstCard(groupCardRows(selectedSubdeckRows)))
 
   useEffect(() => {
