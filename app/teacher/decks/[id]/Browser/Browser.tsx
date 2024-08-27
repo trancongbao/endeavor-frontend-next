@@ -3,14 +3,17 @@
 import _ from 'lodash'
 import CardList from './CardList'
 import { useState } from 'react'
-import { Row, Subdecks } from '../page'
+import { Row, SubdeckRows } from '../page'
 
-export default function Browser({ subdecks }: { subdecks: Subdecks }) {
+export default function Browser({ subdeckRows }: { subdeckRows: SubdeckRows }) {
   /*
    * Subdeck with the lowest order is selected by default.
    */
-  const [selectedSubdeck, setSelectedSubdeck] = useState(subdecks[_.min(Object.keys(subdecks).map(Number)) as number])
+  const [selectedSubdeck, setSelectedSubdeck] = useState(
+    subdeckRows[_.min(Object.keys(subdeckRows).map(Number)) as number]
+  )
 
+  console.log('subdeckRows: ', subdeckRows)
   /*
    * Extract subdeck list to a separate component would introduce tight coupling regarding the state management of selectedSubdeck.
    */
@@ -21,13 +24,13 @@ export default function Browser({ subdecks }: { subdecks: Subdecks }) {
           Add Sub-deck
         </button>
         <div className="flex flex-col gap-4">
-          {Object.keys(subdecks).map((subdeckOrder) => {
+          {Object.keys(subdeckRows).map((subdeckOrder) => {
             return (
               <p
                 key={subdeckOrder}
-                onClick={() => setSelectedSubdeck(subdecks[subdeckOrder])}
+                onClick={() => setSelectedSubdeck(subdeckRows[subdeckOrder])}
                 className={`hover:bg-orange-100 ${selectedSubdeck[0].lessonOrder === parseInt(subdeckOrder) ? 'bg-orange-200' : ''} cursor-pointer p-2 rounded`}
-              >{`${subdecks[subdeckOrder][0].lessonTitle}`}</p>
+              >{`${subdeckRows[subdeckOrder][0].lessonTitle}`}</p>
             )
           })}
         </div>

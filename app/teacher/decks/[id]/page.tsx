@@ -3,17 +3,17 @@ import _ from 'lodash'
 import Browser from './Browser/Browser'
 
 export default async function Page({ params }: { params: { id: string } }) {
-  const data = await queryData(params.id)
+  const data: Row[] = await queryData(params.id)
   console.log('data: ', data)
   const { courseId, courseLevel, courseTitle } = data[0]
 
-  const subdecks: Subdecks = _.groupBy(data, 'lessonOrder')
-  console.log('subdecks: ', subdecks)
+  const subdeckRows: SubdeckRows = _.groupBy(data, 'lessonOrder')
+  console.log('subdeckRows: ', subdeckRows)
 
   return (
     <div className="flex flex-col gap-4">
       <p className="col-span-full border-b-2 text-xl font-bold">{`Level ${courseLevel} - ${courseTitle}`}</p>
-      <Browser subdecks={subdecks} />
+      <Browser subdeckRows={subdeckRows} />
     </div>
   )
 }
@@ -74,10 +74,10 @@ export type Row = {
   wordDefinition: string
   wordPhonetic: string
   wordPartOfSpeech: string
-  wordAudioUri: string
-  wordImageUri: string
+  wordAudioUri?: string
+  wordImageUri?: string
 }
 
-export type Subdecks = {
+export type SubdeckRows = {
   [key: string]: Row[]
 }
