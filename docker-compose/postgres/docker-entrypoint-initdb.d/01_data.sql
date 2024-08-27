@@ -69,7 +69,8 @@ VALUES ('teacher1', 1),
 -- Seed data for LESSON table
 INSERT INTO LESSON (course_id, "order", title, audio, summary, description, thumbnail, content, updated_at)
 VALUES (1, 0, 'Introduction', 'audio/intro_sql.mp3', null, null, null,
-        'There are schools all around the world. There are big schools and little schools, new schools and old schools.
+        'There are schools all around the world. 
+        There are big schools and little schools, new schools and old schools.
         Is your school big or little?
         Is your school new or old?
         *** Discover
@@ -196,17 +197,17 @@ VALUES (1, 0, 'Introduction', 'audio/intro_sql.mp3', null, null, null,
 
 -- Sample data for CARD table
 INSERT INTO CARD (course_id, lesson_order, "order", text, audio_uri)
-VALUES (1, 1, 0, '#There are# schools #all around the world#.', null),
-       (1, 1, 1, '#There are# big schools and little schools, new schools and old schools.', null),
-       (1, 1, 2, 'Is your school #big# or #little#?', null),
-       (1, 1, 3, 'Is your school #new# or #old#?', null),
-       (2, 1, 0, '#All around the world#, students go to school.', null),
-       (2, 1, 1, 'Some students #walk# to school, and some go by bus or by train.', null),
-       (2, 1, 2, 'Some students go by #bicycle#, and some go by #car#.', null),
-       (2, 1, 3, 'These students are in #the USA#. They go to school by bus.', null),
-       (2, 1, 4, 'In the snow in Canada, some students go to school by #sled#.', null),
-       (2, 1, 5, 'In India, some students go to school by #rickshaw#.', null),
-       (2, 1, 6, '#How# do you go to school?', null);
+VALUES (1, 0, 0, '#There are# schools #all around the world#.', null),
+       (1, 0, 1, '#There are# big schools and little schools, new schools and old schools.', null),
+       (1, 0, 2, 'Is your school #big# or #little#?', null),
+       (1, 0, 3, 'Is your school #new# or #old#?', null),
+       (1, 1, 0, '#All around the world#, students go to school.', null),
+       (1, 1, 1, 'Some students #walk# to school, and some go by bus or by train.', null),
+       (1, 1, 2, 'Some students go by #bicycle#, and some go by #car#.', null),
+       (1, 1, 3, 'These students are in #the USA#. They go to school by bus.', null),
+       (1, 1, 4, 'In the snow in Canada, some students go to school by #sled#.', null),
+       (1, 1, 5, 'In India, some students go to school by #rickshaw#.', null),
+       (1, 1, 6, '#How# do you go to school?', null);
 
 -- Sample data for WORD table
 INSERT INTO WORD (text, definition, phonetic, part_of_speech, audio_uri, image_uri)
