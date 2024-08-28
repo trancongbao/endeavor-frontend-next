@@ -49,8 +49,9 @@ export default function CardList({ selectedSubdeckRows }: { selectedSubdeckRows:
           <div>
             <form action={addCard} onSubmit={() => setIsAddingCard(false)}>
               <Input type="hidden" name="courseId" value={selectedSubdeckRows[0].courseId} />
+              <Input type="hidden" name="lessonOrder" value={selectedSubdeckRows[0].lessonOrder as number} />
               <Input type="hidden" name="order" value={groupedCardRows ? Object.keys(groupedCardRows).length : 0} />
-              <Input name="title" ref={addCardTextInputRef} placeholder="Enter the card text and press Return." />
+              <Input name="text" ref={addCardTextInputRef} placeholder="Enter the card text and press Return." />
             </form>
             <Button
               variant="outline"

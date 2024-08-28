@@ -19,4 +19,17 @@ export async function addSubdeck(formData: FormData) {
 
 export async function addCard(formData: FormData) {
   console.log('addCard: formData = ', formData)
+  const addedCard = await kysely
+    .insertInto('card')
+    .values({
+      course_id: parseInt(formData.get('courseId') as string),
+      lesson_order: parseInt(formData.get('lessonOrder') as string),
+      order: parseInt(formData.get('order') as string),
+      text: formData.get('text') as string,
+    })
+    .returningAll()
+    .executeTakeFirstOrThrow()
+
+  console.log('Added card: ', addedCard)
+  revalidatePath('/teacher/decks/[id]')
 }
