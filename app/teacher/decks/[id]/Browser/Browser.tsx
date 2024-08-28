@@ -81,6 +81,4 @@ export default function Browser({ deckRows }: { deckRows: Row[] }) {
   )
 }
 
-export type Cards = {
-  [key: string]: Row[]
-}
+
