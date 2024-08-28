@@ -31,5 +31,5 @@ export async function addCard(formData: FormData) {
     .executeTakeFirstOrThrow()
 
   console.log('Added card: ', addedCard)
-  revalidatePath('/teacher/decks/[id]')
+  revalidatePath('/teacher/decks/[id]', 'page')
 }

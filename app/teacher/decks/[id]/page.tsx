@@ -4,7 +4,7 @@ import Browser from './Browser/Browser'
 
 export default async function Page({ params }: { params: { id: string } }) {
   const deckRows: Row[] = await queryData(params.id)
-  console.log('data: ', deckRows)
+  console.log('deckRows: ', deckRows)
   const { courseId, courseLevel, courseTitle } = deckRows[0]
 
   return (

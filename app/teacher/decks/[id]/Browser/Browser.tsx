@@ -23,6 +23,12 @@ export default function Browser({ deckRows }: { deckRows: Row[] }) {
   const addSubdeckInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
+    const groupedSubdeckRows: GroupedSubdeckRows = _.groupBy(deckRows, 'lessonOrder')
+    const minLessonOrder = _.min(Object.keys(groupedSubdeckRows).map(Number)) as number
+    setSelectedSubdeckRows(groupedSubdeckRows[minLessonOrder])
+  }, [deckRows])
+
+  useEffect(() => {
     if (isAddingSubdeck && addSubdeckInputRef.current) {
       addSubdeckInputRef.current.focus()
     }
@@ -80,5 +86,3 @@ export default function Browser({ deckRows }: { deckRows: Row[] }) {
     </div>
   )
 }
-
-
