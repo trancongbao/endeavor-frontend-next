@@ -51,7 +51,7 @@ export default function Browser({ deckRows }: { deckRows: Row[] }) {
             className="w-36 bg-orange-400  text-white text-md hover:bg-orange-300 hover:text-black py-2 px-4 rounded"
             onClick={() => setIsAddingSubdeck(true)}
           >
-            Add Subdeck
+            Add subdeck
           </Button>
         )}
         {isAddingSubdeck && (

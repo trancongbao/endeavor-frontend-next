@@ -16,3 +16,7 @@ export async function addSubdeck(formData: FormData) {
   console.log('Added subdeck: ', addedSubdeck)
   revalidatePath('/teacher/decks/[id]')
 }
+
+export async function addCard(formData: FormData) {
+  console.log('addCard: formData = ', formData)
+}
