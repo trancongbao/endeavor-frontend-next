@@ -15,18 +15,16 @@ export default function Browser({ deckRows }: { deckRows: Row[] }) {
   /*
    * Subdeck with the lowest order is selected by default.
    */
-  const minLessonOrder = _.min(Object.keys(groupedSubdeckRows).map(Number)) as number
-  const [selectedSubdeckRows, setSelectedSubdeckRows] = useState(groupedSubdeckRows[minLessonOrder])
-  console.log('selectedSubdeckRows: ', selectedSubdeckRows)
+  const minSubdeckOrder = _.min(Object.keys(groupedSubdeckRows).map(Number)) as number
+  /*
+   * Using selectedSubdeckRows as state necessitates updating it when deckRows changes, even when selectedSubdeckOrder does not.
+   * A example is when a card is added, which changes deckRows, which causes rerendering even though selectedSubdeckOrder stays the same.
+   */
+  const [selectedSubdeckOrder, setSelectedSubdeckOrder] = useState(minSubdeckOrder)
+  console.log('selectedSubdeckOrder: ', selectedSubdeckOrder)
 
   const [isAddingSubdeck, setIsAddingSubdeck] = useState(false)
   const addSubdeckInputRef = useRef<HTMLInputElement>(null)
-
-  useEffect(() => {
-    const groupedSubdeckRows: GroupedSubdeckRows = _.groupBy(deckRows, 'lessonOrder')
-    const minLessonOrder = _.min(Object.keys(groupedSubdeckRows).map(Number)) as number
-    setSelectedSubdeckRows(groupedSubdeckRows[minLessonOrder])
-  }, [deckRows])
 
   useEffect(() => {
     if (isAddingSubdeck && addSubdeckInputRef.current) {
@@ -45,8 +43,8 @@ export default function Browser({ deckRows }: { deckRows: Row[] }) {
             return (
               <p
                 key={subdeckOrder}
-                onClick={() => setSelectedSubdeckRows(groupedSubdeckRows[subdeckOrder])}
-                className={`hover:bg-orange-100 ${selectedSubdeckRows[0].lessonOrder === parseInt(subdeckOrder) ? 'bg-orange-200' : ''} cursor-pointer p-2 rounded`}
+                onClick={() => setSelectedSubdeckOrder(parseInt(subdeckOrder))}
+                className={`hover:bg-orange-100 ${parseInt(subdeckOrder) === selectedSubdeckOrder ? 'bg-orange-200' : ''} cursor-pointer p-2 rounded`}
               >{`${groupedSubdeckRows[subdeckOrder][0].lessonTitle}`}</p>
             )
           })}
@@ -63,7 +61,7 @@ export default function Browser({ deckRows }: { deckRows: Row[] }) {
         {isAddingSubdeck && (
           <div>
             <form action={addSubdeck} onSubmit={() => setIsAddingSubdeck(false)}>
-              <Input type="hidden" name="courseId" value={selectedSubdeckRows[0].courseId} />
+              <Input type="hidden" name="courseId" value={groupedSubdeckRows[selectedSubdeckOrder][0].courseId} />
               <Input type="hidden" name="order" value={Object.keys(groupedSubdeckRows).length} />
               <Input name="title" ref={addSubdeckInputRef} placeholder="Enter the subdeck title and press Return." />
             </form>
@@ -82,7 +80,7 @@ export default function Browser({ deckRows }: { deckRows: Row[] }) {
         Ref: https://react.dev/learn/you-might-not-need-an-effect#resetting-all-state-when-a-prop-changes
         Ref: https://react.dev/learn/preserving-and-resetting-state#option-2-resetting-state-with-a-key
       */}
-      <CardList key={selectedSubdeckRows[0].lessonOrder} selectedSubdeckRows={selectedSubdeckRows} />
+      <CardList key={selectedSubdeckOrder} selectedSubdeckRows={groupedSubdeckRows[selectedSubdeckOrder]} />
     </div>
   )
 }
