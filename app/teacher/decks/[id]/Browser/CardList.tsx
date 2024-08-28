@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import _ from 'lodash'
 import { Cards } from './Browser'
 import { styleNewWord } from './styleNewWord'
@@ -7,16 +7,11 @@ import Card from './Card/Card'
 import { Row } from '../page'
 
 export default function CardList({ selectedSubdeckRows }: { selectedSubdeckRows: Row[] }) {
-  console.log('CardList selectedSubdeckRows: ', selectedSubdeckRows)
-  /*
-   * Even though this is a client component, it is still pre-rendered on the server side.
-   * Therefore, the useEffect hook would not be executed on the client side because selectedSubdeckRows would not have changed.
-   * Therefore, the initial state of selectedCardRows must not be set to an empty array.
-   */
-  const [selectedCardRows, setSelectedCardRows] = useState<Row[]>(getFirstCard(groupCardRows(selectedSubdeckRows)))
+  console.log('CardList: selectedSubdeckRows = ', selectedSubdeckRows)
+  const groupedCardRows = _.groupBy(selectedSubdeckRows, 'cardOrder')
+  console.log('CardList: groupedCardRows: ', groupedCardRows)
+  const [selectedCardRows, setSelectedCardRows] = useState<Row[]>(getFirstCard(groupedCardRows))
 
-  const groupedCardRows = groupCardRows(selectedSubdeckRows)
-  console.log('groupedCardRows: ', groupedCardRows)
   return (
     <div className="grid grid-cols-[1fr_2fr]">
       {/*
@@ -28,9 +23,9 @@ export default function CardList({ selectedSubdeckRows }: { selectedSubdeckRows:
         </button>
         {isCardExisting(selectedSubdeckRows) && (
           <ul className="flex flex-col gap-4">
-            {Object.keys(groupCardRows(selectedSubdeckRows)).map((cardOrder) => (
+            {Object.keys(groupedCardRows).map((cardOrder) => (
               <li
-                className={`p-2 rounded cursor-pointer  hover:bg-orange-50 ${parseInt(cardOrder) === selectedCardRows[0].cardOrder ? 'bg-orange-200' : ''}`}
+                className={`p-2 rounded cursor-pointer  hover:bg-orange-50 ${selectedCardRows && parseInt(cardOrder) === selectedCardRows[0].cardOrder ? 'bg-orange-200' : ''}`}
                 key={cardOrder}
                 onClick={() => setSelectedCardRows(groupedCardRows[cardOrder])}
                 dangerouslySetInnerHTML={{
@@ -44,10 +39,6 @@ export default function CardList({ selectedSubdeckRows }: { selectedSubdeckRows:
       {isCardExisting(selectedSubdeckRows) && <Card card={selectedCardRows} />}
     </div>
   )
-}
-
-function groupCardRows(selectedSubdeckRows: Row[]) {
-  return _.groupBy(selectedSubdeckRows, 'cardOrder')
 }
 
 function getFirstCard(cards: Cards) {
