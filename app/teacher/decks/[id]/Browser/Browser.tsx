@@ -8,6 +8,8 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { useRef, useEffect } from 'react'
 import { addSubdeck } from '@/app/actions'
+import { MoreVertical } from 'react-feather'
+import Menu from './Menu'
 
 export default function Browser({ deckRows }: { deckRows: Row[] }) {
   const groupedSubdeckRows: GroupedSubdeckRows = _.groupBy(deckRows, 'lessonOrder')
@@ -74,12 +76,14 @@ export default function Browser({ deckRows }: { deckRows: Row[] }) {
             </Button>
           </div>
         )}
+        <Menu />
       </div>
       {/* 
         We want to reset states (selectedCardRows, specifically) in CardList when selectedSubdeckRows changes without using useEffect.
         Ref: https://react.dev/learn/you-might-not-need-an-effect#resetting-all-state-when-a-prop-changes
         Ref: https://react.dev/learn/preserving-and-resetting-state#option-2-resetting-state-with-a-key
       */}
+
       <CardList key={selectedSubdeckOrder} selectedSubdeckRows={groupedSubdeckRows[selectedSubdeckOrder]} />
     </div>
   )
