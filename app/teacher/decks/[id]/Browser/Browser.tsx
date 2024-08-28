@@ -8,7 +8,6 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { useRef, useEffect } from 'react'
 import { addSubdeck } from '@/app/actions'
-import { MoreVertical } from 'react-feather'
 import Menu from './Menu'
 
 export default function Browser({ deckRows }: { deckRows: Row[] }) {
@@ -42,12 +41,15 @@ export default function Browser({ deckRows }: { deckRows: Row[] }) {
       <div className="basis-80 border-r-4 flex flex-col gap-4">
         <div className="flex flex-col gap-4">
           {Object.keys(groupedSubdeckRows).map((subdeckOrder) => {
+            // Add menu item for each subdeck
             return (
-              <p
-                key={subdeckOrder}
-                onClick={() => setSelectedSubdeckOrder(parseInt(subdeckOrder))}
-                className={`hover:bg-orange-100 ${parseInt(subdeckOrder) === selectedSubdeckOrder ? 'bg-orange-200' : ''} cursor-pointer p-2 rounded`}
-              >{`${groupedSubdeckRows[subdeckOrder][0].lessonTitle}`}</p>
+              <div key={subdeckOrder} className='flex justify-between'>
+                <p
+                  onClick={() => setSelectedSubdeckOrder(parseInt(subdeckOrder))}
+                  className={`hover:bg-orange-100 ${parseInt(subdeckOrder) === selectedSubdeckOrder ? 'bg-orange-200' : ''} cursor-pointer p-2 rounded`}
+                >{`${groupedSubdeckRows[subdeckOrder][0].lessonTitle}`}</p>
+                <Menu />
+              </div>
             )
           })}
         </div>
@@ -76,14 +78,13 @@ export default function Browser({ deckRows }: { deckRows: Row[] }) {
             </Button>
           </div>
         )}
-        <Menu />
       </div>
+
       {/* 
         We want to reset states (selectedCardRows, specifically) in CardList when selectedSubdeckRows changes without using useEffect.
         Ref: https://react.dev/learn/you-might-not-need-an-effect#resetting-all-state-when-a-prop-changes
         Ref: https://react.dev/learn/preserving-and-resetting-state#option-2-resetting-state-with-a-key
       */}
-
       <CardList key={selectedSubdeckOrder} selectedSubdeckRows={groupedSubdeckRows[selectedSubdeckOrder]} />
     </div>
   )
