@@ -71,7 +71,12 @@ export default function Browser({ deckRows }: { deckRows: Row[] }) {
           </div>
         )}
       </div>
-      <CardList selectedSubdeckRows={selectedSubdeckRows} />
+      {/* 
+        We want to reset states (selectedCardRows, specifically) in CardList when selectedSubdeckRows changes without using useEffect.
+        Ref: https://react.dev/learn/you-might-not-need-an-effect#resetting-all-state-when-a-prop-changes
+        Ref: https://react.dev/learn/preserving-and-resetting-state#option-2-resetting-state-with-a-key
+      */}
+      <CardList key={selectedSubdeckRows[0].lessonOrder} selectedSubdeckRows={selectedSubdeckRows} />
     </div>
   )
 }

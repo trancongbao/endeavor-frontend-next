@@ -15,11 +15,6 @@ export default function CardList({ selectedSubdeckRows }: { selectedSubdeckRows:
    */
   const [selectedCardRows, setSelectedCardRows] = useState<Row[]>(getFirstCard(groupCardRows(selectedSubdeckRows)))
 
-  useEffect(() => {
-    console.log('useEffect selectedSubdeckRows: ', selectedSubdeckRows)
-    setSelectedCardRows(getFirstCard(groupCardRows(selectedSubdeckRows)))
-  }, [selectedSubdeckRows])
-
   /*
    * Extract card list to a separate component would introduce tight coupling regarding the state management of selectedSubdeck.
    */
