@@ -4,6 +4,7 @@ import _ from 'lodash'
 import { styleNewWord } from './styleNewWord'
 import Card from './Card/Card'
 import { Row } from '../page'
+import { Button } from '@/components/ui/button'
 
 export default function CardList({ selectedSubdeckRows }: { selectedSubdeckRows: Row[] }) {
   console.log('CardList: selectedSubdeckRows = ', selectedSubdeckRows)
@@ -15,9 +16,6 @@ export default function CardList({ selectedSubdeckRows }: { selectedSubdeckRows:
   return (
     <div className="grid grid-cols-[1fr_2fr]">
       <div className="border-r-4">
-        <button className="w-36 bg-orange-400 text-white  hover:bg-orange-300 hover:text-black py-2 px-4 rounded">
-          Add card
-        </button>
         {/*
          * Card list is defined inline here, as extracting it to a separate component would introduce tight coupling regarding the state management of selectedCardRows.
          */}
@@ -35,8 +33,11 @@ export default function CardList({ selectedSubdeckRows }: { selectedSubdeckRows:
             ))}
           </ul>
         )}
+        <Button className="w-36 bg-orange-400 py-2 px-4 rounded text-white  hover:bg-orange-300 hover:text-black">
+          Add card
+        </Button>
       </div>
-      {groupedCardRows && <Card card={selectedCardRows} />}
+      {selectedCardRows.length > 0 && <Card selectedCardRows={selectedCardRows} />}
     </div>
   )
 }

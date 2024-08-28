@@ -5,9 +5,9 @@ import { useState } from 'react'
 import Preview from './Preview'
 import Edit from './Edit'
 
-export default function Card({ card }: { card: Row[] }) {
+export default function Card({ selectedCardRows }: { selectedCardRows: Row[] }) {
+  console.log('selectedCardRows: ', selectedCardRows)
   const [isEdit, setIsEdit] = useState(false)
-  console.log('card: ', card)
   return (
     <div className="flex flex-col items-center gap-3">
       <div className="self-end">
@@ -18,7 +18,7 @@ export default function Card({ card }: { card: Row[] }) {
           }}
         />
       </div>
-      {isEdit ? <Edit card={card} /> : <Preview card={card} />}
+      {isEdit ? <Edit selectedCardRows={selectedCardRows} /> : <Preview selectedCardRows={selectedCardRows} />}
     </div>
   )
 }
