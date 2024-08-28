@@ -15,13 +15,13 @@ export default function CardList({ selectedSubdeckRows }: { selectedSubdeckRows:
    */
   const [selectedCardRows, setSelectedCardRows] = useState<Row[]>(getFirstCard(groupCardRows(selectedSubdeckRows)))
 
-  /*
-   * Extract card list to a separate component would introduce tight coupling regarding the state management of selectedSubdeck.
-   */
-  const cards = groupCardRows(selectedSubdeckRows)
-  console.log('cards: ', cards)
+  const groupedCardRows = groupCardRows(selectedSubdeckRows)
+  console.log('groupedCardRows: ', groupedCardRows)
   return (
     <div className="grid grid-cols-[1fr_2fr]">
+      {/*
+       * Card list is defined inline here, as extracting it to a separate component would introduce tight coupling regarding the state management of selectedCardRows.
+       */}
       <div className="border-r-4">
         <button className="w-36 bg-orange-400 text-white  hover:bg-orange-300 hover:text-black py-2 px-4 rounded">
           Add card
@@ -32,9 +32,9 @@ export default function CardList({ selectedSubdeckRows }: { selectedSubdeckRows:
               <li
                 className={`p-2 rounded cursor-pointer  hover:bg-orange-50 ${parseInt(cardOrder) === selectedCardRows[0].cardOrder ? 'bg-orange-200' : ''}`}
                 key={cardOrder}
-                onClick={() => setSelectedCardRows(cards[cardOrder])}
+                onClick={() => setSelectedCardRows(groupedCardRows[cardOrder])}
                 dangerouslySetInnerHTML={{
-                  __html: styleNewWord(cards[cardOrder][0].cardText as string),
+                  __html: styleNewWord(groupedCardRows[cardOrder][0].cardText as string),
                 }}
               ></li>
             ))}
