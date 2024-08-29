@@ -1,5 +1,5 @@
 'use client'
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import _ from 'lodash'
 import { styleNewWord } from './styleNewWord'
 import Card from './Card/Card'
@@ -16,6 +16,7 @@ export default function CardList({ selectedSubdeckRows }: { selectedSubdeckRows:
 
   const [isAddingCard, setIsAddingCard] = useState(false)
   const addCardTextInputRef = useRef<HTMLInputElement>(null)
+
   return (
     <div className="grid grid-cols-[1fr_2fr]">
       <div className="border-r-4">

@@ -63,7 +63,7 @@ export default function Browser({ deckRows }: { deckRows: Row[] }) {
             Add subdeck
           </Button>
         )}
-        {/* Use ternery operator */}
+        {/* TODO: Use ternery operator */}
         {isAddingSubdeck && (
           <div>
             <form action={addSubdeck} onSubmit={() => setIsAddingSubdeck(false)}>

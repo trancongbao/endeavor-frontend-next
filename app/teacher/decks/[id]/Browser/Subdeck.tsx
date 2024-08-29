@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Menu from './Menu'
 import { deleteSubdeck, editSubdeckTitle } from '@/app/actions'
 import { Input } from '@/components/ui/input'
@@ -22,6 +22,12 @@ export default function Subdeck({
   const [isEditingSubdeckTitle, setIsEditingSubdeckTitle] = useState(false)
   const editSubdeckTitileInputRef = useRef<HTMLInputElement>(null)
   const [newSubdeckTitle, setNewSubdeckTitle] = useState(subdeckTitle)
+
+  useEffect(() => {
+    if (isEditingSubdeckTitle && editSubdeckTitileInputRef.current) {
+      editSubdeckTitileInputRef.current.focus()
+    }
+  }, [isEditingSubdeckTitle])
 
   return (
     <div>
