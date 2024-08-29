@@ -1,15 +1,8 @@
 import { Button } from '@/components/ui/button'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { MoreVertical, Edit, Delete } from 'react-feather'
 
-export default function Menu() {
+export default function Menu({ onSelect } : { onSelect: (action: 'edit' | 'delete') => void }) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
@@ -18,13 +11,13 @@ export default function Menu() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-        <DropdownMenuItem>
+        <DropdownMenuItem onSelect={() => onSelect('edit')}>
           <Button variant="ghost" className="flex items-center gap-2">
             <Edit />
             <span>Edit</span>
           </Button>
         </DropdownMenuItem>
-        <DropdownMenuItem>
+        <DropdownMenuItem onSelect={() => onSelect('delete')}>
           <Button variant="ghost" className="flex items-center gap-2">
             <Delete />
             <span>Delete</span>

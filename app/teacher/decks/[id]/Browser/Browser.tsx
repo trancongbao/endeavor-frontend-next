@@ -51,7 +51,7 @@ export default function Browser({ deckRows }: { deckRows: Row[] }) {
                   onClick={() => setSelectedSubdeckOrder(parseInt(subdeckOrder))}
                   className={`flex-1 cursor-pointer p-2 rounded`}
                 >{`${groupedSubdeckRows[subdeckOrder][0].lessonTitle}`}</p>
-                <Menu />
+                <Menu onSelect={onSelect} />
               </div>
             )
           })}
@@ -91,4 +91,8 @@ export default function Browser({ deckRows }: { deckRows: Row[] }) {
       <CardList key={selectedSubdeckOrder} selectedSubdeckRows={groupedSubdeckRows[selectedSubdeckOrder]} />
     </div>
   )
+
+  function onSelect(action: 'edit' | 'delete') {
+    console.log('onSelect: ', action)
+  }
 }
