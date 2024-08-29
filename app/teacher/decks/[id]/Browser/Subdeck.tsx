@@ -8,17 +8,10 @@ interface SubdeckProps {
   courseId: number
   subdeckOrder: number
   subdeckTitle: string
-  isSelected: boolean
   setSelectedSubdeckOrder: (order: number) => void
 }
 
-export default function Subdeck({
-  courseId,
-  subdeckOrder,
-  subdeckTitle,
-  isSelected, //TODO: style in parent component
-  setSelectedSubdeckOrder,
-}: SubdeckProps) {
+export default function Subdeck({ courseId, subdeckOrder, subdeckTitle, setSelectedSubdeckOrder }: SubdeckProps) {
   const [isEditingSubdeckTitle, setIsEditingSubdeckTitle] = useState(false)
   const editSubdeckTitileInputRef = useRef<HTMLInputElement>(null)
   const [newSubdeckTitle, setNewSubdeckTitle] = useState(subdeckTitle)
@@ -32,9 +25,7 @@ export default function Subdeck({
   return (
     <div>
       {!isEditingSubdeckTitle ? (
-        <div
-          className={`m-1 ${isSelected ? 'bg-orange-200' : 'hover:bg-orange-100'} rounded flex justify-between items-center`}
-        >
+        <div className={`m-1 rounded flex justify-between items-center`}>
           <p onClick={() => setSelectedSubdeckOrder(subdeckOrder)} className="flex-1 cursor-pointer p-2 rounded">
             {subdeckTitle}
           </p>

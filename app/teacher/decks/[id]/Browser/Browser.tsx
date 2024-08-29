@@ -43,14 +43,17 @@ export default function Browser({ deckRows }: { deckRows: Row[] }) {
         <div className="flex flex-col gap-2">
           {Object.keys(groupedSubdeckRows).map((subdeckOrder) => {
             return (
-              <Subdeck
+              <div
                 key={subdeckOrder}
-                courseId={courseId}
-                subdeckOrder={parseInt(subdeckOrder)}
-                subdeckTitle={groupedSubdeckRows[subdeckOrder][0].lessonTitle as string}
-                isSelected={parseInt(subdeckOrder) === selectedSubdeckOrder}
-                setSelectedSubdeckOrder={setSelectedSubdeckOrder}
-              />
+                className={`${parseInt(subdeckOrder) === selectedSubdeckOrder ? 'bg-orange-200' : 'hover:bg-orange-100'}`}
+              >
+                <Subdeck
+                  courseId={courseId}
+                  subdeckOrder={parseInt(subdeckOrder)}
+                  subdeckTitle={groupedSubdeckRows[subdeckOrder][0].lessonTitle as string}
+                  setSelectedSubdeckOrder={setSelectedSubdeckOrder}
+                />
+              </div>
             )
           })}
         </div>
