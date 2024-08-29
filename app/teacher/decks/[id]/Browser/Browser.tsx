@@ -7,8 +7,9 @@ import { Row, GroupedSubdeckRows } from '../page'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { useRef, useEffect } from 'react'
-import { addSubdeck } from '@/app/actions'
+import { addSubdeck, deleteSubdeck, editSubdeckTitle } from '@/app/actions'
 import Menu from './Menu'
+import Subdeck from './Subdeck'
 
 export default function Browser({ deckRows }: { deckRows: Row[] }) {
   const groupedSubdeckRows: GroupedSubdeckRows = _.groupBy(deckRows, 'lessonOrder')
@@ -41,18 +42,14 @@ export default function Browser({ deckRows }: { deckRows: Row[] }) {
       <div className="basis-80 border-r-4 flex flex-col gap-4">
         <div className="flex flex-col gap-2">
           {Object.keys(groupedSubdeckRows).map((subdeckOrder) => {
-            // Add menu item for each subdeck
             return (
-              <div
+              <Subdeck
                 key={subdeckOrder}
-                className={`m-1 ${parseInt(subdeckOrder) === selectedSubdeckOrder ? 'bg-orange-200' : 'hover:bg-orange-100'} rounded flex justify-between items-center`}
-              >
-                <p
-                  onClick={() => setSelectedSubdeckOrder(parseInt(subdeckOrder))}
-                  className={`flex-1 cursor-pointer p-2 rounded`}
-                >{`${groupedSubdeckRows[subdeckOrder][0].lessonTitle}`}</p>
-                <Menu onSelect={onSelect} />
-              </div>
+                subdeckOrder={parseInt(subdeckOrder)}
+                subdeckTitle={groupedSubdeckRows[subdeckOrder][0].lessonTitle}
+                isSelected={parseInt(subdeckOrder) === selectedSubdeckOrder}
+                setSelectedSubdeckOrder={setSelectedSubdeckOrder}
+              />
             )
           })}
         </div>
@@ -91,8 +88,4 @@ export default function Browser({ deckRows }: { deckRows: Row[] }) {
       <CardList key={selectedSubdeckOrder} selectedSubdeckRows={groupedSubdeckRows[selectedSubdeckOrder]} />
     </div>
   )
-
-  function onSelect(action: 'edit' | 'delete') {
-    console.log('onSelect: ', action)
-  }
 }

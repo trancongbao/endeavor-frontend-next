@@ -17,6 +17,20 @@ export async function addSubdeck(formData: FormData) {
   revalidatePath('/teacher/decks/[id]')
 }
 
+export async function deleteSubdeck(subdeckOrder: number) {
+  console.log('deleteSubdeck: subdeckOrder = ', subdeckOrder)
+  // const deletedSubdeck = await kysely.deleteFrom('lesson').returningAll().executeTakeFirstOrThrow()
+  // console.log('Added subdeck: ', deletedSubdeck)
+  // revalidatePath('/teacher/decks/[id]')
+}
+
+export async function editSubdeckTitle(subdeckOrder: number) {
+  console.log('deleteSubdeck: subdeckOrder = ', subdeckOrder)
+  // const deletedSubdeck = await kysely.deleteFrom('lesson').returningAll().executeTakeFirstOrThrow()
+  // console.log('Added subdeck: ', deletedSubdeck)
+  // revalidatePath('/teacher/decks/[id]')
+}
+
 export async function addCard(formData: FormData) {
   console.log('addCard: formData = ', formData)
   const addedCard = await kysely
