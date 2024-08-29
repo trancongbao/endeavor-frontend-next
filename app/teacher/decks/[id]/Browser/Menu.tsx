@@ -7,7 +7,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { MoreVertical } from 'react-feather'
+import { MoreVertical, Edit, Delete } from 'react-feather'
 
 export default function Menu() {
   return (
@@ -18,12 +18,19 @@ export default function Menu() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-        <DropdownMenuLabel>My Account</DropdownMenuLabel>
+        <DropdownMenuLabel>
+          <Button variant="ghost" className="flex items-center gap-2">
+            <Edit />
+            <span>Edit</span>
+          </Button>
+        </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>Profile</DropdownMenuItem>
-        <DropdownMenuItem>Billing</DropdownMenuItem>
-        <DropdownMenuItem>Team</DropdownMenuItem>
-        <DropdownMenuItem>Subscription</DropdownMenuItem>
+        <DropdownMenuItem className="flex items-center gap-2">
+          <Button variant="ghost" className="flex items-center gap-2">
+            <Delete />
+            <span>Delete</span>
+          </Button>
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   )

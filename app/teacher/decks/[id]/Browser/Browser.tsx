@@ -37,9 +37,9 @@ export default function Browser({ deckRows }: { deckRows: Row[] }) {
    * Extract subdeck list to a separate component would introduce tight coupling regarding the state management of selectedSubdeck.
    */
   return (
-    <div className="grid grid-cols-[1fr_6fr] grid-rows-[1fr_10fr] gap-4">
+    <div className="grid grid-cols-[1fr_6fr] grid-rows-[1fr_10fr] gap-2">
       <div className="basis-80 border-r-4 flex flex-col gap-4">
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-2">
           {Object.keys(groupedSubdeckRows).map((subdeckOrder) => {
             // Add menu item for each subdeck
             return (
@@ -49,7 +49,7 @@ export default function Browser({ deckRows }: { deckRows: Row[] }) {
               >
                 <p
                   onClick={() => setSelectedSubdeckOrder(parseInt(subdeckOrder))}
-                  className={`flex-1  cursor-pointer p-2 rounded`}
+                  className={`flex-1 cursor-pointer p-2 rounded`}
                 >{`${groupedSubdeckRows[subdeckOrder][0].lessonTitle}`}</p>
                 <Menu />
               </div>

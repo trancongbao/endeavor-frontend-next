@@ -23,7 +23,7 @@ export default function CardList({ selectedSubdeckRows }: { selectedSubdeckRows:
          * Card list is defined inline here, as extracting it to a separate component would introduce tight coupling regarding the state management of selectedCardRows.
          */}
         {groupedCardRows && (
-          <ul className="flex flex-col gap-4">
+          <ul className="flex flex-col gap-2">
             {Object.keys(groupedCardRows).map((cardOrder) => (
               <li
                 className={`p-2 rounded cursor-pointer ${selectedCardRows.length > 0 && selectedCardRows[0].cardOrder === parseInt(cardOrder) ? 'bg-orange-200' : 'hover:bg-orange-100'}`}
