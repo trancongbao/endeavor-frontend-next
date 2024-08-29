@@ -2,13 +2,20 @@ import Menu from './Menu'
 import { deleteSubdeck, editSubdeckTitle } from '@/app/actions'
 
 interface SubdeckProps {
+  courseId: number
   subdeckOrder: number
   subdeckTitle: string
   isSelected: boolean
   setSelectedSubdeckOrder: (order: number) => void
 }
 
-export default function Subdeck({ subdeckOrder, subdeckTitle, isSelected, setSelectedSubdeckOrder }: SubdeckProps) {
+export default function Subdeck({
+  courseId,
+  subdeckOrder,
+  subdeckTitle,
+  isSelected, //TODO: style in parent component
+  setSelectedSubdeckOrder,
+}: SubdeckProps) {
   return (
     <div
       className={`m-1 ${isSelected ? 'bg-orange-200' : 'hover:bg-orange-100'} rounded flex justify-between items-center`}
@@ -24,9 +31,9 @@ export default function Subdeck({ subdeckOrder, subdeckTitle, isSelected, setSel
     console.log('onSelect: ', action)
     switch (action) {
       case 'edit':
-        editSubdeckTitle(1)
+        editSubdeckTitle(courseId, subdeckOrder)
       case 'delete':
-        deleteSubdeck(1)
+        deleteSubdeck(courseId, subdeckOrder)
     }
   }
 }

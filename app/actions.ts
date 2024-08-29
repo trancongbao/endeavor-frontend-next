@@ -17,15 +17,20 @@ export async function addSubdeck(formData: FormData) {
   revalidatePath('/teacher/decks/[id]')
 }
 
-export async function deleteSubdeck(subdeckOrder: number) {
-  console.log('deleteSubdeck: subdeckOrder = ', subdeckOrder)
-  // const deletedSubdeck = await kysely.deleteFrom('lesson').returningAll().executeTakeFirstOrThrow()
-  // console.log('Added subdeck: ', deletedSubdeck)
-  // revalidatePath('/teacher/decks/[id]')
+export async function deleteSubdeck(courseId: number, subdeckOrder: number) {
+  console.log(`deleteSubdeck: courseId = ${courseId}, subdeckOrder = ${subdeckOrder}`)
+  const deletedSubdeck = await kysely
+    .deleteFrom('lesson')
+    .where('course_id', '=', courseId)
+    .where('order', '=', subdeckOrder)
+    .returningAll()
+    .executeTakeFirstOrThrow()
+  console.log('Deleted subdeck: ', deletedSubdeck)
+  revalidatePath('/teacher/decks/[id]')
 }
 
-export async function editSubdeckTitle(subdeckOrder: number) {
-  console.log('deleteSubdeck: subdeckOrder = ', subdeckOrder)
+export async function editSubdeckTitle(courseId: number, subdeckOrder: number) {
+  console.log(`editSubdeckTitle: courseId = ${courseId}, subdeckOrder = ${subdeckOrder}`)
   // const deletedSubdeck = await kysely.deleteFrom('lesson').returningAll().executeTakeFirstOrThrow()
   // console.log('Added subdeck: ', deletedSubdeck)
   // revalidatePath('/teacher/decks/[id]')

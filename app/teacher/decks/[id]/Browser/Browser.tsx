@@ -7,11 +7,11 @@ import { Row, GroupedSubdeckRows } from '../page'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { useRef, useEffect } from 'react'
-import { addSubdeck, deleteSubdeck, editSubdeckTitle } from '@/app/actions'
-import Menu from './Menu'
+import { addSubdeck } from '@/app/actions'
 import Subdeck from './Subdeck'
 
 export default function Browser({ deckRows }: { deckRows: Row[] }) {
+  const { courseId } = deckRows[0]
   const groupedSubdeckRows: GroupedSubdeckRows = _.groupBy(deckRows, 'lessonOrder')
   console.log('groupedSubdeckRows: ', groupedSubdeckRows)
   /*
@@ -45,8 +45,9 @@ export default function Browser({ deckRows }: { deckRows: Row[] }) {
             return (
               <Subdeck
                 key={subdeckOrder}
+                courseId={courseId}
                 subdeckOrder={parseInt(subdeckOrder)}
-                subdeckTitle={groupedSubdeckRows[subdeckOrder][0].lessonTitle}
+                subdeckTitle={groupedSubdeckRows[subdeckOrder][0].lessonTitle as string}
                 isSelected={parseInt(subdeckOrder) === selectedSubdeckOrder}
                 setSelectedSubdeckOrder={setSelectedSubdeckOrder}
               />
