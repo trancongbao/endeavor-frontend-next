@@ -18,14 +18,13 @@ export default function Menu() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-        <DropdownMenuLabel>
+        <DropdownMenuItem>
           <Button variant="ghost" className="flex items-center gap-2">
             <Edit />
             <span>Edit</span>
           </Button>
-        </DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem className="flex items-center gap-2">
+        </DropdownMenuItem>
+        <DropdownMenuItem>
           <Button variant="ghost" className="flex items-center gap-2">
             <Delete />
             <span>Delete</span>
