@@ -2,6 +2,7 @@ import { useRef, useState } from 'react'
 import Menu from './Menu'
 import { deleteSubdeck, editSubdeckTitle } from '@/app/actions'
 import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
 
 interface SubdeckProps {
   courseId: number
@@ -20,7 +21,7 @@ export default function Subdeck({
 }: SubdeckProps) {
   const [isEditingSubdeckTitle, setIsEditingSubdeckTitle] = useState(false)
   const editSubdeckTitileInputRef = useRef<HTMLInputElement>(null)
-  const [newSubdeckTitle, setNewSubdeckTitle] = useState(subdeckTitle);
+  const [newSubdeckTitle, setNewSubdeckTitle] = useState(subdeckTitle)
 
   return (
     <div>
@@ -34,8 +35,8 @@ export default function Subdeck({
           <Menu onSelect={onSelect} />
         </div>
       ) : (
-        <div>
-          <form action={editSubdeckTitle} onSubmit={() => setIsEditingSubdeckTitle(false)}>
+        <div className='flex'>
+          <form action={editSubdeckTitle} onSubmit={() => setIsEditingSubdeckTitle(false)} className='flex-1'>
             <Input type="hidden" name="courseId" value={courseId} />
             <Input type="hidden" name="order" value={subdeckOrder} />
             <Input
@@ -46,6 +47,13 @@ export default function Subdeck({
               onChange={(e) => setNewSubdeckTitle(e.target.value)}
             />
           </form>
+          <Button
+            variant="outline"
+            className="w-20 bg-orange-400  text-white text-md hover:bg-orange-300 hover:text-black py-2 px-4 rounded"
+            onClick={() => setIsEditingSubdeckTitle(false)}
+          >
+            Cancel
+          </Button>
         </div>
       )}
     </div>
