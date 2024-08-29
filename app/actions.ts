@@ -29,8 +29,8 @@ export async function deleteSubdeck(courseId: number, subdeckOrder: number) {
   revalidatePath('/teacher/decks/[id]')
 }
 
-export async function editSubdeckTitle(courseId: number, subdeckOrder: number) {
-  console.log(`editSubdeckTitle: courseId = ${courseId}, subdeckOrder = ${subdeckOrder}`)
+export async function editSubdeckTitle(formData: FormData) {
+  console.log('editSubdeckTitle: formData = ', formData)
   // const deletedSubdeck = await kysely.deleteFrom('lesson').returningAll().executeTakeFirstOrThrow()
   // console.log('Added subdeck: ', deletedSubdeck)
   // revalidatePath('/teacher/decks/[id]')
