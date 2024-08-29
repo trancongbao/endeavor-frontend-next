@@ -2,13 +2,11 @@ import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { MoreVertical, Edit, Delete } from 'react-feather'
 
-export default function Menu({ onSelect } : { onSelect: (action: 'edit' | 'delete') => void }) {
+export default function Menu({ onSelect }: { onSelect: (action: 'edit' | 'delete') => void }) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
-        <Button variant="ghost">
-          <MoreVertical color="hsl(180, 10%, 60%)" />
-        </Button>
+        <MoreVertical color="hsl(180, 10%, 60%)" />
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuItem onSelect={() => onSelect('edit')}>
