@@ -13,8 +13,8 @@ export default function Menu() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
-        <Button variant="outline">
-          <MoreVertical />
+        <Button variant="ghost">
+          <MoreVertical color="hsl(180, 10%, 60%)" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent>

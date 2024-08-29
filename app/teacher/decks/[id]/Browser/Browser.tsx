@@ -43,10 +43,13 @@ export default function Browser({ deckRows }: { deckRows: Row[] }) {
           {Object.keys(groupedSubdeckRows).map((subdeckOrder) => {
             // Add menu item for each subdeck
             return (
-              <div key={subdeckOrder} className='flex justify-between'>
+              <div
+                key={subdeckOrder}
+                className={`m-1 ${parseInt(subdeckOrder) === selectedSubdeckOrder ? 'bg-orange-200' : 'hover:bg-orange-100'} rounded flex justify-between items-center`}
+              >
                 <p
                   onClick={() => setSelectedSubdeckOrder(parseInt(subdeckOrder))}
-                  className={`hover:bg-orange-100 ${parseInt(subdeckOrder) === selectedSubdeckOrder ? 'bg-orange-200' : ''} cursor-pointer p-2 rounded`}
+                  className={`flex-1  cursor-pointer p-2 rounded`}
                 >{`${groupedSubdeckRows[subdeckOrder][0].lessonTitle}`}</p>
                 <Menu />
               </div>

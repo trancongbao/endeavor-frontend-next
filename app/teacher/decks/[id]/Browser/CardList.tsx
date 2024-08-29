@@ -26,7 +26,7 @@ export default function CardList({ selectedSubdeckRows }: { selectedSubdeckRows:
           <ul className="flex flex-col gap-4">
             {Object.keys(groupedCardRows).map((cardOrder) => (
               <li
-                className={`p-2 rounded cursor-pointer  hover:bg-orange-50 ${selectedCardRows.length > 0 && selectedCardRows[0].cardOrder === parseInt(cardOrder) ? 'bg-orange-200' : ''}`}
+                className={`p-2 rounded cursor-pointer ${selectedCardRows.length > 0 && selectedCardRows[0].cardOrder === parseInt(cardOrder) ? 'bg-orange-200' : 'hover:bg-orange-100'}`}
                 key={cardOrder}
                 onClick={() => setSelectedCardRows(groupedCardRows[cardOrder])}
                 dangerouslySetInnerHTML={{
