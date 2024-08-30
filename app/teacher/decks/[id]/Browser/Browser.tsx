@@ -7,10 +7,11 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { useRef, useEffect } from 'react'
 import { addCard, addSubdeck, deleteSubdeck, editSubdeckTitle } from '@/app/actions'
-import Menu from './Menu'
+import KebabMenu from './KebabMenu'
 import { styleNewWord } from './styleNewWord'
 import Toggle from './Toggle'
 import Image from 'next/image'
+import { Edit, Delete } from 'react-feather'
 
 export default function Browser({ deckRows }: { deckRows: Row[] }) {
   const { courseId } = deckRows[0]
@@ -117,6 +118,11 @@ function Subdeck({ courseId, subdeckOrder, subdeckTitle, setSelectedSubdeckOrder
     }
   }, [isEditingSubdeckTitle])
 
+  const menuOptions = [
+    { label: 'Edit', icon: <Edit />, onSelect: () => setIsEditingSubdeckTitle(true) },
+    { label: 'Delete', icon: <Delete />, onSelect: () => deleteSubdeck(courseId, subdeckOrder) },
+  ]
+
   return (
     <div>
       {!isEditingSubdeckTitle ? (
@@ -124,7 +130,7 @@ function Subdeck({ courseId, subdeckOrder, subdeckTitle, setSelectedSubdeckOrder
           <p onClick={() => setSelectedSubdeckOrder(subdeckOrder)} className="flex-1 cursor-pointer p-2 rounded">
             {subdeckTitle}
           </p>
-          <Menu onSelect={onSelect} />
+          <KebabMenu menuOptions={menuOptions} />
         </div>
       ) : (
         <div className="flex">
@@ -283,12 +289,12 @@ function Card({ selectedCardRows }: { selectedCardRows: Row[] }) {
           }}
         />
       </div>
-      {isEdit ? <Edit selectedCardRows={selectedCardRows} /> : <Preview selectedCardRows={selectedCardRows} />}
+      {isEdit ? <EditCard selectedCardRows={selectedCardRows} /> : <PreviewCard selectedCardRows={selectedCardRows} />}
     </div>
   )
 }
 
-function Edit({ selectedCardRows }: { selectedCardRows: Row[] }) {
+function EditCard({ selectedCardRows }: { selectedCardRows: Row[] }) {
   console.log('selectedCardRows: ', selectedCardRows)
   return (
     <div className="w-full flex flex-col items-center gap-3">
@@ -312,7 +318,7 @@ function Edit({ selectedCardRows }: { selectedCardRows: Row[] }) {
   )
 }
 
-function Preview({ selectedCardRows }: { selectedCardRows: Row[] }) {
+function PreviewCard({ selectedCardRows }: { selectedCardRows: Row[] }) {
   console.log('selectedCardRows: ', selectedCardRows)
   return (
     <div className="w-full pl-3 flex flex-col items-center gap-3">
