@@ -27,6 +27,7 @@ export async function deleteSubdeck(courseId: number, subdeckOrder: number) {
     .executeTakeFirstOrThrow()
   console.log('Deleted subdeck: ', deletedSubdeck)
   revalidatePath('/teacher/decks/[id]')
+  //TODO: Delete all cards in the subdeck
 }
 
 export async function editSubdeckTitle(formData: FormData) {
@@ -59,4 +60,18 @@ export async function addCard(formData: FormData) {
 
   console.log('Added card: ', addedCard)
   revalidatePath('/teacher/decks/[id]', 'page')
+}
+
+export async function deleteCard(courseId: number, subdeckOrder: number, cardOrder: number) {
+  //TODO: authorization with courseId
+  console.log(`deleteCard: courseId = ${courseId}, subdeckOrder = ${subdeckOrder}, cardOrder = ${cardOrder}`)
+  const deletedSubdeck = await kysely
+    .deleteFrom('card')
+    .where('course_id', '=', courseId)
+    .where('lesson_order', '=', subdeckOrder)
+    .where('order', '=', cardOrder)
+    .returningAll()
+    .executeTakeFirstOrThrow()
+  console.log('Deleted subdeck: ', deletedSubdeck)
+  revalidatePath('/teacher/decks/[id]')
 }

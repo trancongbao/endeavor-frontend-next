@@ -6,8 +6,8 @@ import { Row, GroupedSubdeckRows } from '../page'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { useRef, useEffect } from 'react'
-import { addCard, addSubdeck, deleteSubdeck, editSubdeckTitle } from '@/app/actions'
-import KebabMenu, { MenuOption } from './KebabMenu'
+import { addCard, addSubdeck, deleteCard, deleteSubdeck, editSubdeckTitle } from '@/app/actions'
+import KebabMenu from './KebabMenu'
 import { styleNewWord } from './styleNewWord'
 import Toggle from './Toggle'
 import Image from 'next/image'
@@ -158,20 +158,6 @@ function Subdeck({ courseId, subdeckOrder, subdeckTitle, setSelectedSubdeckOrder
       )}
     </div>
   )
-
-  function onSelect(action: 'edit' | 'delete') {
-    console.log('onSelect: ', action)
-    switch (action) {
-      case 'edit':
-        setIsEditingSubdeckTitle(true)
-        break
-      case 'delete':
-        deleteSubdeck(courseId, subdeckOrder)
-        break
-      default:
-        break
-    }
-  }
 }
 
 interface AddSubdeckFormProps {
@@ -204,6 +190,7 @@ function AddSubdeckForm({ courseId, order, setIsAddingSubdeck }: AddSubdeckFormP
 }
 
 function CardList({ selectedSubdeckRows }: { selectedSubdeckRows: Row[] }) {
+  const { courseId, lessonOrder } = selectedSubdeckRows[0]
   console.log('CardList: selectedSubdeckRows = ', selectedSubdeckRows)
   const groupedCardRows = hasCard(selectedSubdeckRows) ? _.groupBy(selectedSubdeckRows, 'cardOrder') : undefined
   console.log('CardList: groupedCardRows = ', groupedCardRows)
@@ -222,13 +209,30 @@ function CardList({ selectedSubdeckRows }: { selectedSubdeckRows: Row[] }) {
           <ul className="flex flex-col gap-2">
             {Object.keys(groupedCardRows).map((cardOrder) => (
               <li
-                className={`p-2 rounded cursor-pointer ${selectedCardRows.length > 0 && selectedCardRows[0].cardOrder === parseInt(cardOrder) ? 'bg-orange-200' : 'hover:bg-orange-100'}`}
+                className={`p-2 rounded cursor-pointer ${selectedCardRows.length > 0 && selectedCardRows[0].cardOrder === parseInt(cardOrder) ? 'bg-orange-200' : 'hover:bg-orange-100'} flex justify-between gap-2`}
                 key={cardOrder}
                 onClick={() => setSelectedCardRows(groupedCardRows[cardOrder])}
-                dangerouslySetInnerHTML={{
-                  __html: styleNewWord(groupedCardRows[cardOrder][0].cardText as string),
-                }}
-              ></li>
+              >
+                <p
+                  dangerouslySetInnerHTML={{
+                    __html: styleNewWord(groupedCardRows[cardOrder][0].cardText as string),
+                  }}
+                ></p>
+                <KebabMenu
+                  menuOptions={[
+                    {
+                      label: 'Edit',
+                      icon: <Edit />,
+                      onSelect: () => deleteCard(courseId, lessonOrder as number, parseInt(cardOrder)),
+                    },
+                    {
+                      label: 'Delete',
+                      icon: <Delete />,
+                      onSelect: () => deleteCard(courseId, lessonOrder as number, parseInt(cardOrder)),
+                    },
+                  ]}
+                />
+              </li>
             ))}
           </ul>
         )}
