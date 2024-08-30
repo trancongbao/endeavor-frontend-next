@@ -9,7 +9,6 @@ import { Button } from '@/components/ui/button'
 import { useRef, useEffect } from 'react'
 import { addSubdeck, deleteSubdeck, editSubdeckTitle } from '@/app/actions'
 import Menu from './Menu'
-// import Subdeck from './Subdeck'
 
 export default function Browser({ deckRows }: { deckRows: Row[] }) {
   const { courseId } = deckRows[0]
@@ -33,40 +32,14 @@ export default function Browser({ deckRows }: { deckRows: Row[] }) {
    */
   return (
     <div className="grid grid-cols-[1fr_6fr] grid-rows-[1fr_10fr] gap-2">
-      <div className="basis-80 border-r-4 flex flex-col gap-4">
-        <div className="flex flex-col gap-2">
-          {Object.keys(groupedSubdeckRows).map((subdeckOrder) => {
-            return (
-              <div
-                key={subdeckOrder}
-                className={`${parseInt(subdeckOrder) === selectedSubdeckOrder ? 'bg-orange-200' : 'hover:bg-orange-100'}`}
-              >
-                <Subdeck
-                  courseId={courseId}
-                  subdeckOrder={parseInt(subdeckOrder)}
-                  subdeckTitle={groupedSubdeckRows[subdeckOrder][0].lessonTitle as string}
-                  setSelectedSubdeckOrder={setSelectedSubdeckOrder}
-                />
-              </div>
-            )
-          })}
-        </div>
-        {!isAddingSubdeck ? (
-          <Button
-            variant="outline"
-            className="w-36 bg-orange-400  text-white text-md hover:bg-orange-300 hover:text-black py-2 px-4 rounded"
-            onClick={() => setIsAddingSubdeck(true)}
-          >
-            Add subdeck
-          </Button>
-        ) : (
-          <AddSubdeckForm
-            courseId={courseId}
-            order={Object.keys(groupedSubdeckRows).length}
-            setIsAddingSubdeck={setIsAddingSubdeck}
-          />
-        )}
-      </div>
+      <Subdecks
+        groupedSubdeckRows={groupedSubdeckRows}
+        courseId={courseId}
+        selectedSubdeckOrder={selectedSubdeckOrder}
+        setSelectedSubdeckOrder={selectedSubdeckOrder}
+        isAddingSubdeck={isAddingSubdeck}
+        setIsAddingSubdeck={setIsAddingSubdeck}
+      />
 
       {/* 
         We want to reset states (selectedCardRows, specifically) in CardList when selectedSubdeckRows changes without using useEffect.
@@ -74,6 +47,52 @@ export default function Browser({ deckRows }: { deckRows: Row[] }) {
         Ref: https://react.dev/learn/preserving-and-resetting-state#option-2-resetting-state-with-a-key
       */}
       <CardList key={selectedSubdeckOrder} selectedSubdeckRows={groupedSubdeckRows[selectedSubdeckOrder]} />
+    </div>
+  )
+}
+
+function Subdecks({
+  groupedSubdeckRows,
+  courseId,
+  setSelectedSubdeckOrder,
+  selectedSubdeckOrder,
+  isAddingSubdeck,
+  setIsAddingSubdeck,
+}) {
+  return (
+    <div className="basis-80 border-r-4 flex flex-col gap-4">
+      <div className="flex flex-col gap-2">
+        {Object.keys(groupedSubdeckRows).map((subdeckOrder) => {
+          return (
+            <div
+              key={subdeckOrder}
+              className={`${parseInt(subdeckOrder) === selectedSubdeckOrder ? 'bg-orange-200' : 'hover:bg-orange-100'}`}
+            >
+              <Subdeck
+                courseId={courseId}
+                subdeckOrder={parseInt(subdeckOrder)}
+                subdeckTitle={groupedSubdeckRows[subdeckOrder][0].lessonTitle as string}
+                setSelectedSubdeckOrder={setSelectedSubdeckOrder}
+              />
+            </div>
+          )
+        })}
+      </div>
+      {!isAddingSubdeck ? (
+        <Button
+          variant="outline"
+          className="w-36 bg-orange-400  text-white text-md hover:bg-orange-300 hover:text-black py-2 px-4 rounded"
+          onClick={() => setIsAddingSubdeck(true)}
+        >
+          Add subdeck
+        </Button>
+      ) : (
+        <AddSubdeckForm
+          courseId={courseId}
+          order={Object.keys(groupedSubdeckRows).length}
+          setIsAddingSubdeck={setIsAddingSubdeck}
+        />
+      )}
     </div>
   )
 }
