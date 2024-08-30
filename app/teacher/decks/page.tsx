@@ -1,4 +1,4 @@
-import { kysely, Lesson } from '../../db/kysely'
+import { kysely } from '../../db/kysely'
 import DeckTile from './DeckTile'
 
 export default async function Decks() {

@@ -12,7 +12,7 @@ export default function Menu() {
     { text: 'Contact Us', icon: Phone, href: '/teacher/contact' },
   ]
   return (
-    <nav className="self-start p-10 flex flex-col gap-7 text-[18px]">
+    <nav className="self-start p-10 flex flex-col gap-4 text-[18px]">
       {items.map((item, index) => (
         <Link
           href={item.href}
