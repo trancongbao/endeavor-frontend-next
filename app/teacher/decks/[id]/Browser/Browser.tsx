@@ -29,8 +29,8 @@ export default function Browser({ deckRows }: { deckRows: Row[] }) {
   const addSubdeckInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
-    if (isAddingSubdeck && addSubdeckInputRef.current) {
-      addSubdeckInputRef.current.focus()
+    if (isAddingSubdeck) {
+      addSubdeckInputRef.current!.focus()
     }
   }, [isAddingSubdeck])
 
@@ -57,17 +57,18 @@ export default function Browser({ deckRows }: { deckRows: Row[] }) {
             )
           })}
         </div>
-        {!isAddingSubdeck && (
+        {!isAddingSubdeck ? (
           <Button
             variant="outline"
             className="w-36 bg-orange-400  text-white text-md hover:bg-orange-300 hover:text-black py-2 px-4 rounded"
-            onClick={() => setIsAddingSubdeck(true)}
+            onClick={() => {
+              setIsAddingSubdeck(true)
+              addSubdeckInputRef.current!.focus()
+            }}
           >
             Add subdeck
           </Button>
-        )}
-        {/* TODO: Use ternery operator */}
-        {isAddingSubdeck && (
+        ) : (
           <div>
             <form action={addSubdeck} onSubmit={() => setIsAddingSubdeck(false)}>
               <Input type="hidden" name="courseId" value={groupedSubdeckRows[selectedSubdeckOrder][0].courseId} />
