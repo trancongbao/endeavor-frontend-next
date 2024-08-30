@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { useRef, useEffect } from 'react'
 import { addCard, addSubdeck, deleteSubdeck, editSubdeckTitle } from '@/app/actions'
-import KebabMenu from './KebabMenu'
+import KebabMenu, { MenuOption } from './KebabMenu'
 import { styleNewWord } from './styleNewWord'
 import Toggle from './Toggle'
 import Image from 'next/image'
@@ -118,11 +118,6 @@ function Subdeck({ courseId, subdeckOrder, subdeckTitle, setSelectedSubdeckOrder
     }
   }, [isEditingSubdeckTitle])
 
-  const menuOptions = [
-    { label: 'Edit', icon: <Edit />, onSelect: () => setIsEditingSubdeckTitle(true) },
-    { label: 'Delete', icon: <Delete />, onSelect: () => deleteSubdeck(courseId, subdeckOrder) },
-  ]
-
   return (
     <div>
       {!isEditingSubdeckTitle ? (
@@ -130,7 +125,12 @@ function Subdeck({ courseId, subdeckOrder, subdeckTitle, setSelectedSubdeckOrder
           <p onClick={() => setSelectedSubdeckOrder(subdeckOrder)} className="flex-1 cursor-pointer p-2 rounded">
             {subdeckTitle}
           </p>
-          <KebabMenu menuOptions={menuOptions} />
+          <KebabMenu
+            menuOptions={[
+              { label: 'Edit', icon: <Edit />, onSelect: () => setIsEditingSubdeckTitle(true) },
+              { label: 'Delete', icon: <Delete />, onSelect: () => deleteSubdeck(courseId, subdeckOrder) },
+            ]}
+          />
         </div>
       ) : (
         <div className="flex">
