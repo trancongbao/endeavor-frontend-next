@@ -25,20 +25,18 @@ export default function Browser({ deckRows }: { deckRows: Row[] }) {
   const [selectedSubdeckOrder, setSelectedSubdeckOrder] = useState(minSubdeckOrder)
   console.log('selectedSubdeckOrder: ', selectedSubdeckOrder)
 
-  const [isAddingSubdeck, setIsAddingSubdeck] = useState(false)
-
-  /*
-   * Extract subdeck list to a separate component would introduce tight coupling regarding the state management of selectedSubdeck.
-   */
   return (
+    /*
+     * An argubaly more logical approach is to add CardList to Subdeck, and conditionally render it based on a isSelected prop.
+     * This approach would reduce coupling.
+     * However, this approach would require less straight-forward CSS layout than `grid`.
+     */
     <div className="grid grid-cols-[1fr_6fr] grid-rows-[1fr_10fr] gap-2">
       <Subdecks
         groupedSubdeckRows={groupedSubdeckRows}
         courseId={courseId}
         selectedSubdeckOrder={selectedSubdeckOrder}
-        setSelectedSubdeckOrder={selectedSubdeckOrder}
-        isAddingSubdeck={isAddingSubdeck}
-        setIsAddingSubdeck={setIsAddingSubdeck}
+        setSelectedSubdeckOrder={setSelectedSubdeckOrder}
       />
 
       {/* 
@@ -51,14 +49,16 @@ export default function Browser({ deckRows }: { deckRows: Row[] }) {
   )
 }
 
-function Subdecks({
-  groupedSubdeckRows,
-  courseId,
-  setSelectedSubdeckOrder,
-  selectedSubdeckOrder,
-  isAddingSubdeck,
-  setIsAddingSubdeck,
-}) {
+interface SubdecksProps {
+  courseId: number
+  groupedSubdeckRows: GroupedSubdeckRows
+  selectedSubdeckOrder: number
+  setSelectedSubdeckOrder: (order: number) => void
+}
+
+function Subdecks({ groupedSubdeckRows, courseId, selectedSubdeckOrder, setSelectedSubdeckOrder }: SubdecksProps) {
+  const [isAddingSubdeck, setIsAddingSubdeck] = useState(false)
+
   return (
     <div className="basis-80 border-r-4 flex flex-col gap-4">
       <div className="flex flex-col gap-2">
