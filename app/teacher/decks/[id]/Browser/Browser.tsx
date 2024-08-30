@@ -28,8 +28,8 @@ export default function Browser({ deckRows }: { deckRows: Row[] }) {
   return (
     /*
      * An argubaly more logical approach is to add CardList to Subdeck, and conditionally render it based on a isSelected prop.
-     * This approach would reduce coupling.
-     * However, this approach would require less straight-forward CSS layout than `grid`.
+     * This approach may reduce coupling, and making state management easier.
+     * However, it would require a less straight-forward CSS layout method than `grid`.
      */
     <div className="grid grid-cols-[1fr_6fr] grid-rows-[1fr_10fr] gap-2">
       <Subdecks
