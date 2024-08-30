@@ -195,7 +195,10 @@ function CardTextList({ selectedSubdeckRows }: { selectedSubdeckRows: Row[] }) {
   console.log('CardList: hasCard = ', hasCard(selectedSubdeckRows))
   const groupedCardRows = hasCard(selectedSubdeckRows) ? _.groupBy(selectedSubdeckRows, 'cardOrder') : undefined
   console.log('CardList: groupedCardRows = ', groupedCardRows)
-  // const [selectedCardRows, setSelectedCardRows] = useState<Row[]>(groupedCardRows ? getFirstCard(groupedCardRows) : [])
+  /*
+   * Using selectedCardRows as state necessitates updating it when deckRows changes, even when selectedCardOrder does not.
+   * An example is when a card is added, which changes deckRows, which causes rerendering even though selectedCardOrder stays the same.
+   */
   const [selectedCardOrder, setSelectedCardOrder] = useState(
     groupedCardRows ? getFirstCardOrder(groupedCardRows) : undefined
   )
@@ -212,31 +215,13 @@ function CardTextList({ selectedSubdeckRows }: { selectedSubdeckRows: Row[] }) {
         {groupedCardRows && (
           <ul className="flex flex-col gap-2">
             {Object.keys(groupedCardRows).map((cardOrder) => (
-              <li
-                className={`p-2 rounded cursor-pointer ${selectedCardOrder === parseInt(cardOrder) ? 'bg-orange-200' : 'hover:bg-orange-100'} flex justify-between gap-2`}
+              <CardTextListItem
                 key={cardOrder}
+                cardText={groupedCardRows[cardOrder][0].cardText as string}
+                isSelected={selectedCardOrder === parseInt(cardOrder)}
                 onClick={() => setSelectedCardOrder(parseInt(cardOrder))}
-              >
-                <p
-                  dangerouslySetInnerHTML={{
-                    __html: styleNewWord(groupedCardRows[cardOrder][0].cardText as string),
-                  }}
-                ></p>
-                <KebabMenu
-                  menuOptions={[
-                    {
-                      label: 'Edit',
-                      icon: <Edit />,
-                      onSelect: () => deleteCard(courseId, lessonOrder as number, parseInt(cardOrder)),
-                    },
-                    {
-                      label: 'Delete',
-                      icon: <Delete />,
-                      onSelect: () => deleteCard(courseId, lessonOrder as number, parseInt(cardOrder)),
-                    },
-                  ]}
-                />
-              </li>
+                onMenuAction={() => console.log('Menu action')}
+              />
             ))}
           </ul>
         )}
@@ -284,34 +269,36 @@ function hasCard(selectedSubdeckRows: Row[]) {
   return selectedSubdeckRows[0]['cardOrder'] !== null
 }
 
-// function CardTextListItem({ cardText, setSelectedCardRows, cardOrder }: { cardOrder: string }) {
-//   return (
-//     <li
-//       className={`p-2 rounded cursor-pointen flex justify-between gap-2`}
-//       onClick={() => setSelectedCardRows(groupedCardRows[cardOrder])}
-//     >
-//       <p
-//         dangerouslySetInnerHTML={{
-//           __html: styleNewWord(groupedCardRows[cardOrder][0].cardText as string),
-//         }}
-//       ></p>
-//       <KebabMenu
-//         menuOptions={[
-//           {
-//             label: 'Edit',
-//             icon: <Edit />,
-//             onSelect: () => deleteCard(courseId, lessonOrder as number, parseInt(cardOrder)),
-//           },
-//           {
-//             label: 'Delete',
-//             icon: <Delete />,
-//             onSelect: () => deleteCard(courseId, lessonOrder as number, parseInt(cardOrder)),
-//           },
-//         ]}
-//       />
-//     </li>
-//   )
-// }
+function CardTextListItem({ cardText, isSelected, onClick, onMenuAction }) {
+  return (
+    <li
+      className={`p-2 rounded cursor-pointer ${isSelected ? 'bg-orange-200' : 'hover:bg-orange-100'} flex justify-between gap-2`}
+      onClick={() => onClick()}
+    >
+      <p
+        dangerouslySetInnerHTML={{
+          __html: styleNewWord(cardText as string),
+        }}
+      ></p>
+      {/* TODO: move action to parent */}
+      <KebabMenu
+        menuOptions={[
+          {
+            label: 'Edit',
+            icon: <Edit />,
+            // onSelect: () => deleteCard(courseId, lessonOrder, cardOrder),
+            onSelect: () => onMenuAction(),
+          },
+          {
+            label: 'Delete',
+            icon: <Delete />,
+            onSelect: () => onMenuAction(),
+          },
+        ]}
+      />
+    </li>
+  )
+}
 
 function Card({ selectedCardRows }: { selectedCardRows: Row[] }) {
   console.log('selectedCardRows: ', selectedCardRows)
