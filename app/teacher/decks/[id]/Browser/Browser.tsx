@@ -1,14 +1,16 @@
 'use client'
 
 import _ from 'lodash'
-import CardList from './CardList'
 import { useState } from 'react'
 import { Row, GroupedSubdeckRows } from '../page'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { useRef, useEffect } from 'react'
-import { addSubdeck, deleteSubdeck, editSubdeckTitle } from '@/app/actions'
+import { addCard, addSubdeck, deleteSubdeck, editSubdeckTitle } from '@/app/actions'
 import Menu from './Menu'
+import { styleNewWord } from './styleNewWord'
+import Toggle from './Toggle'
+import Image from 'next/image'
 
 export default function Browser({ deckRows }: { deckRows: Row[] }) {
   const { courseId } = deckRows[0]
@@ -191,6 +193,147 @@ function AddSubdeckForm({ courseId, order, setIsAddingSubdeck }: AddSubdeckFormP
       >
         Cancel
       </Button>
+    </div>
+  )
+}
+
+function CardList({ selectedSubdeckRows }: { selectedSubdeckRows: Row[] }) {
+  console.log('CardList: selectedSubdeckRows = ', selectedSubdeckRows)
+  const groupedCardRows = hasCard(selectedSubdeckRows) ? _.groupBy(selectedSubdeckRows, 'cardOrder') : undefined
+  console.log('CardList: groupedCardRows = ', groupedCardRows)
+  const [selectedCardRows, setSelectedCardRows] = useState<Row[]>(groupedCardRows ? getFirstCard(groupedCardRows) : [])
+
+  const [isAddingCard, setIsAddingCard] = useState(false)
+  const addCardTextInputRef = useRef<HTMLInputElement>(null)
+
+  return (
+    <div className="grid grid-cols-[1fr_2fr]">
+      <div className="border-r-4">
+        {/*
+         * Card list is defined inline here, as extracting it to a separate component would introduce tight coupling regarding the state management of selectedCardRows.
+         */}
+        {groupedCardRows && (
+          <ul className="flex flex-col gap-2">
+            {Object.keys(groupedCardRows).map((cardOrder) => (
+              <li
+                className={`p-2 rounded cursor-pointer ${selectedCardRows.length > 0 && selectedCardRows[0].cardOrder === parseInt(cardOrder) ? 'bg-orange-200' : 'hover:bg-orange-100'}`}
+                key={cardOrder}
+                onClick={() => setSelectedCardRows(groupedCardRows[cardOrder])}
+                dangerouslySetInnerHTML={{
+                  __html: styleNewWord(groupedCardRows[cardOrder][0].cardText as string),
+                }}
+              ></li>
+            ))}
+          </ul>
+        )}
+        {!isAddingCard && (
+          <Button
+            variant="outline"
+            className="w-36 bg-orange-400  text-white text-md hover:bg-orange-300 hover:text-black py-2 px-4 rounded"
+            onClick={() => setIsAddingCard(true)}
+          >
+            Add card
+          </Button>
+        )}
+        {isAddingCard && (
+          <div>
+            <form action={addCard} onSubmit={() => setIsAddingCard(false)}>
+              <Input type="hidden" name="courseId" value={selectedSubdeckRows[0].courseId} />
+              <Input type="hidden" name="lessonOrder" value={selectedSubdeckRows[0].lessonOrder as number} />
+              <Input type="hidden" name="order" value={groupedCardRows ? Object.keys(groupedCardRows).length : 0} />
+              <Input name="text" ref={addCardTextInputRef} placeholder="Enter the card text and press Return." />
+            </form>
+            <Button
+              variant="outline"
+              className="w-36 bg-orange-400  text-white text-md hover:bg-orange-300 hover:text-black py-2 px-4 rounded"
+              onClick={() => setIsAddingCard(false)}
+            >
+              Cancel
+            </Button>
+          </div>
+        )}
+      </div>
+      {selectedCardRows.length > 0 && <Card selectedCardRows={selectedCardRows} />}
+    </div>
+  )
+}
+
+type GroupedCardRows = {
+  [key: string]: Row[]
+}
+
+function getFirstCard(groupedCardRows: GroupedCardRows) {
+  return groupedCardRows[_.min(Object.keys(groupedCardRows).map(Number)) as number]
+}
+
+function hasCard(selectedSubdeckRows: Row[]) {
+  return selectedSubdeckRows[0]['cardOrder'] !== null
+}
+
+function Card({ selectedCardRows }: { selectedCardRows: Row[] }) {
+  console.log('selectedCardRows: ', selectedCardRows)
+  const [isEdit, setIsEdit] = useState(false)
+  return (
+    <div className="flex flex-col items-center gap-3">
+      <div className="self-end">
+        <Toggle
+          isChecked={isEdit}
+          onChange={() => {
+            setIsEdit(!isEdit)
+          }}
+        />
+      </div>
+      {isEdit ? <Edit selectedCardRows={selectedCardRows} /> : <Preview selectedCardRows={selectedCardRows} />}
+    </div>
+  )
+}
+
+function Edit({ selectedCardRows }: { selectedCardRows: Row[] }) {
+  console.log('selectedCardRows: ', selectedCardRows)
+  return (
+    <div className="w-full flex flex-col items-center gap-3">
+      <input
+        className="w-3/4 p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-center text-lg"
+        value={selectedCardRows[0].cardText as string}
+      />
+      <div className="w-full h-1 bg-gray-200"></div>
+      {selectedCardRows.map((wordRow, index) => (
+        <div key={index} className="flex flex-col items-center">
+          <div>
+            <span className="font-bold text-primary-600">{wordRow.wordText}</span>
+            <span className=""> :: {wordRow.wordDefinition}</span>
+          </div>
+          {wordRow.wordImageUri && (
+            <Image src={wordRow.wordImageUri} alt={wordRow.wordText as string} width={200} height={100}></Image>
+          )}
+        </div>
+      ))}
+    </div>
+  )
+}
+
+function Preview({ selectedCardRows }: { selectedCardRows: Row[] }) {
+  console.log('selectedCardRows: ', selectedCardRows)
+  return (
+    <div className="w-full pl-3 flex flex-col items-center gap-3">
+      <p
+        className="text-center text-lg"
+        dangerouslySetInnerHTML={{
+          __html: styleNewWord(selectedCardRows[0].cardText as string),
+        }}
+      ></p>
+      <div className="w-full h-1 bg-gray-200"></div>
+      {selectedCardRows.map((wordRow, index) => (
+        <div key={index} className="flex flex-col items-center">
+          <div>
+            <span className="font-bold text-primary-600">{wordRow.wordText}</span>
+            <span className=""> :: {wordRow.wordDefinition}</span>
+          </div>
+          {wordRow.wordImageUri && (
+            <Image src={wordRow.wordImageUri} alt={wordRow.wordText as string} width={200} height={100}></Image>
+          )}
+        </div>
+      ))}
     </div>
   )
 }
