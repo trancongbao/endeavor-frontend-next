@@ -220,7 +220,7 @@ function CardTextList({ selectedSubdeckRows }: { selectedSubdeckRows: Row[] }) {
                 cardText={groupedCardRows[cardOrder][0].cardText as string}
                 isSelected={selectedCardOrder === parseInt(cardOrder)}
                 onClick={() => setSelectedCardOrder(parseInt(cardOrder))}
-                onMenuAction={() => console.log('Menu action')}
+                onMenuItemSelect={() => console.log('Menu action')}
               />
             ))}
           </ul>
@@ -269,7 +269,14 @@ function hasCard(selectedSubdeckRows: Row[]) {
   return selectedSubdeckRows[0]['cardOrder'] !== null
 }
 
-function CardTextListItem({ cardText, isSelected, onClick, onMenuAction }) {
+interface CardTextListItemProps {
+  cardText: string
+  isSelected: boolean
+  onClick: () => void
+  onMenuItemSelect: () => void
+}
+
+function CardTextListItem({ cardText, isSelected, onClick, onMenuItemSelect }: CardTextListItemProps) {
   return (
     <li
       className={`p-2 rounded cursor-pointer ${isSelected ? 'bg-orange-200' : 'hover:bg-orange-100'} flex justify-between gap-2`}
@@ -287,12 +294,12 @@ function CardTextListItem({ cardText, isSelected, onClick, onMenuAction }) {
             label: 'Edit',
             icon: <Edit />,
             // onSelect: () => deleteCard(courseId, lessonOrder, cardOrder),
-            onSelect: () => onMenuAction(),
+            onSelect: () => onMenuItemSelect(),
           },
           {
             label: 'Delete',
             icon: <Delete />,
-            onSelect: () => onMenuAction(),
+            onSelect: () => onMenuItemSelect(),
           },
         ]}
       />
