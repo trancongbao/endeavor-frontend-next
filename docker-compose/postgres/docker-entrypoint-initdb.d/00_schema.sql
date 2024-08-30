@@ -83,6 +83,17 @@ CREATE TABLE TEACHER_COURSE
     Even though using it as a foreign key (in other tables) is more cubersome than `id`, it is deemed tolerable.
     Another important benefit of this approach is that we can use course_id direcly for authorization when dealing with `lesson` or `card`.
 */
+/* 
+    There are different approaches to ordering lessons in a course.
+    Ref: https://stackoverflow.com/questions/9536262/best-representation-of-an-ordered-list-in-a-database
+    The first approach is using a simple integer `order` column with increment of 1. 
+    This is simple from read perspective but can be highly problematic when reordering lessons, as we need to renumber all the lessons and update the foreign keys in other tables.
+    So even though it is an uncommon operation, we choose not to use this approach.
+    The second approach is using a linked-list-like structure with a nullable `prev_lesson_id` column. 
+    This make re-ordering simple but can makes read operation (which is a more frequent operation by far) a bit more cubersome.
+    The third approach is using either an integer with large increment (instead of 1), a float, or a string.
+    As we are not expecting a huge number of lessons in a course, and re-ordering is an uncommon operation, we choose to use an integer with increment of 100.
+*/
 CREATE TABLE LESSON
 (
     course_id    INTEGER REFERENCES COURSE (id),     -- Foreign key referencing the course that the lesson belongs to
