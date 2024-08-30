@@ -47,7 +47,7 @@ export default function Browser({ deckRows }: { deckRows: Row[] }) {
         Ref: https://react.dev/learn/you-might-not-need-an-effect#resetting-all-state-when-a-prop-changes
         Ref: https://react.dev/learn/preserving-and-resetting-state#option-2-resetting-state-with-a-key
       */}
-      <CardList key={selectedSubdeckOrder} selectedSubdeckRows={groupedSubdeckRows[selectedSubdeckOrder]} />
+      <CardTextList key={selectedSubdeckOrder} selectedSubdeckRows={groupedSubdeckRows[selectedSubdeckOrder]} />
     </div>
   )
 }
@@ -189,12 +189,16 @@ function AddSubdeckForm({ courseId, order, setIsAddingSubdeck }: AddSubdeckFormP
   )
 }
 
-function CardList({ selectedSubdeckRows }: { selectedSubdeckRows: Row[] }) {
+function CardTextList({ selectedSubdeckRows }: { selectedSubdeckRows: Row[] }) {
   const { courseId, lessonOrder } = selectedSubdeckRows[0]
   console.log('CardList: selectedSubdeckRows = ', selectedSubdeckRows)
+  console.log('CardList: hasCard = ', hasCard(selectedSubdeckRows))
   const groupedCardRows = hasCard(selectedSubdeckRows) ? _.groupBy(selectedSubdeckRows, 'cardOrder') : undefined
   console.log('CardList: groupedCardRows = ', groupedCardRows)
-  const [selectedCardRows, setSelectedCardRows] = useState<Row[]>(groupedCardRows ? getFirstCard(groupedCardRows) : [])
+  // const [selectedCardRows, setSelectedCardRows] = useState<Row[]>(groupedCardRows ? getFirstCard(groupedCardRows) : [])
+  const [selectedCardOrder, setSelectedCardOrder] = useState(
+    groupedCardRows ? getFirstCardOrder(groupedCardRows) : undefined
+  )
 
   const [isAddingCard, setIsAddingCard] = useState(false)
   const addCardTextInputRef = useRef<HTMLInputElement>(null)
@@ -209,9 +213,9 @@ function CardList({ selectedSubdeckRows }: { selectedSubdeckRows: Row[] }) {
           <ul className="flex flex-col gap-2">
             {Object.keys(groupedCardRows).map((cardOrder) => (
               <li
-                className={`p-2 rounded cursor-pointer ${selectedCardRows.length > 0 && selectedCardRows[0].cardOrder === parseInt(cardOrder) ? 'bg-orange-200' : 'hover:bg-orange-100'} flex justify-between gap-2`}
+                className={`p-2 rounded cursor-pointer ${selectedCardOrder === parseInt(cardOrder) ? 'bg-orange-200' : 'hover:bg-orange-100'} flex justify-between gap-2`}
                 key={cardOrder}
-                onClick={() => setSelectedCardRows(groupedCardRows[cardOrder])}
+                onClick={() => setSelectedCardOrder(parseInt(cardOrder))}
               >
                 <p
                   dangerouslySetInnerHTML={{
@@ -263,7 +267,7 @@ function CardList({ selectedSubdeckRows }: { selectedSubdeckRows: Row[] }) {
           </div>
         )}
       </div>
-      {selectedCardRows.length > 0 && <Card selectedCardRows={selectedCardRows} />}
+      {selectedCardOrder && <Card selectedCardRows={groupedCardRows![selectedCardOrder]} />}
     </div>
   )
 }
@@ -272,13 +276,42 @@ type GroupedCardRows = {
   [key: string]: Row[]
 }
 
-function getFirstCard(groupedCardRows: GroupedCardRows) {
-  return groupedCardRows[_.min(Object.keys(groupedCardRows).map(Number)) as number]
+function getFirstCardOrder(groupedCardRows: GroupedCardRows) {
+  return _.min(Object.keys(groupedCardRows).map(Number)) as number
 }
 
 function hasCard(selectedSubdeckRows: Row[]) {
   return selectedSubdeckRows[0]['cardOrder'] !== null
 }
+
+// function CardTextListItem({ cardText, setSelectedCardRows, cardOrder }: { cardOrder: string }) {
+//   return (
+//     <li
+//       className={`p-2 rounded cursor-pointen flex justify-between gap-2`}
+//       onClick={() => setSelectedCardRows(groupedCardRows[cardOrder])}
+//     >
+//       <p
+//         dangerouslySetInnerHTML={{
+//           __html: styleNewWord(groupedCardRows[cardOrder][0].cardText as string),
+//         }}
+//       ></p>
+//       <KebabMenu
+//         menuOptions={[
+//           {
+//             label: 'Edit',
+//             icon: <Edit />,
+//             onSelect: () => deleteCard(courseId, lessonOrder as number, parseInt(cardOrder)),
+//           },
+//           {
+//             label: 'Delete',
+//             icon: <Delete />,
+//             onSelect: () => deleteCard(courseId, lessonOrder as number, parseInt(cardOrder)),
+//           },
+//         ]}
+//       />
+//     </li>
+//   )
+// }
 
 function Card({ selectedCardRows }: { selectedCardRows: Row[] }) {
   console.log('selectedCardRows: ', selectedCardRows)
