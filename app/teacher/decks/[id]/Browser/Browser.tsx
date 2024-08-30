@@ -20,19 +20,12 @@ export default function Browser({ deckRows }: { deckRows: Row[] }) {
   const minSubdeckOrder = _.min(Object.keys(groupedSubdeckRows).map(Number)) as number
   /*
    * Using selectedSubdeckRows as state necessitates updating it when deckRows changes, even when selectedSubdeckOrder does not.
-   * A example is when a card is added, which changes deckRows, which causes rerendering even though selectedSubdeckOrder stays the same.
+   * An example is when a card is added, which changes deckRows, which causes rerendering even though selectedSubdeckOrder stays the same.
    */
   const [selectedSubdeckOrder, setSelectedSubdeckOrder] = useState(minSubdeckOrder)
   console.log('selectedSubdeckOrder: ', selectedSubdeckOrder)
 
   const [isAddingSubdeck, setIsAddingSubdeck] = useState(false)
-  const addSubdeckInputRef = useRef<HTMLInputElement>(null)
-
-  useEffect(() => {
-    if (isAddingSubdeck) {
-      addSubdeckInputRef.current!.focus()
-    }
-  }, [isAddingSubdeck])
 
   /*
    * Extract subdeck list to a separate component would introduce tight coupling regarding the state management of selectedSubdeck.
@@ -61,28 +54,16 @@ export default function Browser({ deckRows }: { deckRows: Row[] }) {
           <Button
             variant="outline"
             className="w-36 bg-orange-400  text-white text-md hover:bg-orange-300 hover:text-black py-2 px-4 rounded"
-            onClick={() => {
-              setIsAddingSubdeck(true)
-              addSubdeckInputRef.current!.focus()
-            }}
+            onClick={() => setIsAddingSubdeck(true)}
           >
             Add subdeck
           </Button>
         ) : (
-          <div>
-            <form action={addSubdeck} onSubmit={() => setIsAddingSubdeck(false)}>
-              <Input type="hidden" name="courseId" value={groupedSubdeckRows[selectedSubdeckOrder][0].courseId} />
-              <Input type="hidden" name="order" value={Object.keys(groupedSubdeckRows).length} />
-              <Input name="title" ref={addSubdeckInputRef} placeholder="Enter the subdeck title and press Return." />
-            </form>
-            <Button
-              variant="outline"
-              className="w-36 bg-orange-400  text-white text-md hover:bg-orange-300 hover:text-black py-2 px-4 rounded"
-              onClick={() => setIsAddingSubdeck(false)}
-            >
-              Cancel
-            </Button>
-          </div>
+          <AddSubdeckForm
+            courseId={courseId}
+            order={Object.keys(groupedSubdeckRows).length}
+            setIsAddingSubdeck={setIsAddingSubdeck}
+          />
         )}
       </div>
 
@@ -92,6 +73,35 @@ export default function Browser({ deckRows }: { deckRows: Row[] }) {
         Ref: https://react.dev/learn/preserving-and-resetting-state#option-2-resetting-state-with-a-key
       */}
       <CardList key={selectedSubdeckOrder} selectedSubdeckRows={groupedSubdeckRows[selectedSubdeckOrder]} />
+    </div>
+  )
+}
+
+interface AddSubdeckFormProps {
+  courseId: number
+  order: number
+  setIsAddingSubdeck: React.Dispatch<React.SetStateAction<boolean>>
+}
+
+function AddSubdeckForm({ courseId, order, setIsAddingSubdeck }: AddSubdeckFormProps) {
+  const addSubdeckInputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => addSubdeckInputRef.current!.focus(), [])
+
+  return (
+    <div>
+      <form action={addSubdeck} onSubmit={() => setIsAddingSubdeck(false)}>
+        <Input type="hidden" name="courseId" value={courseId} />
+        <Input type="hidden" name="order" value={order} />
+        <Input name="title" ref={addSubdeckInputRef} placeholder="Enter the subdeck title and press Return." />
+      </form>
+      <Button
+        variant="outline"
+        className="w-36 bg-orange-400  text-white text-md hover:bg-orange-300 hover:text-black py-2 px-4 rounded"
+        onClick={() => setIsAddingSubdeck(false)}
+      >
+        Cancel
+      </Button>
     </div>
   )
 }
