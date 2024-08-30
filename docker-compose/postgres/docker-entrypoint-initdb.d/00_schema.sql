@@ -91,6 +91,7 @@ CREATE TABLE TEACHER_COURSE
     So even though it is an uncommon operation, we choose not to use this approach.
     The second approach is using a linked-list-like structure with a nullable `prev_lesson_id` column. 
     This make re-ordering simple but can makes read operation (which is a more frequent operation by far) a bit more cubersome.
+    Also, we need to think about validation, making sure that the linked-list is not broken.
     The third approach is using either an integer with large increment (instead of 1), a float, or a string.
     As we are not expecting a huge number of lessons in a course, and re-ordering is an uncommon operation, we choose to use an integer with increment of 100.
 */
