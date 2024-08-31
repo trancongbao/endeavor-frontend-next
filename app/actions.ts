@@ -75,3 +75,19 @@ export async function deleteCard(courseId: number, subdeckOrder: number, cardOrd
   console.log('Deleted subdeck: ', deletedSubdeck)
   revalidatePath('/teacher/decks/[id]', 'page')
 }
+
+export async function editCardText(courseId: number, subdeckOrder: number, cardOrder: number, newCardText: string) {
+  console.log('editCardText: courseId = ', courseId)
+  const updatedCard = await kysely
+    .updateTable('card')
+    .where('course_id', '=', courseId)
+    .where('lesson_order', '=', subdeckOrder)
+    .where('order', '=', cardOrder)
+    .set({
+      text: newCardText,
+    })
+    .returningAll()
+    .executeTakeFirstOrThrow()
+  console.log('Updated card: ', updatedCard)
+  revalidatePath('/teacher/decks/[id]', 'page')
+}

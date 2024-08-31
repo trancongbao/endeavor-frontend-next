@@ -6,7 +6,7 @@ import { Row, GroupedSubdeckRows } from '../page'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { useRef, useEffect } from 'react'
-import { addCard, addSubdeck, deleteCard, deleteSubdeck, editSubdeckTitle } from '@/app/actions'
+import { addCard, addSubdeck, deleteCard, deleteSubdeck, editCardText, editSubdeckTitle } from '@/app/actions'
 import KebabMenu from './KebabMenu'
 import { styleNewWord } from './styleNewWord'
 import Toggle from './Toggle'
@@ -158,7 +158,6 @@ function SubdeckListItem({
         </div>
       ) : (
         <EditSubdeckTitleForm
-          subdeckOrder={subdeckOrder}
           currentSubdeckTitle={subdeckTitle}
           setIsEditingSubdeckTitle={setIsEditingSubdeckTitle}
           editSubdeckTitle={(newSubdeckTitle: string) => editSubdeckTitle(subdeckOrder, newSubdeckTitle)}
@@ -198,7 +197,6 @@ function AddSubdeckForm({ courseId, order, setIsAddingSubdeck }: AddSubdeckFormP
 }
 
 interface EditSubdeckTitleFormProps {
-  subdeckOrder: number
   currentSubdeckTitle: string
   setIsEditingSubdeckTitle: (isEditing: boolean) => void
   editSubdeckTitle: (title: string) => void
@@ -241,6 +239,10 @@ function EditSubdeckTitleForm({
   )
 }
 
+/*
+ * TODO: Determine if data rows should be passed down the tree or only the necessary data.
+ * This requires experience working with many-to-many relationships, for example card-word.
+ */
 function CardTextList({ selectedSubdeckRows }: { selectedSubdeckRows: Row[] }) {
   const { courseId, lessonOrder } = selectedSubdeckRows[0]
   console.log('CardList: selectedSubdeckRows = ', selectedSubdeckRows)
@@ -273,6 +275,9 @@ function CardTextList({ selectedSubdeckRows }: { selectedSubdeckRows: Row[] }) {
                 isSelected={selectedCardOrder === parseInt(cardOrder)}
                 onClick={() => setSelectedCardOrder(parseInt(cardOrder))}
                 deleteCard={() => deleteCard(courseId, lessonOrder as number, parseInt(cardOrder))}
+                editCardText={(newCardText: string) => {
+                  editCardText(courseId, lessonOrder as number, parseInt(cardOrder), newCardText)
+                }}
               />
             ))}
           </ul>
@@ -310,37 +315,50 @@ interface CardTextListItemProps {
   isSelected: boolean
   onClick: () => void
   deleteCard: () => void
+  editCardText: (newCardText: string) => void
 }
 
-function CardTextListItem({ cardText, isSelected, onClick, deleteCard }: CardTextListItemProps) {
+function CardTextListItem({ cardText, isSelected, onClick, deleteCard, editCardText }: CardTextListItemProps) {
+  const [isEditingCardText, setIsEditingCardText] = useState(false)
+
   return (
-    <li
-      className={`p-2 rounded cursor-pointer ${isSelected ? 'bg-orange-200' : 'hover:bg-orange-100'} flex justify-between gap-2`}
-    >
-      {/* onClick is not put in <li> to prevent the card list item from being selected upon kebab menu option being clicked. */}
-      <p
-        onClick={() => onClick()}
-        dangerouslySetInnerHTML={{
-          __html: styleNewWord(cardText as string),
-        }}
-      ></p>
-      <KebabMenu
-        menuOptions={[
-          {
-            id: 'edit',
-            label: 'Edit',
-            icon: <Edit />,
-            onSelect: (id) => onMenuItemSelect(id),
-          },
-          {
-            id: 'delete',
-            label: 'Delete',
-            icon: <Delete />,
-            onSelect: (id) => deleteCard(),
-          },
-        ]}
-      />
-    </li>
+    <div>
+      {!isEditingCardText ? (
+        <li
+          className={`p-2 rounded cursor-pointer ${isSelected ? 'bg-orange-200' : 'hover:bg-orange-100'} flex justify-between gap-2`}
+        >
+          {/* onClick is not put in <li> to prevent the card list item from being selected upon kebab menu option being clicked. */}
+          <p
+            onClick={() => onClick()}
+            dangerouslySetInnerHTML={{
+              __html: styleNewWord(cardText as string),
+            }}
+          ></p>
+          <KebabMenu
+            menuOptions={[
+              {
+                id: 'edit',
+                label: 'Edit',
+                icon: <Edit />,
+                onSelect: (id) => setIsEditingCardText(true),
+              },
+              {
+                id: 'delete',
+                label: 'Delete',
+                icon: <Delete />,
+                onSelect: (id) => deleteCard(),
+              },
+            ]}
+          />
+        </li>
+      ) : (
+        <EditCardTextForm
+          currentCardText={cardText}
+          setIsEditingCardText={setIsEditingCardText}
+          editCardText={(newCardText: string) => editCardText(newCardText)}
+        />
+      )}
+    </div>
   )
 }
 
@@ -380,6 +398,45 @@ function AddCardForm({ courseId, lessonOrder, order, setIsAddingCard }: AddCardF
         variant="outline"
         className="w-36 bg-orange-400  text-white text-md hover:bg-orange-300 hover:text-black py-2 px-4 rounded"
         onClick={() => setIsAddingCard(false)}
+      >
+        Cancel
+      </Button>
+    </div>
+  )
+}
+
+interface EditCardTextFormProps {
+  currentCardText: string
+  setIsEditingCardText: (isEditing: boolean) => void
+  editCardText: (text: string) => void
+}
+
+function EditCardTextForm({ currentCardText, setIsEditingCardText, editCardText }: EditCardTextFormProps) {
+  const cardTextInputRef = useRef<HTMLInputElement>(null)
+  const [newCardText, setNewCardText] = useState(currentCardText)
+
+  useEffect(() => cardTextInputRef.current!.focus())
+
+  return (
+    <div className="flex">
+      <form
+        onSubmit={() => {
+          setIsEditingCardText(false)
+          editCardText(newCardText)
+        }}
+        className="flex-1"
+      >
+        <Input
+          name="title"
+          ref={cardTextInputRef}
+          value={newCardText}
+          onChange={(e) => setNewCardText(e.target.value)}
+        />
+      </form>
+      <Button
+        variant="outline"
+        className="w-20 bg-orange-400  text-white text-md hover:bg-orange-300 hover:text-black py-2 px-4 rounded"
+        onClick={() => setIsEditingCardText(false)}
       >
         Cancel
       </Button>
