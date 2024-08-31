@@ -272,14 +272,7 @@ function CardTextList({ selectedSubdeckRows }: { selectedSubdeckRows: Row[] }) {
                 cardText={groupedCardRows[cardOrder][0].cardText as string}
                 isSelected={selectedCardOrder === parseInt(cardOrder)}
                 onClick={() => setSelectedCardOrder(parseInt(cardOrder))}
-                onMenuItemSelect={(id: string) => {
-                  const actions: { [key: string]: () => void } = {
-                    edit: () => console.log('Edit card'),
-                    delete: () => deleteCard(courseId, lessonOrder as number, parseInt(cardOrder)),
-                  }
-
-                  actions[id]()
-                }}
+                deleteCard={() => deleteCard(courseId, lessonOrder as number, parseInt(cardOrder))}
               />
             ))}
           </ul>
@@ -316,10 +309,10 @@ interface CardTextListItemProps {
   cardText: string
   isSelected: boolean
   onClick: () => void
-  onMenuItemSelect: (id: string) => void
+  deleteCard: () => void
 }
 
-function CardTextListItem({ cardText, isSelected, onClick, onMenuItemSelect }: CardTextListItemProps) {
+function CardTextListItem({ cardText, isSelected, onClick, deleteCard }: CardTextListItemProps) {
   return (
     <li
       className={`p-2 rounded cursor-pointer ${isSelected ? 'bg-orange-200' : 'hover:bg-orange-100'} flex justify-between gap-2`}
@@ -343,7 +336,7 @@ function CardTextListItem({ cardText, isSelected, onClick, onMenuItemSelect }: C
             id: 'delete',
             label: 'Delete',
             icon: <Delete />,
-            onSelect: (id) => onMenuItemSelect(id),
+            onSelect: (id) => deleteCard(),
           },
         ]}
       />
