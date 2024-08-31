@@ -136,14 +136,6 @@ function SubdeckListItem({
   deleteSubdeck,
 }: SubdeckProps) {
   const [isEditingSubdeckTitle, setIsEditingSubdeckTitle] = useState(false)
-  const editSubdeckTitileInputRef = useRef<HTMLInputElement>(null)
-  const [newSubdeckTitle, setNewSubdeckTitle] = useState(subdeckTitle)
-
-  useEffect(() => {
-    if (isEditingSubdeckTitle && editSubdeckTitileInputRef.current) {
-      editSubdeckTitileInputRef.current.focus()
-    }
-  }, [isEditingSubdeckTitle])
 
   return (
     <div>
@@ -181,10 +173,7 @@ function SubdeckListItem({
           <Button
             variant="outline"
             className="w-20 bg-orange-400  text-white text-md hover:bg-orange-300 hover:text-black py-2 px-4 rounded"
-            onClick={() => {
-              setIsEditingSubdeckTitle(false)
-              setNewSubdeckTitle(subdeckTitle)
-            }}
+            onClick={() => setIsEditingSubdeckTitle(false)}
           >
             Cancel
           </Button>
