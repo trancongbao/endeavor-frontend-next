@@ -163,21 +163,12 @@ function SubdeckListItem({
           />
         </div>
       ) : (
-        <div className="flex">
-          <EditSubdeckTitleForm
-            subdeckOrder={subdeckOrder}
-            currentSubdeckTitle={subdeckTitle}
-            setIsEditingSubdeckTitle={setIsEditingSubdeckTitle}
-            editSubdeckTitle={(newSubdeckTitle: string) => editSubdeckTitle(subdeckOrder, newSubdeckTitle)}
-          />
-          <Button
-            variant="outline"
-            className="w-20 bg-orange-400  text-white text-md hover:bg-orange-300 hover:text-black py-2 px-4 rounded"
-            onClick={() => setIsEditingSubdeckTitle(false)}
-          >
-            Cancel
-          </Button>
-        </div>
+        <EditSubdeckTitleForm
+          subdeckOrder={subdeckOrder}
+          currentSubdeckTitle={subdeckTitle}
+          setIsEditingSubdeckTitle={setIsEditingSubdeckTitle}
+          editSubdeckTitle={(newSubdeckTitle: string) => editSubdeckTitle(subdeckOrder, newSubdeckTitle)}
+        />
       )}
     </div>
   )
@@ -230,20 +221,29 @@ function EditSubdeckTitleForm({
   useEffect(() => editSubdeckTitleInputRef.current!.focus())
 
   return (
-    <form
-      onSubmit={() => {
-        setIsEditingSubdeckTitle(false)
-        editSubdeckTitle(newSubdeckTitle)
-      }}
-      className="flex-1"
-    >
-      <Input
-        name="title"
-        ref={editSubdeckTitleInputRef}
-        value={newSubdeckTitle}
-        onChange={(e) => setNewSubdeckTitle(e.target.value)}
-      />
-    </form>
+    <div className="flex">
+      <form
+        onSubmit={() => {
+          setIsEditingSubdeckTitle(false)
+          editSubdeckTitle(newSubdeckTitle)
+        }}
+        className="flex-1"
+      >
+        <Input
+          name="title"
+          ref={editSubdeckTitleInputRef}
+          value={newSubdeckTitle}
+          onChange={(e) => setNewSubdeckTitle(e.target.value)}
+        />
+      </form>
+      <Button
+        variant="outline"
+        className="w-20 bg-orange-400  text-white text-md hover:bg-orange-300 hover:text-black py-2 px-4 rounded"
+        onClick={() => setIsEditingSubdeckTitle(false)}
+      >
+        Cancel
+      </Button>
+    </div>
   )
 }
 
