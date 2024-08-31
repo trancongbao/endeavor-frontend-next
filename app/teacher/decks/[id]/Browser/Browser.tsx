@@ -151,13 +151,7 @@ function SubdeckListItem({
                 id: 'delete',
                 label: 'Delete',
                 icon: <Delete />,
-                onSelect: (id) => {
-                  const actions = {
-                    edit: () => setIsEditingSubdeckTitle(true),
-                    delete: () => deleteSubdeck(subdeckOrder),
-                  }
-                  actions[id]()
-                },
+                onSelect: (id) => deleteSubdeck(subdeckOrder),
               },
             ]}
           />
