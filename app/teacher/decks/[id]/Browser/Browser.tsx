@@ -176,7 +176,7 @@ function SubdeckListItem({
             subdeckOrder={subdeckOrder}
             currentSubdeckTitle={subdeckTitle}
             setIsEditingSubdeckTitle={setIsEditingSubdeckTitle}
-            editSubdeckTitle={editSubdeckTitle}
+            editSubdeckTitle={(newSubdeckTitle: string) => editSubdeckTitle(subdeckOrder, newSubdeckTitle)}
           />
           <Button
             variant="outline"
@@ -227,32 +227,30 @@ interface EditSubdeckTitleFormProps {
   subdeckOrder: number
   currentSubdeckTitle: string
   setIsEditingSubdeckTitle: (isEditing: boolean) => void
-  editSubdeckTitle: (order: number, title: string) => void
+  editSubdeckTitle: (title: string) => void
 }
 
 function EditSubdeckTitleForm({
-  subdeckOrder,
   currentSubdeckTitle,
   setIsEditingSubdeckTitle,
   editSubdeckTitle,
 }: EditSubdeckTitleFormProps) {
-  const editSubdeckTitileInputRef = useRef<HTMLInputElement>(null)
+  const editSubdeckTitleInputRef = useRef<HTMLInputElement>(null)
   const [newSubdeckTitle, setNewSubdeckTitle] = useState(currentSubdeckTitle)
 
-  useEffect(() => editSubdeckTitileInputRef.current!.focus())
+  useEffect(() => editSubdeckTitleInputRef.current!.focus())
 
   return (
     <form
       onSubmit={() => {
         setIsEditingSubdeckTitle(false)
-        editSubdeckTitle(subdeckOrder, newSubdeckTitle)
+        editSubdeckTitle(newSubdeckTitle)
       }}
       className="flex-1"
     >
-      <Input type="hidden" name="order" value={subdeckOrder} />
       <Input
         name="title"
-        ref={editSubdeckTitileInputRef}
+        ref={editSubdeckTitleInputRef}
         value={newSubdeckTitle}
         onChange={(e) => setNewSubdeckTitle(e.target.value)}
       />
