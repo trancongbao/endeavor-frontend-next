@@ -204,7 +204,6 @@ function CardTextList({ selectedSubdeckRows }: { selectedSubdeckRows: Row[] }) {
   )
 
   const [isAddingCard, setIsAddingCard] = useState(false)
-  const addCardTextInputRef = useRef<HTMLInputElement>(null)
 
   return (
     <div className="grid grid-cols-[1fr_2fr]">
@@ -225,7 +224,7 @@ function CardTextList({ selectedSubdeckRows }: { selectedSubdeckRows: Row[] }) {
             ))}
           </ul>
         )}
-        {!isAddingCard && (
+        {!isAddingCard ? (
           <Button
             variant="outline"
             className="w-36 bg-orange-400  text-white text-md hover:bg-orange-300 hover:text-black py-2 px-4 rounded"
@@ -233,26 +232,16 @@ function CardTextList({ selectedSubdeckRows }: { selectedSubdeckRows: Row[] }) {
           >
             Add card
           </Button>
-        )}
-        {isAddingCard && (
-          <div>
-            <form action={addCard} onSubmit={() => setIsAddingCard(false)}>
-              <Input type="hidden" name="courseId" value={selectedSubdeckRows[0].courseId} />
-              <Input type="hidden" name="lessonOrder" value={selectedSubdeckRows[0].lessonOrder as number} />
-              <Input type="hidden" name="order" value={groupedCardRows ? Object.keys(groupedCardRows).length : 0} />
-              <Input name="text" ref={addCardTextInputRef} placeholder="Enter the card text and press Return." />
-            </form>
-            <Button
-              variant="outline"
-              className="w-36 bg-orange-400  text-white text-md hover:bg-orange-300 hover:text-black py-2 px-4 rounded"
-              onClick={() => setIsAddingCard(false)}
-            >
-              Cancel
-            </Button>
-          </div>
+        ) : (
+          <AddCardForm
+            courseId={courseId}
+            lessonOrder={lessonOrder as number}
+            order={groupedCardRows ? Object.keys(groupedCardRows).length : 0}
+            setIsAddingCard={setIsAddingCard}
+          />
         )}
       </div>
-      {selectedCardOrder && <Card selectedCardRows={groupedCardRows![selectedCardOrder]} />}
+      {selectedCardOrder !== undefined && <Card selectedCardRows={groupedCardRows![selectedCardOrder]} />}
     </div>
   )
 }
@@ -305,6 +294,37 @@ function CardTextListItem({ cardText, isSelected, onClick, onMenuItemSelect }: C
   )
 }
 
+interface AddCardFormProps {
+  courseId: string | number
+  lessonOrder: number
+  order: number
+  setIsAddingCard: (value: boolean) => void
+}
+
+function AddCardForm({ courseId, lessonOrder, order, setIsAddingCard }: AddCardFormProps) {
+  const addCardTextInputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => addCardTextInputRef.current!.focus(), [])
+
+  return (
+    <div>
+      <form action={addCard} onSubmit={() => setIsAddingCard(false)}>
+        <Input type="hidden" name="courseId" value={courseId} />
+        <Input type="hidden" name="lessonOrder" value={lessonOrder as number} />
+        <Input type="hidden" name="order" value={order} />
+        <Input name="text" ref={addCardTextInputRef} placeholder="Enter the card text and press Return." />
+      </form>
+      <Button
+        variant="outline"
+        className="w-36 bg-orange-400  text-white text-md hover:bg-orange-300 hover:text-black py-2 px-4 rounded"
+        onClick={() => setIsAddingCard(false)}
+      >
+        Cancel
+      </Button>
+    </div>
+  )
+}
+
 function Card({ selectedCardRows }: { selectedCardRows: Row[] }) {
   console.log('selectedCardRows: ', selectedCardRows)
   const [isEdit, setIsEdit] = useState(false)
@@ -318,12 +338,12 @@ function Card({ selectedCardRows }: { selectedCardRows: Row[] }) {
           }}
         />
       </div>
-      {isEdit ? <EditCard selectedCardRows={selectedCardRows} /> : <PreviewCard selectedCardRows={selectedCardRows} />}
+      {isEdit ? <CardEdit selectedCardRows={selectedCardRows} /> : <CardPreview selectedCardRows={selectedCardRows} />}
     </div>
   )
 }
 
-function EditCard({ selectedCardRows }: { selectedCardRows: Row[] }) {
+function CardEdit({ selectedCardRows }: { selectedCardRows: Row[] }) {
   console.log('selectedCardRows: ', selectedCardRows)
   return (
     <div className="w-full flex flex-col items-center gap-3">
@@ -347,7 +367,7 @@ function EditCard({ selectedCardRows }: { selectedCardRows: Row[] }) {
   )
 }
 
-function PreviewCard({ selectedCardRows }: { selectedCardRows: Row[] }) {
+function CardPreview({ selectedCardRows }: { selectedCardRows: Row[] }) {
   console.log('selectedCardRows: ', selectedCardRows)
   return (
     <div className="w-full pl-3 flex flex-col items-center gap-3">
