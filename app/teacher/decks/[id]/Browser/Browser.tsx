@@ -76,6 +76,7 @@ function SubdeckList({ groupedSubdeckRows, courseId, selectedSubdeckOrder, setSe
                 subdeckOrder={parseInt(subdeckOrder)}
                 subdeckTitle={groupedSubdeckRows[subdeckOrder][0].lessonTitle as string}
                 setSelectedSubdeckOrder={setSelectedSubdeckOrder}
+                onMenuItemSelect={(id) => console.log('Menu action: ', id)}
               />
             </div>
           )
@@ -115,9 +116,16 @@ interface SubdeckProps {
   subdeckOrder: number
   subdeckTitle: string
   setSelectedSubdeckOrder: (order: number) => void
+  onMenuItemSelect: (id: string) => void
 }
 
-function SubdeckListItem({ courseId, subdeckOrder, subdeckTitle, setSelectedSubdeckOrder }: SubdeckProps) {
+function SubdeckListItem({
+  courseId,
+  subdeckOrder,
+  subdeckTitle,
+  setSelectedSubdeckOrder,
+  onMenuItemSelect,
+}: SubdeckProps) {
   const [isEditingSubdeckTitle, setIsEditingSubdeckTitle] = useState(false)
   const editSubdeckTitileInputRef = useRef<HTMLInputElement>(null)
   const [newSubdeckTitle, setNewSubdeckTitle] = useState(subdeckTitle)
@@ -137,8 +145,13 @@ function SubdeckListItem({ courseId, subdeckOrder, subdeckTitle, setSelectedSubd
           </p>
           <KebabMenu
             menuOptions={[
-              { label: 'Edit', icon: <Edit />, onSelect: () => setIsEditingSubdeckTitle(true) },
-              { label: 'Delete', icon: <Delete />, onSelect: () => deleteSubdeck(courseId, subdeckOrder) },
+              { id: 'edit', label: 'Edit', icon: <Edit />, onSelect: (id) => onMenuItemSelect(id) },
+              {
+                id: 'delete',
+                label: 'Delete',
+                icon: <Delete />,
+                onSelect: (id) => onMenuItemSelect(id),
+              },
             ]}
           />
         </div>
@@ -229,7 +242,7 @@ function CardTextList({ selectedSubdeckRows }: { selectedSubdeckRows: Row[] }) {
                 cardText={groupedCardRows[cardOrder][0].cardText as string}
                 isSelected={selectedCardOrder === parseInt(cardOrder)}
                 onClick={() => setSelectedCardOrder(parseInt(cardOrder))}
-                onMenuItemSelect={() => console.log('Menu action')}
+                onMenuItemSelect={(id: string) => console.log('Menu action: ', id)}
               />
             ))}
           </ul>
@@ -250,18 +263,6 @@ function CardTextList({ selectedSubdeckRows }: { selectedSubdeckRows: Row[] }) {
   )
 }
 
-function AddCardButton({ setIsAddingCard }: { setIsAddingCard: React.Dispatch<React.SetStateAction<boolean>> }) {
-  return (
-    <Button
-      variant="outline"
-      className="w-36 bg-orange-400  text-white text-md hover:bg-orange-300 hover:text-black py-2 px-4 rounded"
-      onClick={() => setIsAddingCard(true)}
-    >
-      Add card
-    </Button>
-  )
-}
-
 type GroupedCardRows = {
   [key: string]: Row[]
 }
@@ -278,7 +279,7 @@ interface CardTextListItemProps {
   cardText: string
   isSelected: boolean
   onClick: () => void
-  onMenuItemSelect: () => void
+  onMenuItemSelect: (id: string) => void
 }
 
 function CardTextListItem({ cardText, isSelected, onClick, onMenuItemSelect }: CardTextListItemProps) {
@@ -295,18 +296,32 @@ function CardTextListItem({ cardText, isSelected, onClick, onMenuItemSelect }: C
       <KebabMenu
         menuOptions={[
           {
+            id: 'edit',
             label: 'Edit',
             icon: <Edit />,
-            onSelect: () => onMenuItemSelect(),
+            onSelect: (id) => onMenuItemSelect(id),
           },
           {
+            id: 'delete',
             label: 'Delete',
             icon: <Delete />,
-            onSelect: () => onMenuItemSelect(),
+            onSelect: (id) => onMenuItemSelect(id),
           },
         ]}
       />
     </li>
+  )
+}
+
+function AddCardButton({ setIsAddingCard }: { setIsAddingCard: React.Dispatch<React.SetStateAction<boolean>> }) {
+  return (
+    <Button
+      variant="outline"
+      className="w-36 bg-orange-400  text-white text-md hover:bg-orange-300 hover:text-black py-2 px-4 rounded"
+      onClick={() => setIsAddingCard(true)}
+    >
+      Add card
+    </Button>
   )
 }
 

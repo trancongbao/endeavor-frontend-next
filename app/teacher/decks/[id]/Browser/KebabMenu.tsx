@@ -4,9 +4,10 @@ import { ReactNode } from 'react'
 import { MoreVertical } from 'react-feather'
 
 export interface MenuOption {
+  id: string
   label: string
   icon: ReactNode
-  onSelect: () => void
+  onSelect: (id: string) => void
 }
 
 export default function KebabMenu({ menuOptions }: { menuOptions: MenuOption[] }) {
@@ -16,8 +17,8 @@ export default function KebabMenu({ menuOptions }: { menuOptions: MenuOption[] }
         <MoreVertical color="hsl(180, 10%, 60%)" />
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-        {menuOptions.map(({ label, icon, onSelect }, index) => (
-          <DropdownMenuItem key={index} onSelect={onSelect}>
+        {menuOptions.map(({ id, label, icon, onSelect }, index) => (
+          <DropdownMenuItem key={index} onSelect={() => onSelect(id)}>
             <Button variant="ghost" className="flex items-center gap-2">
               {icon}
               <span>{label}</span>
