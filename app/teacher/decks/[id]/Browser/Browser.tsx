@@ -172,21 +172,12 @@ function SubdeckListItem({
         </div>
       ) : (
         <div className="flex">
-          <form
-            onSubmit={() => {
-              setIsEditingSubdeckTitle(false)
-              editSubdeckTitle(subdeckOrder, newSubdeckTitle)
-            }}
-            className="flex-1"
-          >
-            <Input type="hidden" name="order" value={subdeckOrder} />
-            <Input
-              name="title"
-              ref={editSubdeckTitileInputRef}
-              value={newSubdeckTitle}
-              onChange={(e) => setNewSubdeckTitle(e.target.value)}
-            />
-          </form>
+          <EditSubdeckTitleForm
+            subdeckOrder={subdeckOrder}
+            currentSubdeckTitle={subdeckTitle}
+            setIsEditingSubdeckTitle={setIsEditingSubdeckTitle}
+            editSubdeckTitle={editSubdeckTitle}
+          />
           <Button
             variant="outline"
             className="w-20 bg-orange-400  text-white text-md hover:bg-orange-300 hover:text-black py-2 px-4 rounded"
@@ -229,6 +220,43 @@ function AddSubdeckForm({ courseId, order, setIsAddingSubdeck }: AddSubdeckFormP
         Cancel
       </Button>
     </div>
+  )
+}
+
+interface EditSubdeckTitleFormProps {
+  subdeckOrder: number
+  currentSubdeckTitle: string
+  setIsEditingSubdeckTitle: (isEditing: boolean) => void
+  editSubdeckTitle: (order: number, title: string) => void
+}
+
+function EditSubdeckTitleForm({
+  subdeckOrder,
+  currentSubdeckTitle,
+  setIsEditingSubdeckTitle,
+  editSubdeckTitle,
+}: EditSubdeckTitleFormProps) {
+  const editSubdeckTitileInputRef = useRef<HTMLInputElement>(null)
+  const [newSubdeckTitle, setNewSubdeckTitle] = useState(currentSubdeckTitle)
+
+  useEffect(() => editSubdeckTitileInputRef.current!.focus())
+
+  return (
+    <form
+      onSubmit={() => {
+        setIsEditingSubdeckTitle(false)
+        editSubdeckTitle(subdeckOrder, newSubdeckTitle)
+      }}
+      className="flex-1"
+    >
+      <Input type="hidden" name="order" value={subdeckOrder} />
+      <Input
+        name="title"
+        ref={editSubdeckTitileInputRef}
+        value={newSubdeckTitle}
+        onChange={(e) => setNewSubdeckTitle(e.target.value)}
+      />
+    </form>
   )
 }
 
