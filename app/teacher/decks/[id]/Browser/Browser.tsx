@@ -235,13 +235,7 @@ function CardTextList({ selectedSubdeckRows }: { selectedSubdeckRows: Row[] }) {
           </ul>
         )}
         {!isAddingCard ? (
-          <Button
-            variant="outline"
-            className="w-36 bg-orange-400  text-white text-md hover:bg-orange-300 hover:text-black py-2 px-4 rounded"
-            onClick={() => setIsAddingCard(true)}
-          >
-            Add card
-          </Button>
+          <AddCardButton setIsAddingCard={setIsAddingCard} />
         ) : (
           <AddCardForm
             courseId={courseId}
@@ -253,6 +247,18 @@ function CardTextList({ selectedSubdeckRows }: { selectedSubdeckRows: Row[] }) {
       </div>
       {selectedCardOrder !== undefined && <Card selectedCardRows={groupedCardRows![selectedCardOrder]} />}
     </div>
+  )
+}
+
+function AddCardButton({ setIsAddingCard }: { setIsAddingCard: React.Dispatch<React.SetStateAction<boolean>> }) {
+  return (
+    <Button
+      variant="outline"
+      className="w-36 bg-orange-400  text-white text-md hover:bg-orange-300 hover:text-black py-2 px-4 rounded"
+      onClick={() => setIsAddingCard(true)}
+    >
+      Add card
+    </Button>
   )
 }
 
