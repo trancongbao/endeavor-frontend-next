@@ -30,14 +30,14 @@ export async function deleteSubdeck(courseId: number, subdeckOrder: number) {
   //TODO: Delete all cards in the subdeck
 }
 
-export async function editSubdeckTitle(formData: FormData) {
-  console.log('editSubdeckTitle: formData = ', formData)
+export async function editSubdeckTitle(courseId: number, subdeckOrder: number, newSubdeckTitle: string) {
+  console.log('editSubdeckTitle: courseId = ', courseId)
   const updatedSubdeck = await kysely
     .updateTable('lesson')
-    .where('course_id', '=', parseInt(formData.get('courseId') as string))
-    .where('order', '=', parseInt(formData.get('order') as string))
+    .where('course_id', '=', courseId)
+    .where('order', '=', subdeckOrder)
     .set({
-      title: formData.get('title') as string,
+      title: newSubdeckTitle,
     })
     .returningAll()
     .executeTakeFirstOrThrow()

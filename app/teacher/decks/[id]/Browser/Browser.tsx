@@ -59,6 +59,13 @@ interface SubdecksProps {
   setSelectedSubdeckOrder: (order: number) => void
 }
 
+/*
+ * Operations on Cards are traversed as well as authorized via Subdeck.
+ * Operations on Subdeck, in turn, are traversed as well as authorized via Course.
+ * One approach is to pass Course Id and Lesson Order down the tree to the component where the operations are executed.
+ * Another approach is to treat Course as an aggregate root (DDD), and operations are called back the tree.
+ * We decided to used the latter approach.
+ */
 function SubdeckList({ groupedSubdeckRows, courseId, selectedSubdeckOrder, setSelectedSubdeckOrder }: SubdecksProps) {
   const [isAddingSubdeck, setIsAddingSubdeck] = useState(false)
 
@@ -72,11 +79,13 @@ function SubdeckList({ groupedSubdeckRows, courseId, selectedSubdeckOrder, setSe
               className={`${parseInt(subdeckOrder) === selectedSubdeckOrder ? 'bg-orange-200' : 'hover:bg-orange-100'}`}
             >
               <SubdeckListItem
-                courseId={courseId}
                 subdeckOrder={parseInt(subdeckOrder)}
                 subdeckTitle={groupedSubdeckRows[subdeckOrder][0].lessonTitle as string}
                 setSelectedSubdeckOrder={setSelectedSubdeckOrder}
-                onMenuItemSelect={(id) => console.log('Menu action: ', id)}
+                editSubdeckTitle={(subdeckOrder, newSubdeckTitle) =>
+                  editSubdeckTitle(courseId, subdeckOrder, newSubdeckTitle)
+                }
+                deleteSubdeck={(order) => deleteSubdeck(courseId, order)}
               />
             </div>
           )
@@ -112,19 +121,19 @@ function AddSubdeckButton({
 }
 
 interface SubdeckProps {
-  courseId: number
   subdeckOrder: number
   subdeckTitle: string
   setSelectedSubdeckOrder: (order: number) => void
-  onMenuItemSelect: (id: string) => void
+  editSubdeckTitle: (subdeckOrder: number, newSubdeckTitle: string) => void
+  deleteSubdeck: (subdeckOrder: number) => void
 }
 
 function SubdeckListItem({
-  courseId,
   subdeckOrder,
   subdeckTitle,
   setSelectedSubdeckOrder,
-  onMenuItemSelect,
+  editSubdeckTitle,
+  deleteSubdeck,
 }: SubdeckProps) {
   const [isEditingSubdeckTitle, setIsEditingSubdeckTitle] = useState(false)
   const editSubdeckTitileInputRef = useRef<HTMLInputElement>(null)
@@ -145,20 +154,31 @@ function SubdeckListItem({
           </p>
           <KebabMenu
             menuOptions={[
-              { id: 'edit', label: 'Edit', icon: <Edit />, onSelect: (id) => onMenuItemSelect(id) },
+              { id: 'edit', label: 'Edit', icon: <Edit />, onSelect: (id) => setIsEditingSubdeckTitle(true) },
               {
                 id: 'delete',
                 label: 'Delete',
                 icon: <Delete />,
-                onSelect: (id) => onMenuItemSelect(id),
+                onSelect: (id) => {
+                  const actions = {
+                    edit: () => setIsEditingSubdeckTitle(true),
+                    delete: () => deleteSubdeck(subdeckOrder),
+                  }
+                  actions[id]()
+                },
               },
             ]}
           />
         </div>
       ) : (
         <div className="flex">
-          <form action={editSubdeckTitle} onSubmit={() => setIsEditingSubdeckTitle(false)} className="flex-1">
-            <Input type="hidden" name="courseId" value={courseId} />
+          <form
+            onSubmit={() => {
+              setIsEditingSubdeckTitle(false)
+              editSubdeckTitle(subdeckOrder, newSubdeckTitle)
+            }}
+            className="flex-1"
+          >
             <Input type="hidden" name="order" value={subdeckOrder} />
             <Input
               name="title"
