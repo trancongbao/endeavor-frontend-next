@@ -225,6 +225,7 @@ function CardTextList({ selectedSubdeckRows }: { selectedSubdeckRows: Row[] }) {
   const [selectedCardOrder, setSelectedCardOrder] = useState(
     groupedCardRows ? getFirstCardOrder(groupedCardRows) : undefined
   )
+  console.log('CardList: selectedCardOrder = ', selectedCardOrder)
 
   const [isAddingCard, setIsAddingCard] = useState(false)
 
@@ -293,9 +294,10 @@ function CardTextListItem({ cardText, isSelected, onClick, onMenuItemSelect }: C
   return (
     <li
       className={`p-2 rounded cursor-pointer ${isSelected ? 'bg-orange-200' : 'hover:bg-orange-100'} flex justify-between gap-2`}
-      onClick={() => onClick()}
     >
+      {/* onClick is not put in <li> to prevent the card list item from being selected upon kebab menu option being clicked. */}
       <p
+        onClick={() => onClick()}
         dangerouslySetInnerHTML={{
           __html: styleNewWord(cardText as string),
         }}
@@ -364,7 +366,7 @@ function AddCardForm({ courseId, lessonOrder, order, setIsAddingCard }: AddCardF
 }
 
 function Card({ selectedCardRows }: { selectedCardRows: Row[] }) {
-  console.log('selectedCardRows: ', selectedCardRows)
+  console.log('Card selectedCardRows: ', selectedCardRows)
   const [isEdit, setIsEdit] = useState(false)
   return (
     <div className="flex flex-col items-center gap-3">
