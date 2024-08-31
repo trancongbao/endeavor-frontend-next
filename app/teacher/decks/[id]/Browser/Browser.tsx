@@ -82,13 +82,7 @@ function SubdeckList({ groupedSubdeckRows, courseId, selectedSubdeckOrder, setSe
         })}
       </div>
       {!isAddingSubdeck ? (
-        <Button
-          variant="outline"
-          className="w-36 bg-orange-400  text-white text-md hover:bg-orange-300 hover:text-black py-2 px-4 rounded"
-          onClick={() => setIsAddingSubdeck(true)}
-        >
-          Add subdeck
-        </Button>
+        <AddSubdeckButton setIsAddingSubdeck={setIsAddingSubdeck} />
       ) : (
         <AddSubdeckForm
           courseId={courseId}
@@ -97,6 +91,22 @@ function SubdeckList({ groupedSubdeckRows, courseId, selectedSubdeckOrder, setSe
         />
       )}
     </div>
+  )
+}
+
+function AddSubdeckButton({
+  setIsAddingSubdeck,
+}: {
+  setIsAddingSubdeck: React.Dispatch<React.SetStateAction<boolean>>
+}) {
+  return (
+    <Button
+      variant="outline"
+      className="w-36 bg-orange-400  text-white text-md hover:bg-orange-300 hover:text-black py-2 px-4 rounded"
+      onClick={() => setIsAddingSubdeck(true)}
+    >
+      Add subdeck
+    </Button>
   )
 }
 
@@ -302,9 +312,9 @@ interface AddCardFormProps {
 }
 
 function AddCardForm({ courseId, lessonOrder, order, setIsAddingCard }: AddCardFormProps) {
-  const addCardTextInputRef = useRef<HTMLInputElement>(null)
+  const cardTextInputRef = useRef<HTMLInputElement>(null)
 
-  useEffect(() => addCardTextInputRef.current!.focus(), [])
+  useEffect(() => cardTextInputRef.current!.focus(), [])
 
   return (
     <div>
@@ -312,7 +322,7 @@ function AddCardForm({ courseId, lessonOrder, order, setIsAddingCard }: AddCardF
         <Input type="hidden" name="courseId" value={courseId} />
         <Input type="hidden" name="lessonOrder" value={lessonOrder as number} />
         <Input type="hidden" name="order" value={order} />
-        <Input name="text" ref={addCardTextInputRef} placeholder="Enter the card text and press Return." />
+        <Input name="text" ref={cardTextInputRef} placeholder="Enter the card text and press Return." />
       </form>
       <Button
         variant="outline"
