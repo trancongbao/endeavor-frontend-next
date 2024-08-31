@@ -14,7 +14,7 @@ export async function addSubdeck(formData: FormData) {
     .executeTakeFirstOrThrow()
 
   console.log('Added subdeck: ', addedSubdeck)
-  revalidatePath('/teacher/decks/[id]')
+  revalidatePath('/teacher/decks/[id]', 'page')
 }
 
 export async function deleteSubdeck(courseId: number, subdeckOrder: number) {
@@ -26,7 +26,7 @@ export async function deleteSubdeck(courseId: number, subdeckOrder: number) {
     .returningAll()
     .executeTakeFirstOrThrow()
   console.log('Deleted subdeck: ', deletedSubdeck)
-  revalidatePath('/teacher/decks/[id]')
+  revalidatePath('/teacher/decks/[id]', 'page')
   //TODO: Delete all cards in the subdeck
 }
 
@@ -42,7 +42,7 @@ export async function editSubdeckTitle(formData: FormData) {
     .returningAll()
     .executeTakeFirstOrThrow()
   console.log('Updated subdeck: ', updatedSubdeck)
-  revalidatePath('/teacher/decks/[id]')
+  revalidatePath('/teacher/decks/[id]', 'page')
 }
 
 export async function addCard(formData: FormData) {
@@ -73,5 +73,5 @@ export async function deleteCard(courseId: number, subdeckOrder: number, cardOrd
     .returningAll()
     .executeTakeFirstOrThrow()
   console.log('Deleted subdeck: ', deletedSubdeck)
-  revalidatePath('/teacher/decks/[id]')
+  revalidatePath('/teacher/decks/[id]', 'page')
 }

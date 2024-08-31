@@ -242,7 +242,14 @@ function CardTextList({ selectedSubdeckRows }: { selectedSubdeckRows: Row[] }) {
                 cardText={groupedCardRows[cardOrder][0].cardText as string}
                 isSelected={selectedCardOrder === parseInt(cardOrder)}
                 onClick={() => setSelectedCardOrder(parseInt(cardOrder))}
-                onMenuItemSelect={(id: string) => console.log('Menu action: ', id)}
+                onMenuItemSelect={(id: string) => {
+                  const actions: { [key: string]: () => void } = {
+                    edit: () => console.log('Edit card'),
+                    delete: () => deleteCard(courseId, lessonOrder as number, parseInt(cardOrder)),
+                  }
+
+                  actions[id]()
+                }}
               />
             ))}
           </ul>
