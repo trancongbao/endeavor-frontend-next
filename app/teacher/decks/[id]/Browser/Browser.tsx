@@ -35,7 +35,7 @@ export default function Browser({ deckRows }: { deckRows: Row[] }) {
      * However, it would require a less straight-forward CSS layout method than `grid`.
      */
     <div className="grid grid-cols-[1fr_6fr] grid-rows-[1fr_10fr] gap-2">
-      <Subdecks
+      <SubdeckList
         groupedSubdeckRows={groupedSubdeckRows}
         courseId={courseId}
         selectedSubdeckOrder={selectedSubdeckOrder}
@@ -59,7 +59,7 @@ interface SubdecksProps {
   setSelectedSubdeckOrder: (order: number) => void
 }
 
-function Subdecks({ groupedSubdeckRows, courseId, selectedSubdeckOrder, setSelectedSubdeckOrder }: SubdecksProps) {
+function SubdeckList({ groupedSubdeckRows, courseId, selectedSubdeckOrder, setSelectedSubdeckOrder }: SubdecksProps) {
   const [isAddingSubdeck, setIsAddingSubdeck] = useState(false)
 
   return (
@@ -71,7 +71,7 @@ function Subdecks({ groupedSubdeckRows, courseId, selectedSubdeckOrder, setSelec
               key={subdeckOrder}
               className={`${parseInt(subdeckOrder) === selectedSubdeckOrder ? 'bg-orange-200' : 'hover:bg-orange-100'}`}
             >
-              <Subdeck
+              <SubdeckListItem
                 courseId={courseId}
                 subdeckOrder={parseInt(subdeckOrder)}
                 subdeckTitle={groupedSubdeckRows[subdeckOrder][0].lessonTitle as string}
@@ -107,7 +107,7 @@ interface SubdeckProps {
   setSelectedSubdeckOrder: (order: number) => void
 }
 
-function Subdeck({ courseId, subdeckOrder, subdeckTitle, setSelectedSubdeckOrder }: SubdeckProps) {
+function SubdeckListItem({ courseId, subdeckOrder, subdeckTitle, setSelectedSubdeckOrder }: SubdeckProps) {
   const [isEditingSubdeckTitle, setIsEditingSubdeckTitle] = useState(false)
   const editSubdeckTitileInputRef = useRef<HTMLInputElement>(null)
   const [newSubdeckTitle, setNewSubdeckTitle] = useState(subdeckTitle)
@@ -287,13 +287,11 @@ function CardTextListItem({ cardText, isSelected, onClick, onMenuItemSelect }: C
           __html: styleNewWord(cardText as string),
         }}
       ></p>
-      {/* TODO: move action to parent */}
       <KebabMenu
         menuOptions={[
           {
             label: 'Edit',
             icon: <Edit />,
-            // onSelect: () => deleteCard(courseId, lessonOrder, cardOrder),
             onSelect: () => onMenuItemSelect(),
           },
           {
