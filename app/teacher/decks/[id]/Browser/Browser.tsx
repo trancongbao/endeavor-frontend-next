@@ -484,6 +484,7 @@ function CardFront({ cardText }: { cardText: string }) {
               const boundingClientRect = range.getBoundingClientRect()
               console.log('boundingClientRect: ', boundingClientRect)
               console.log('selected text: ', selectedText)
+              fetchSuggestedWords(selectedText)
               setSuggestedWordsPosition({
                 top: boundingClientRect.bottom + window.scrollY,
                 left: boundingClientRect.left + window.scrollX,
@@ -494,18 +495,37 @@ function CardFront({ cardText }: { cardText: string }) {
         }}
       ></p>
 
-      <WordSuggestionsDialog
+      <SuggestedWords
         open={suggestedWordsVisible}
         onOpenChange={setSuggestedWordsVisible}
         position={suggestedWordsPosition}
-        suggestions={[
-          { id: 1, text: 'text', onSelect: (id: number) => console.log('WordSuggestionDialog: ', id) },
-          { id: 2, text: 'text', onSelect: (id: number) => console.log('WordSuggestionDialog: ', id) },
-        ]}
+        suggestions={suggestedWords}
         onSelect={(id: number) => console.log('WordSuggestionDialog: ', id)}
       />
     </div>
   )
+
+  async function fetchSuggestedWords(selectedText: string) {
+    try {
+      const response = await fetch(`/api/word/search?query=${encodeURIComponent(selectedText)}`)
+
+      if (response.ok) {
+        const data = await response.json()
+        console.log('data: ', data)
+        setSuggestedWords(
+          data.map((item: { id: number; text: string }) => ({
+            id: item.id,
+            text: item.text,
+            onSelect: (id: number) => console.log('WordSuggestionDialog: ', id),
+          }))
+        )
+      } else {
+        console.error('Failed to fetch suggestions')
+      }
+    } catch (error) {
+      console.error('Error fetching suggestions:', error)
+    }
+  }
 }
 
 function CardBack({ selectedCardRows }: { selectedCardRows: Row[] }) {
@@ -545,7 +565,7 @@ export interface WordSuggestionsItem {
   onSelect: (id: number) => void
 }
 
-function WordSuggestionsDialog({
+function SuggestedWords({
   open,
   onOpenChange,
   position,
