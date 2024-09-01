@@ -457,19 +457,31 @@ function Card({ selectedCardRows }: { selectedCardRows: Row[] }) {
           }}
         />
       </div>
-      {isEdit ? <CardEdit selectedCardRows={selectedCardRows} /> : <CardPreview selectedCardRows={selectedCardRows} />}
+      <CardEdit selectedCardRows={selectedCardRows} />
     </div>
   )
 }
 
+//TODO: use start and end indices to denote new words
 function CardEdit({ selectedCardRows }: { selectedCardRows: Row[] }) {
   console.log('selectedCardRows: ', selectedCardRows)
+  const [isAddingWord, setIsAddingWord] = useState(false)
+
   return (
-    <div className="w-full flex flex-col items-center gap-3">
-      <input
-        className="w-3/4 p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-center text-lg"
-        value={selectedCardRows[0].cardText as string}
-      />
+    <div className="p-2 w-full flex flex-col items-center gap-3">
+      <p
+        className="text-center text-lg"
+        dangerouslySetInnerHTML={{
+          __html: styleNewWord(selectedCardRows[0].cardText as string),
+        }}
+        /* TODO: select whole words: select to the nearst whitespaces */
+        onMouseUp={(e) => {
+          const selection = window.getSelection()?.toString()
+          if (selection && selection.length > 0) {
+            console.log('selected text: ', window.getSelection()?.toString())
+          }
+        }}
+      ></p>
       <div className="w-full h-1 bg-gray-200"></div>
       {selectedCardRows.map((wordRow, index) => (
         <div key={index} className="flex flex-col items-center">
@@ -482,6 +494,48 @@ function CardEdit({ selectedCardRows }: { selectedCardRows: Row[] }) {
           )}
         </div>
       ))}
+      {!isAddingWord ? (
+        <Button
+          variant="outline"
+          className="self-start w-20 bg-orange-400  text-white text-md hover:bg-orange-300 hover:text-black py-2 px-4 rounded"
+          onClick={() => setIsAddingWord(true)}
+        >
+          Add Word
+        </Button>
+      ) : (
+        <div>Word Form</div>
+      )}
+    </div>
+  )
+}
+
+interface AddWordFormProps {
+  courseId: string | number
+  lessonOrder: number
+  order: number
+  setIsAddingCard: (value: boolean) => void
+}
+
+function AddWordForm({ courseId, lessonOrder, order, setIsAddingCard }: AddCardFormProps) {
+  const cardTextInputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => cardTextInputRef.current!.focus(), [])
+
+  return (
+    <div>
+      <form action={addCard} onSubmit={() => setIsAddingCard(false)}>
+        <Input type="hidden" name="courseId" value={courseId} />
+        <Input type="hidden" name="lessonOrder" value={lessonOrder as number} />
+        <Input type="hidden" name="order" value={order} />
+        <Input name="text" ref={cardTextInputRef} placeholder="Enter the card text and press Return." />
+      </form>
+      <Button
+        variant="outline"
+        className="w-36 bg-orange-400  text-white text-md hover:bg-orange-300 hover:text-black py-2 px-4 rounded"
+        onClick={() => setIsAddingCard(false)}
+      >
+        Cancel
+      </Button>
     </div>
   )
 }
