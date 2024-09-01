@@ -469,6 +469,7 @@ function Card({ selectedCardRows }: { selectedCardRows: Row[] }) {
 function CardEdit({ selectedCardRows }: { selectedCardRows: Row[] }) {
   console.log('selectedCardRows: ', selectedCardRows)
   const [wordSuggestionsDialogVisible, setWordSuggestionsDialogVisible] = useState(false)
+  const [wordSuggestionsDialogPosition, setWordSuggestionsDialogPosition] = useState({ top: 0, left: 0 })
   const [isAddingWord, setIsAddingWord] = useState(false)
 
   return (
@@ -480,10 +481,22 @@ function CardEdit({ selectedCardRows }: { selectedCardRows: Row[] }) {
         }}
         /* TODO: select whole words: select to the nearst whitespaces */
         onMouseUp={(e) => {
-          const selection = window.getSelection()?.toString()
-          if (selection && selection.length > 0) {
-            console.log('selected text: ', window.getSelection()?.toString())
-            setWordSuggestionsDialogVisible(true)
+          const selection = window.getSelection()
+          console.log('selection: ', selection)
+          if (selection !== null) {
+            const selectedText = selection.toString()
+            if (selectedText.length > 0) {
+              const range = selection?.getRangeAt(0)
+              console.log('range: ', range)
+              const boundingClientRect = range.getBoundingClientRect()
+              console.log('boundingClientRect: ', boundingClientRect)
+              console.log('selected text: ', selectedText)
+              setWordSuggestionsDialogPosition({
+                top: boundingClientRect.bottom + window.scrollY,
+                left: boundingClientRect.left + window.scrollX,
+              })
+              setWordSuggestionsDialogVisible(true)
+            }
           }
         }}
       ></p>
@@ -491,6 +504,7 @@ function CardEdit({ selectedCardRows }: { selectedCardRows: Row[] }) {
       <WordSuggestionsDialog
         open={wordSuggestionsDialogVisible}
         onOpenChange={setWordSuggestionsDialogVisible}
+        position={wordSuggestionsDialogPosition}
         suggestions={[
           { id: 1, text: 'text', onSelect: (id: number) => console.log('WordSuggestionDialog: ', id) },
           { id: 2, text: 'text', onSelect: (id: number) => console.log('WordSuggestionDialog: ', id) },
@@ -535,16 +549,21 @@ export interface WordSuggestionsItem {
 function WordSuggestionsDialog({
   open,
   onOpenChange,
+  position,
   suggestions,
 }: {
   open: boolean
   onOpenChange: (value: boolean) => void
+  position: { top: number; left: number }
   onSelect: (id: number) => void
   suggestions: WordSuggestionsItem[]
 }) {
   return (
     <DropdownMenu open={open} onOpenChange={onOpenChange}>
-      <DropdownMenuContent className={`fixed top-96 left-96 bg-white border border-gray-500`}>
+      <DropdownMenuContent
+        className={`fixed bg-white border border-gray-500`}
+        style={{ top: position.top, left: position.left }}
+      >
         {suggestions.map(({ id, text, onSelect }, index) => (
           <DropdownMenuItem key={index} onSelect={() => onSelect(id)}>
             <Button variant="ghost" className="flex items-center gap-2">
