@@ -468,13 +468,9 @@ function Card({ selectedCardRows }: { selectedCardRows: Row[] }) {
 //TODO: use start and end indices to denote new words
 function CardEdit({ selectedCardRows }: { selectedCardRows: Row[] }) {
   console.log('selectedCardRows: ', selectedCardRows)
-  const [wordSuggestionsDialogVisible, setWordSuggestionsDialogVisible] = useState(true)
+  const [wordSuggestionsDialogVisible, setWordSuggestionsDialogVisible] = useState(false)
   const [isAddingWord, setIsAddingWord] = useState(false)
 
-  const suggestions = [
-    { id: 1, text: 'text', onSelect: (id: number) => console.log('WordSuggestionDialog: ', id) },
-    { id: 2, text: 'text', onSelect: (id: number) => console.log('WordSuggestionDialog: ', id) },
-  ]
   return (
     <div className="p-2 w-full flex flex-col items-center gap-3">
       <p
@@ -494,29 +490,12 @@ function CardEdit({ selectedCardRows }: { selectedCardRows: Row[] }) {
       ></p>
 
       <WordSuggestionsDialog
-        suggestions={[{ id: 1, text: 'text', onSelect: (id) => console.log('WordSuggestionDialog: ', id) }]}
-        setIsDialogOpen={setWordSuggestionsDialogVisible}
-      />
-
-      <DropdownMenu
-        defaultOpen={true}
         open={wordSuggestionsDialogVisible}
-        onOpenChange={setWordSuggestionsDialogVisible}
-      >
-        <DropdownMenuContent
-          className={`fixed top-96 left-96 bg-white border border-gray-500`}
-          // style={{ transform: 'none' }}
-        >
-          {suggestions.map(({ id, text, onSelect }, index) => (
-            <DropdownMenuItem key={index} onSelect={() => onSelect(id)}>
-              <span>XXXX</span>
-              <Button variant="ghost" className="flex items-center gap-2">
-                <span>{text}</span>
-              </Button>
-            </DropdownMenuItem>
-          ))}
-        </DropdownMenuContent>
-      </DropdownMenu>
+        suggestions={[
+          { id: 1, text: 'text', onSelect: (id: number) => console.log('WordSuggestionDialog: ', id) },
+          { id: 2, text: 'text', onSelect: (id: number) => console.log('WordSuggestionDialog: ', id) },
+        ]}
+      />
 
       <Separator className="w-full h-1 bg-gray-200" />
 
@@ -552,16 +531,13 @@ export interface WordSuggestionsItem {
   onSelect: (id: number) => void
 }
 
-function WordSuggestionsDialog({
-  suggestions,
-  setIsDialogOpen,
-}: {
-  suggestions: WordSuggestionsItem[]
-  setIsDialogOpen: (value: boolean) => void
-}) {
+function WordSuggestionsDialog({ open, suggestions }: { open: boolean; suggestions: WordSuggestionsItem[] }) {
   return (
-    <DropdownMenu defaultOpen={true} open={true} onOpenChange={setIsDialogOpen}>
-      <DropdownMenuContent>
+    <DropdownMenu open={open}>
+      <DropdownMenuContent
+        className={`fixed top-96 left-96 bg-white border border-gray-500`}
+        // style={{ transform: 'none' }}
+      >
         {suggestions.map(({ id, text, onSelect }, index) => (
           <DropdownMenuItem key={index} onSelect={() => onSelect(id)}>
             <Button variant="ghost" className="flex items-center gap-2">
