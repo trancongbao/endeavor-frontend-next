@@ -217,12 +217,14 @@ VALUES ('there are', 'có', null, null, null, null),
        ('little', 'nhỏ', null, null, null, null),
        ('new', 'mới', null, null, null, null),
        ('walk', 'đi', null, null, null, null),
+       ('walk', 'a journey that you make by walking, often for enjoyment', null, null, null, null),
        ('bicycle', 'xe đạp', null, null, null, null),
        ('car', 'xe hơi', null, null, null, null),
        ('the USA', 'nước Mỹ', null, null, null, null),
        ('sled', 'xe kéo trượt tuyết', null, null, null, null),
        ('rickshaw', 'xe kéo', null, null, null, null),
        ('how', 'bằng cách nào', null, null, null, null);
+       
 
 -- Sample data for CARD_WORD table
 INSERT INTO CARD_WORD (card_id, word_id, word_order)
