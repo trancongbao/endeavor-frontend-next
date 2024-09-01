@@ -450,17 +450,51 @@ function EditCardTextForm({ currentCardText, setIsEditingCardText, editCardText 
 //TODO: use start and end indices to denote new words
 function Card({ selectedCardRows }: { selectedCardRows: Row[] }) {
   console.log('selectedCardRows: ', selectedCardRows)
-  const [suggestedWords, setSuggestedWords] = useState([])
-  const [suggestedWordsVisible, setSuggestedWordsVisible] = useState(false)
-  const [suggestedWordsPosition, setSuggestedWordsPosition] = useState({ top: 0, left: 0 })
   const [isAddingWord, setIsAddingWord] = useState(false)
 
   return (
     <div className="p-2 w-full flex flex-col items-center gap-3">
+      <CardFront cardText={selectedCardRows[0].cardText as string} />
+
+      <Separator className="w-full h-1 bg-gray-200" />
+
+      {selectedCardRows.map((wordRow, index) => (
+        <div key={index} className="flex flex-col items-center">
+          <div>
+            <span className="font-bold text-primary-600">{wordRow.wordText}</span>
+            <span className=""> :: {wordRow.wordDefinition}</span>
+          </div>
+          {wordRow.wordImageUri && (
+            <Image src={wordRow.wordImageUri} alt={wordRow.wordText as string} width={200} height={100}></Image>
+          )}
+        </div>
+      ))}
+      {!isAddingWord ? (
+        <Button
+          variant="outline"
+          className="self-start w-20 bg-orange-400  text-white text-md hover:bg-orange-300 hover:text-black py-2 px-4 rounded"
+          onClick={() => setIsAddingWord(true)}
+        >
+          Add Word
+        </Button>
+      ) : (
+        <div>Word Form</div>
+      )}
+    </div>
+  )
+}
+
+function CardFront({ cardText }: { cardText: string }) {
+  const [suggestedWords, setSuggestedWords] = useState([])
+  const [suggestedWordsVisible, setSuggestedWordsVisible] = useState(false)
+  const [suggestedWordsPosition, setSuggestedWordsPosition] = useState({ top: 0, left: 0 })
+
+  return (
+    <div>
       <p
         className="text-center text-lg"
         dangerouslySetInnerHTML={{
-          __html: styleNewWord(selectedCardRows[0].cardText as string),
+          __html: styleNewWord(cardText as string),
         }}
         /* TODO: select whole words: select to the nearst whitespaces */
         onMouseUp={(e) => {
@@ -494,31 +528,6 @@ function Card({ selectedCardRows }: { selectedCardRows: Row[] }) {
         ]}
         onSelect={(id: number) => console.log('WordSuggestionDialog: ', id)}
       />
-
-      <Separator className="w-full h-1 bg-gray-200" />
-
-      {selectedCardRows.map((wordRow, index) => (
-        <div key={index} className="flex flex-col items-center">
-          <div>
-            <span className="font-bold text-primary-600">{wordRow.wordText}</span>
-            <span className=""> :: {wordRow.wordDefinition}</span>
-          </div>
-          {wordRow.wordImageUri && (
-            <Image src={wordRow.wordImageUri} alt={wordRow.wordText as string} width={200} height={100}></Image>
-          )}
-        </div>
-      ))}
-      {!isAddingWord ? (
-        <Button
-          variant="outline"
-          className="self-start w-20 bg-orange-400  text-white text-md hover:bg-orange-300 hover:text-black py-2 px-4 rounded"
-          onClick={() => setIsAddingWord(true)}
-        >
-          Add Word
-        </Button>
-      ) : (
-        <div>Word Form</div>
-      )}
     </div>
   )
 }
