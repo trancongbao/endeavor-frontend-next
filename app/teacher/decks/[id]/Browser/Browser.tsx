@@ -484,17 +484,18 @@ function CardEdit({ selectedCardRows }: { selectedCardRows: Row[] }) {
           if (selection && selection.length > 0) {
             console.log('selected text: ', window.getSelection()?.toString())
             setWordSuggestionsDialogVisible(true)
-            // TODO: show list of suggested words
           }
         }}
       ></p>
 
       <WordSuggestionsDialog
         open={wordSuggestionsDialogVisible}
+        onOpenChange={setWordSuggestionsDialogVisible}
         suggestions={[
           { id: 1, text: 'text', onSelect: (id: number) => console.log('WordSuggestionDialog: ', id) },
           { id: 2, text: 'text', onSelect: (id: number) => console.log('WordSuggestionDialog: ', id) },
         ]}
+        onSelect={(id: number) => console.log('WordSuggestionDialog: ', id)}
       />
 
       <Separator className="w-full h-1 bg-gray-200" />
@@ -531,13 +532,19 @@ export interface WordSuggestionsItem {
   onSelect: (id: number) => void
 }
 
-function WordSuggestionsDialog({ open, suggestions }: { open: boolean; suggestions: WordSuggestionsItem[] }) {
+function WordSuggestionsDialog({
+  open,
+  onOpenChange,
+  suggestions,
+}: {
+  open: boolean
+  onOpenChange: (value: boolean) => void
+  onSelect: (id: number) => void
+  suggestions: WordSuggestionsItem[]
+}) {
   return (
-    <DropdownMenu open={open}>
-      <DropdownMenuContent
-        className={`fixed top-96 left-96 bg-white border border-gray-500`}
-        // style={{ transform: 'none' }}
-      >
+    <DropdownMenu open={open} onOpenChange={onOpenChange}>
+      <DropdownMenuContent className={`fixed top-96 left-96 bg-white border border-gray-500`}>
         {suggestions.map(({ id, text, onSelect }, index) => (
           <DropdownMenuItem key={index} onSelect={() => onSelect(id)}>
             <Button variant="ghost" className="flex items-center gap-2">
