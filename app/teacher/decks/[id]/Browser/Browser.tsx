@@ -499,7 +499,7 @@ function CardFront({ cardText }: { cardText: string }) {
         open={suggestedWordsVisible}
         onOpenChange={setSuggestedWordsVisible}
         position={suggestedWordsPosition}
-        suggestions={suggestedWords}
+        suggestedWords={suggestedWords}
         onSelect={(id: number) => console.log('WordSuggestionDialog: ', id)}
       />
     </div>
@@ -510,15 +510,9 @@ function CardFront({ cardText }: { cardText: string }) {
       const response = await fetch(`/api/word/search?query=${encodeURIComponent(selectedText)}`)
 
       if (response.ok) {
-        const data = await response.json()
-        console.log('data: ', data)
-        setSuggestedWords(
-          data.map((item: { id: number; text: string }) => ({
-            id: item.id,
-            text: item.text,
-            onSelect: (id: number) => console.log('WordSuggestionDialog: ', id),
-          }))
-        )
+        const suggestedWords = await response.json()
+        console.log('suggestedWords: ', suggestedWords)
+        setSuggestedWords(suggestedWords)
       } else {
         console.error('Failed to fetch suggestions')
       }
@@ -559,23 +553,18 @@ function CardBack({ selectedCardRows }: { selectedCardRows: Row[] }) {
   )
 }
 
-export interface WordSuggestionsItem {
-  id: number
-  text: string
-  onSelect: (id: number) => void
-}
-
 function SuggestedWords({
   open,
   onOpenChange,
   position,
-  suggestions,
+  suggestedWords,
+  onSelect,
 }: {
   open: boolean
   onOpenChange: (value: boolean) => void
   position: { top: number; left: number }
+  suggestedWords: { id: number; text: string; definition: string }[]
   onSelect: (id: number) => void
-  suggestions: WordSuggestionsItem[]
 }) {
   return (
     <DropdownMenu open={open} onOpenChange={onOpenChange}>
@@ -583,10 +572,10 @@ function SuggestedWords({
         className={`fixed bg-white border border-gray-500`}
         style={{ top: position.top, left: position.left }}
       >
-        {suggestions.map(({ id, text, onSelect }, index) => (
+        {suggestedWords.map(({ id, text, definition }, index) => (
           <DropdownMenuItem key={index} onSelect={() => onSelect(id)}>
             <Button variant="ghost" className="flex items-center gap-2">
-              <span>{text}</span>
+              <span>{`${text} :: ${definition}`}</span>
             </Button>
           </DropdownMenuItem>
         ))}
