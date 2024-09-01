@@ -468,8 +468,9 @@ function Card({ selectedCardRows }: { selectedCardRows: Row[] }) {
 //TODO: use start and end indices to denote new words
 function CardEdit({ selectedCardRows }: { selectedCardRows: Row[] }) {
   console.log('selectedCardRows: ', selectedCardRows)
-  const [wordSuggestionsDialogVisible, setWordSuggestionsDialogVisible] = useState(false)
-  const [wordSuggestionsDialogPosition, setWordSuggestionsDialogPosition] = useState({ top: 0, left: 0 })
+  const [suggestedWords, setSuggestedWords] = useState([])
+  const [suggestedWordsVisible, setSuggestedWordsVisible] = useState(false)
+  const [suggestedWordsPosition, setSuggestedWordsPosition] = useState({ top: 0, left: 0 })
   const [isAddingWord, setIsAddingWord] = useState(false)
 
   return (
@@ -491,20 +492,20 @@ function CardEdit({ selectedCardRows }: { selectedCardRows: Row[] }) {
               const boundingClientRect = range.getBoundingClientRect()
               console.log('boundingClientRect: ', boundingClientRect)
               console.log('selected text: ', selectedText)
-              setWordSuggestionsDialogPosition({
+              setSuggestedWordsPosition({
                 top: boundingClientRect.bottom + window.scrollY,
                 left: boundingClientRect.left + window.scrollX,
               })
-              setWordSuggestionsDialogVisible(true)
+              setSuggestedWordsVisible(true)
             }
           }
         }}
       ></p>
 
       <WordSuggestionsDialog
-        open={wordSuggestionsDialogVisible}
-        onOpenChange={setWordSuggestionsDialogVisible}
-        position={wordSuggestionsDialogPosition}
+        open={suggestedWordsVisible}
+        onOpenChange={setSuggestedWordsVisible}
+        position={suggestedWordsPosition}
         suggestions={[
           { id: 1, text: 'text', onSelect: (id: number) => console.log('WordSuggestionDialog: ', id) },
           { id: 2, text: 'text', onSelect: (id: number) => console.log('WordSuggestionDialog: ', id) },
