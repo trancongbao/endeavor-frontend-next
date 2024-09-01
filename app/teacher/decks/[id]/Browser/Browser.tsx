@@ -447,26 +447,8 @@ function EditCardTextForm({ currentCardText, setIsEditingCardText, editCardText 
   )
 }
 
-function Card({ selectedCardRows }: { selectedCardRows: Row[] }) {
-  console.log('Card selectedCardRows: ', selectedCardRows)
-  const [isEdit, setIsEdit] = useState(false)
-  return (
-    <div className="flex flex-col items-center gap-3">
-      <div className="self-end">
-        <Toggle
-          isChecked={isEdit}
-          onChange={() => {
-            setIsEdit(!isEdit)
-          }}
-        />
-      </div>
-      <CardEdit selectedCardRows={selectedCardRows} />
-    </div>
-  )
-}
-
 //TODO: use start and end indices to denote new words
-function CardEdit({ selectedCardRows }: { selectedCardRows: Row[] }) {
+function Card({ selectedCardRows }: { selectedCardRows: Row[] }) {
   console.log('selectedCardRows: ', selectedCardRows)
   const [suggestedWords, setSuggestedWords] = useState([])
   const [suggestedWordsVisible, setSuggestedWordsVisible] = useState(false)
@@ -604,32 +586,6 @@ function AddWordForm({ courseId, lessonOrder, order, setIsAddingCard }: AddCardF
       >
         Cancel
       </Button>
-    </div>
-  )
-}
-
-function CardPreview({ selectedCardRows }: { selectedCardRows: Row[] }) {
-  console.log('selectedCardRows: ', selectedCardRows)
-  return (
-    <div className="w-full pl-3 flex flex-col items-center gap-3">
-      <p
-        className="text-center text-lg"
-        dangerouslySetInnerHTML={{
-          __html: styleNewWord(selectedCardRows[0].cardText as string),
-        }}
-      ></p>
-      <div className="w-full h-1 bg-gray-200"></div>
-      {selectedCardRows.map((wordRow, index) => (
-        <div key={index} className="flex flex-col items-center">
-          <div>
-            <span className="font-bold text-primary-600">{wordRow.wordText}</span>
-            <span className=""> :: {wordRow.wordDefinition}</span>
-          </div>
-          {wordRow.wordImageUri && (
-            <Image src={wordRow.wordImageUri} alt={wordRow.wordText as string} width={200} height={100}></Image>
-          )}
-        </div>
-      ))}
     </div>
   )
 }
