@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
   const response = await kysely
     .selectFrom('word')
     .selectAll()
-    .where(sql`to_tsvector(word)`, '@@', sql`to_tsquery(${query})`)
+    .where(sql`to_tsvector(text)`, '@@', sql`to_tsquery(${query})`)
     .execute()
 
   console.log('response: ', response)
