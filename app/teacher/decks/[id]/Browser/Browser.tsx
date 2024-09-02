@@ -500,7 +500,7 @@ function CardFront({ cardText }: { cardText: string }) {
         onOpenChange={setSuggestedWordsVisible}
         position={suggestedWordsPosition}
         suggestedWords={suggestedWords}
-        onSelect={(id: number) => console.log('WordSuggestionDialog: ', id)}
+        onSelect={(id: number) => console.log('suggested word selected: ', id)}
       />
     </div>
   )
@@ -527,16 +527,8 @@ function CardBack({ selectedCardRows }: { selectedCardRows: Row[] }) {
 
   return (
     <div className="w-full flex flex-col items-center gap-3">
-      {selectedCardRows.map((wordRow, index) => (
-        <div key={index} className="flex flex-col items-center">
-          <div>
-            <span className="font-bold text-primary-600">{wordRow.wordText}</span>
-            <span className=""> :: {wordRow.wordDefinition}</span>
-          </div>
-          {wordRow.wordImageUri && (
-            <Image src={wordRow.wordImageUri} alt={wordRow.wordText as string} width={200} height={100}></Image>
-          )}
-        </div>
+      {selectedCardRows.map((word, index) => (
+        <Word key={index} word={word} />
       ))}
       {!isAddingWord ? (
         <Button
@@ -548,6 +540,20 @@ function CardBack({ selectedCardRows }: { selectedCardRows: Row[] }) {
         </Button>
       ) : (
         <div>Word Form</div>
+      )}
+    </div>
+  )
+}
+
+function Word({ word }: { word: Row }) {
+  return (
+    <div className="flex flex-col items-center">
+      <div>
+        <span className="font-bold text-primary-600">{word.wordText}</span>
+        <span className=""> :: {word.wordDefinition}</span>
+      </div>
+      {word.wordImageUri && (
+        <Image src={word.wordImageUri} alt={word.wordText as string} width={200} height={100}></Image>
       )}
     </div>
   )
