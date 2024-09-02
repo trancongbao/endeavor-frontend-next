@@ -92,6 +92,40 @@ export async function editCardText(courseId: number, subdeckOrder: number, cardO
   revalidatePath('/teacher/decks/[id]', 'page')
 }
 
+export async function addWordToCard(
+  courseId: number,
+  lessonOrder: number,
+  cardId: number,
+  cardOrder: number,
+  cardText: string,
+  wordId: number,
+  wordOrder: number
+) {
+  // console.log(`addWordToCard: cardId = ${cardId}, wordId = ${wordId}, wordOrder = ${wordOrder}`)
+  // const addedCardWord = await kysely
+  //   .insertInto('card_word')
+  //   .values({
+  //     card_id: cardId,
+  //     word_id: wordId,
+  //     word_order: wordOrder,
+  //   })
+  //   .returningAll()
+  //   .executeTakeFirstOrThrow()
+  // console.log('Added card word: ', addedCardWord)
+  const updatedCard = await kysely
+    .updateTable('card')
+    .where('course_id', '=', courseId)
+    .where('lesson_order', '=', lessonOrder)
+    .where('order', '=', cardOrder)
+    .set({
+      text: cardText,
+    })
+    .returningAll()
+    .executeTakeFirstOrThrow()
+  console.log('Updated card: ', updatedCard)
+  revalidatePath('/teacher/decks/[id]', 'page')
+}
+
 export async function removeWordFromCard(cardId: number, wordId: number) {
   console.log(`removeWordFromCard: cardId = ${cardId}, wordId = ${wordId}`)
   const deletedCardWord = await kysely

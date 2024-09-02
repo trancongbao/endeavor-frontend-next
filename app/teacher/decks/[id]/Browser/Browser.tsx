@@ -9,6 +9,7 @@ import { useRef, useEffect } from 'react'
 import {
   addCard,
   addSubdeck,
+  addWordToCard,
   deleteCard,
   deleteSubdeck,
   editCardText,
@@ -460,14 +461,29 @@ function Card({ selectedCardRows }: { selectedCardRows: Row[] }) {
 
   return (
     <div className="p-2 w-full flex flex-col items-center gap-3">
-      <CardFront cardText={selectedCardRows[0].cardText as string} />
+      <CardFront
+        cardText={selectedCardRows[0].cardText as string}
+        addWordToCard={(cardText: string) => {
+          const { courseId, lessonOrder, cardOrder, cardId, wordId, wordOrder } = selectedCardRows[0]
+          addWordToCard(
+            selectedCardRows[0].courseId as number,
+            selectedCardRows[0].lessonOrder as number,
+            cardId as number,
+            cardOrder as number,
+            cardText,
+            wordId as number,
+            wordOrder as number
+          )
+        }}
+      />
       <Separator className="w-full h-1 bg-gray-200" />
       <CardBack selectedCardRows={selectedCardRows} />
     </div>
   )
 }
 
-function CardFront({ cardText }: { cardText: string }) {
+function CardFront({ cardText, addWordToCard }: { cardText: string; addWordToCard: (cardText: string) => void }) {
+  const [selectionIndices, setSelectionIndices] = useState({ start: 0, end: 0 })
   const [suggestedWords, setSuggestedWords] = useState([])
   const [suggestedWordsVisible, setSuggestedWordsVisible] = useState(false)
   const [suggestedWordsPosition, setSuggestedWordsPosition] = useState({ top: 0, left: 0 })
@@ -482,7 +498,11 @@ function CardFront({ cardText }: { cardText: string }) {
         /* TODO: select whole words: select to the nearst whitespaces */
         onMouseUp={(e) => {
           const selection = window.getSelection()
-          console.log('selection: ', selection)
+          const anchorOffset = selection!.anchorOffset
+          const focusOffset = selection!.focusOffset
+          const start = Math.min(anchorOffset, focusOffset)
+          const end = Math.max(anchorOffset, focusOffset)
+          setSelectionIndices({ start, end })
           if (selection !== null) {
             const selectedText = selection.toString()
             if (selectedText.length > 0) {
@@ -507,7 +527,12 @@ function CardFront({ cardText }: { cardText: string }) {
         onOpenChange={setSuggestedWordsVisible}
         position={suggestedWordsPosition}
         suggestedWords={suggestedWords}
-        onSelect={(id: number) => console.log('suggested word selected: ', id)}
+        onSelect={(id: number) => {
+          console.log('suggested word selected: ', id)
+          console.log('addWordMarkings: ', addWordMarkings(cardText))
+          addWordToCard(addWordMarkings(cardText))
+          setSuggestedWordsVisible(false)
+        }}
       />
     </div>
   )
@@ -526,6 +551,11 @@ function CardFront({ cardText }: { cardText: string }) {
     } catch (error) {
       console.error('Error fetching suggestions:', error)
     }
+  }
+
+  function addWordMarkings(cardText: string): string {
+    const { start, end } = selectionIndices
+    return cardText.slice(0, start) + '#' + cardText.slice(start, end) + '#' + cardText.slice(end)
   }
 }
 
