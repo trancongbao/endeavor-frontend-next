@@ -527,7 +527,7 @@ function CardBack({ selectedCardRows }: { selectedCardRows: Row[] }) {
   return (
     <div className="w-full flex flex-col items-center gap-3">
       {selectedCardRows.map((word, index) => (
-        <Word key={index} word={word} />
+        <Word key={index} word={word} removeWord={(id) => console.log('remove word: ', id)} />
       ))}
       {!isAddingWord ? (
         <Button
@@ -544,7 +544,8 @@ function CardBack({ selectedCardRows }: { selectedCardRows: Row[] }) {
   )
 }
 
-function Word({ word }: { word: Row }) {
+function Word({ word, removeWord }: { word: Row; removeWord: (id: number) => void }) {
+  const [isEditingWord, setIsEditingWord] = useState(false)
   return (
     <div className="w-full grid grid-cols-[1fr_8fr_1fr] items-start">
       <div></div>
@@ -558,10 +559,10 @@ function Word({ word }: { word: Row }) {
         )}
       </div>
       <div className="flex flex-col">
-        <Button variant="ghost" size={'sm'}>
+        <Button variant="ghost" size={'sm'} onClick={() => setIsEditingWord(true)}>
           <Edit />
         </Button>
-        <Button variant="ghost" size={'sm'}>
+        <Button variant="ghost" size={'sm'} onClick={() => removeWord(word.cardId as number)}>
           <XSquare />
         </Button>
       </div>
