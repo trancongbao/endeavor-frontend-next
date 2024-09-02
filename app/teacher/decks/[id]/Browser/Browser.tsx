@@ -463,8 +463,8 @@ function Card({ selectedCardRows }: { selectedCardRows: Row[] }) {
     <div className="p-2 w-full flex flex-col items-center gap-3">
       <CardFront
         cardText={selectedCardRows[0].cardText as string}
-        addWordToCard={(cardText: string) => {
-          const { courseId, lessonOrder, cardOrder, cardId, wordId, wordOrder } = selectedCardRows[0]
+        addWordToCard={(cardText: string, wordId: number) => {
+          const { courseId, lessonOrder, cardOrder, cardId } = selectedCardRows[0]
           addWordToCard(
             selectedCardRows[0].courseId as number,
             selectedCardRows[0].lessonOrder as number,
@@ -472,7 +472,7 @@ function Card({ selectedCardRows }: { selectedCardRows: Row[] }) {
             cardOrder as number,
             cardText,
             wordId as number,
-            wordOrder as number
+            0 //TODO: wordOrder
           )
         }}
       />
@@ -482,7 +482,13 @@ function Card({ selectedCardRows }: { selectedCardRows: Row[] }) {
   )
 }
 
-function CardFront({ cardText, addWordToCard }: { cardText: string; addWordToCard: (cardText: string) => void }) {
+function CardFront({
+  cardText,
+  addWordToCard,
+}: {
+  cardText: string
+  addWordToCard: (cardText: string, wordId: number) => void
+}) {
   const [selectionIndices, setSelectionIndices] = useState({ start: 0, end: 0 })
   const [suggestedWords, setSuggestedWords] = useState([])
   const [suggestedWordsVisible, setSuggestedWordsVisible] = useState(false)
@@ -527,10 +533,10 @@ function CardFront({ cardText, addWordToCard }: { cardText: string; addWordToCar
         onOpenChange={setSuggestedWordsVisible}
         position={suggestedWordsPosition}
         suggestedWords={suggestedWords}
-        onSelect={(id: number) => {
-          console.log('suggested word selected: ', id)
+        onSelect={(wordId: number) => {
+          console.log('suggested word selected: ', wordId)
           console.log('addWordMarkings: ', addWordMarkings(cardText))
-          addWordToCard(addWordMarkings(cardText))
+          addWordToCard(addWordMarkings(cardText), wordId)
           setSuggestedWordsVisible(false)
         }}
       />
@@ -645,7 +651,7 @@ function SuggestedWords({
   onOpenChange: (value: boolean) => void
   position: { top: number; left: number }
   suggestedWords: { id: number; text: string; definition: string }[]
-  onSelect: (id: number) => void
+  onSelect: (wordId: number) => void
 }) {
   return (
     <DropdownMenu open={open} onOpenChange={onOpenChange}>

@@ -101,17 +101,17 @@ export async function addWordToCard(
   wordId: number,
   wordOrder: number
 ) {
-  // console.log(`addWordToCard: cardId = ${cardId}, wordId = ${wordId}, wordOrder = ${wordOrder}`)
-  // const addedCardWord = await kysely
-  //   .insertInto('card_word')
-  //   .values({
-  //     card_id: cardId,
-  //     word_id: wordId,
-  //     word_order: wordOrder,
-  //   })
-  //   .returningAll()
-  //   .executeTakeFirstOrThrow()
-  // console.log('Added card word: ', addedCardWord)
+  console.log(`addWordToCard: cardId = ${cardId}, wordId = ${wordId}, wordOrder = ${wordOrder}`)
+  const addedCardWord = await kysely
+    .insertInto('card_word')
+    .values({
+      card_id: cardId,
+      word_id: wordId,
+      word_order: wordOrder,
+    })
+    .returningAll()
+    .executeTakeFirstOrThrow()
+  console.log('Added card word: ', addedCardWord)
   const updatedCard = await kysely
     .updateTable('card')
     .where('course_id', '=', courseId)
