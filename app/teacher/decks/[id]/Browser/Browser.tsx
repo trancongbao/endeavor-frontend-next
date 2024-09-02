@@ -6,7 +6,15 @@ import { Row, GroupedSubdeckRows } from '../page'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { useRef, useEffect } from 'react'
-import { addCard, addSubdeck, deleteCard, deleteSubdeck, editCardText, editSubdeckTitle } from '@/app/actions'
+import {
+  addCard,
+  addSubdeck,
+  deleteCard,
+  deleteSubdeck,
+  editCardText,
+  editSubdeckTitle,
+  removeWordFromCard,
+} from '@/app/actions'
 import KebabMenu from './KebabMenu'
 import { styleNewWord } from './styleNewWord'
 import Image from 'next/image'
@@ -527,7 +535,7 @@ function CardBack({ selectedCardRows }: { selectedCardRows: Row[] }) {
   return (
     <div className="w-full flex flex-col items-center gap-3">
       {selectedCardRows.map((word, index) => (
-        <Word key={index} word={word} removeWord={(id) => console.log('remove word: ', id)} />
+        <Word key={index} word={word} />
       ))}
       {!isAddingWord ? (
         <Button
@@ -544,8 +552,9 @@ function CardBack({ selectedCardRows }: { selectedCardRows: Row[] }) {
   )
 }
 
-function Word({ word, removeWord }: { word: Row; removeWord: (id: number) => void }) {
+function Word({ word }: { word: Row }) {
   const [isEditingWord, setIsEditingWord] = useState(false)
+
   return (
     <div className="w-full grid grid-cols-[1fr_8fr_1fr] items-start">
       <div></div>
@@ -562,7 +571,7 @@ function Word({ word, removeWord }: { word: Row; removeWord: (id: number) => voi
         <Button variant="ghost" size={'sm'} onClick={() => setIsEditingWord(true)}>
           <Edit />
         </Button>
-        <Button variant="ghost" size={'sm'} onClick={() => removeWord(word.cardId as number)}>
+        <Button variant="ghost" onClick={() => removeWordFromCard(word.cardId as number, word.cardId as number)}>
           <XSquare />
         </Button>
       </div>

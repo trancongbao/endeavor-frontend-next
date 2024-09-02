@@ -91,3 +91,15 @@ export async function editCardText(courseId: number, subdeckOrder: number, cardO
   console.log('Updated card: ', updatedCard)
   revalidatePath('/teacher/decks/[id]', 'page')
 }
+
+export async function removeWordFromCard(cardId: number, wordId: number) {
+  console.log(`removeWordFromCard: cardId = ${cardId}, wordId = ${wordId}`)
+  const deletedCardWord = await kysely
+    .deleteFrom('card_word')
+    .where('card_id', '=', cardId)
+    .where('word_id', '=', wordId)
+    .returningAll()
+    .executeTakeFirstOrThrow()
+  console.log('Deleted card word: ', deletedCardWord)
+  revalidatePath('/teacher/decks/[id]', 'page')
+}
