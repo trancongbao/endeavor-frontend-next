@@ -574,11 +574,13 @@ function Word({ word }: { word: Row }) {
         <Button
           variant="ghost"
           onClick={() => {
-            console.log('cardText: ', word.cardText as string)
-            console.log('wordOrder: ', word.wordOrder as number)
-            console.log('removeHighlight: ', removeHighlight(word.cardText as string, word.wordOrder as number))
-            // editCardText(word.courseId, word.lessonOrder as number, word.cardOrder as number, 'new card text')
-            // removeWordFromCard(word.cardId as number, word.cardId as number)
+            editCardText(
+              word.courseId,
+              word.lessonOrder as number,
+              word.cardOrder as number,
+              removeWordMarkings(word.cardText as string, word.wordOrder as number)
+            )
+            removeWordFromCard(word.cardId as number, word.cardId as number)
           }}
         >
           <XSquare />
@@ -587,7 +589,7 @@ function Word({ word }: { word: Row }) {
     </div>
   )
 
-  function removeHighlight(cardText: string, wordOrder: number): string {
+  function removeWordMarkings(cardText: string, wordOrder: number): string {
     let order = 0
     let startIndex = cardText.indexOf('#')
     let endIndex = cardText.indexOf('#', startIndex + 1)
