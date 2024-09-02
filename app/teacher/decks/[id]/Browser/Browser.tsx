@@ -9,9 +9,8 @@ import { useRef, useEffect } from 'react'
 import { addCard, addSubdeck, deleteCard, deleteSubdeck, editCardText, editSubdeckTitle } from '@/app/actions'
 import KebabMenu from './KebabMenu'
 import { styleNewWord } from './styleNewWord'
-import Toggle from './Toggle'
 import Image from 'next/image'
-import { Edit, Delete } from 'react-feather'
+import { Edit, Delete, X, Edit2, XSquare } from 'react-feather'
 import { DropdownMenu, DropdownMenuItem, DropdownMenuSeparator } from '@/components/ui/dropdown-menu'
 import { DropdownMenuContent } from '@radix-ui/react-dropdown-menu'
 import { Separator } from '@/components/ui/separator'
@@ -547,14 +546,25 @@ function CardBack({ selectedCardRows }: { selectedCardRows: Row[] }) {
 
 function Word({ word }: { word: Row }) {
   return (
-    <div className="flex flex-col items-center">
-      <div>
-        <span className="font-bold text-primary-600">{word.wordText}</span>
-        <span className=""> :: {word.wordDefinition}</span>
+    <div className="w-full grid grid-cols-[1fr_8fr_1fr] items-start">
+      <div></div>
+      <div className="flex flex-col items-center">
+        <div>
+          <span className="font-bold text-primary-600">{word.wordText}</span>
+          <span className=""> :: {word.wordDefinition}</span>
+        </div>
+        {word.wordImageUri && (
+          <Image src={word.wordImageUri} alt={word.wordText as string} width={200} height={100}></Image>
+        )}
       </div>
-      {word.wordImageUri && (
-        <Image src={word.wordImageUri} alt={word.wordText as string} width={200} height={100}></Image>
-      )}
+      <div className="flex flex-col">
+        <Button variant="ghost" size={'sm'}>
+          <Edit />
+        </Button>
+        <Button variant="ghost" size={'sm'}>
+          <XSquare />
+        </Button>
+      </div>
     </div>
   )
 }
