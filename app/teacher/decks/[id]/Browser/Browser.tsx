@@ -523,38 +523,37 @@ function CardFront({
           if (selectedText.length > 0 && !isOverlappingTargetWord(paragraph, selection)) {
             const childNodes = paragraph.childNodes
             console.log('childNodes: ', childNodes.values())
-            const boldElements = paragraph.querySelectorAll('b')
-            console.log('boldElements: ', boldElements)
 
             const range = selection.getRangeAt(0)
             console.log('range: ', range)
-
             const startContainer = range.startContainer
             console.log('startContainer: ', startContainer)
-            console.log('startContainer.nodeName: ', startContainer.nodeName)
-            const endContainer = range.endContainer
-            console.log('endContainer: ', endContainer)
-
             const startOffset = range.startOffset
             console.log('startOffset: ', startOffset)
-            let wordOrder = -1
+
+            let wordOrder = 0
             let startIndex = 0
+
+            /*
+             * We traverse the paragragh's child nodes to find the start index of the selection.
+             */
             for (let i = 0; i < childNodes.length; i++) {
               const childNode = childNodes[i]
               /*
-               * In practice though, only Firefox allows to select multiple ranges in the document.
-               * So here, we only care about the startContainer, and not the endContainer
+               * If the child node is not the startContainer, we add the text length of the node to the startIndex,and increment wordOrder.
+               * If the child node is the startContainer, we add the startOffset to the startIndex, and break the loop.
+               * We only care about the startContainer, and not the endContainer, because in practice, only Firefox allows to select multiple ranges.
                */
-              if (childNode === startContainer) {
-                wordOrder = i
-                console.log('startContainerIndex: ', wordOrder)
+              if (childNode !== startContainer) {
+                wordOrder++
+                startIndex += childNode.textContent!.length
+              } else {
                 startIndex += startOffset
                 break
-              } else {
-                startIndex += childNode.textContent!.length
               }
             }
 
+            console.log('wordOrder: ', wordOrder)
             console.log('startIndex: ', startIndex)
 
             paragraph.childNodes.forEach((node) => {
