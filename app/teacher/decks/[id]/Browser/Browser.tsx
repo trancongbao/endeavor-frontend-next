@@ -489,8 +489,7 @@ function CardFront({
   cardText: string
   addWordToCard: (cardText: string, wordId: number) => void
 }) {
-  const [selectionIndices, setSelectionIndices] = useState({ startIndex: 0, endIndex: 0 })
-  const [wordOrder, setWordOrder] = useState(0) //TODO: wordOrder should probably be derived from selectionIndices
+  const [selectionPosition, setSelectionPosition] = useState({ startIndex: 0, endIndex: 0, wordOrder: 0 })
   const [suggestedWords, setSuggestedWords] = useState([])
   const [suggestedWordsVisible, setSuggestedWordsVisible] = useState(false)
   const [suggestedWordsPosition, setSuggestedWordsPosition] = useState({ top: 0, left: 0 })
@@ -522,11 +521,8 @@ function CardFront({
            * Ref: https://javascript.info/selection-range
            */
           if (selectedText.length > 0 && !isOverlappingTargetWord(paragraph, selection)) {
-            const { wordOrder, startIndex, endIndex } = getSelectionPosition(paragraph, selection)
-            setWordOrder(wordOrder)
-            setSelectionIndices({ startIndex, endIndex })
-
             fetchSuggestedWords(selectedText)
+            setSelectionPosition(determineSelectionPosition(paragraph, selection))
             setSuggestedWordsPosition(determineSuggestedWordsPosition(selection))
             setSuggestedWordsVisible(true)
           }
@@ -567,7 +563,7 @@ function CardFront({
     return isOverlappingTargetWord
   }
 
-  function getSelectionPosition(paragraph: EventTarget & HTMLParagraphElement, selection: Selection) {
+  function determineSelectionPosition(paragraph: EventTarget & HTMLParagraphElement, selection: Selection) {
     /*
      * We traverse the paragragh's child nodes to find the start/end indices of the selection, and the word order.
      * If the child node is not the startContainer, we add the text length of the node to the startIndex and endIndex,and increment wordOrder.
@@ -639,7 +635,7 @@ function CardFront({
 
   function calculateWordOrder(): number {
     console.log('calculateWordOrder: cardText= ', cardText)
-    const { startIndex: start } = selectionIndices
+    const { startIndex: start } = selectionPosition
     console.log('start: ', start)
 
     let order = 0
@@ -664,7 +660,7 @@ function CardFront({
   }
 
   function addWordMarkings(cardText: string): string {
-    const { startIndex, endIndex } = selectionIndices
+    const { startIndex, endIndex } = selectionPosition
     return cardText.slice(0, startIndex) + '#' + cardText.slice(startIndex, endIndex) + '#' + cardText.slice(endIndex)
   }
 }
