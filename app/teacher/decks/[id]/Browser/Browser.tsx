@@ -1,6 +1,6 @@
 'use client'
 
-import _ from 'lodash'
+import _, { set } from 'lodash'
 import { useState } from 'react'
 import { Row, GroupedSubdeckRows } from '../page'
 import { Input } from '@/components/ui/input'
@@ -489,7 +489,8 @@ function CardFront({
   cardText: string
   addWordToCard: (cardText: string, wordId: number) => void
 }) {
-  const [selectionIndices, setSelectionIndices] = useState({ start: 0, end: 0 })
+  const [selectionIndices, setSelectionIndices] = useState({ startIndex: 0, endIndex: 0 })
+  const [wordOrder, setWordOrder] = useState(0) //TODO: wordOrder should probably be derived from selectionIndices
   const [suggestedWords, setSuggestedWords] = useState([])
   const [suggestedWordsVisible, setSuggestedWordsVisible] = useState(false)
   const [suggestedWordsPosition, setSuggestedWordsPosition] = useState({ top: 0, left: 0 })
@@ -522,30 +523,11 @@ function CardFront({
            */
           if (selectedText.length > 0 && !isOverlappingTargetWord(paragraph, selection)) {
             const { wordOrder, startIndex, endIndex } = getSelectionPosition(paragraph, selection)
+            setWordOrder(wordOrder)
+            setSelectionIndices({ startIndex, endIndex })
 
-            console.log('wordOrder: ', wordOrder)
-            console.log('startIndex: ', startIndex)
-            console.log('endIndex: ', endIndex)
-
-            const anchorOffset = selection!.anchorOffset
-            console.log('anchorOffset: ', anchorOffset)
-            const focusOffset = selection!.focusOffset
-            console.log('focusOffset: ', focusOffset)
-            const start = Math.min(anchorOffset, focusOffset)
-            console.log('start: ', start)
-            const end = Math.max(anchorOffset, focusOffset)
-            setSelectionIndices({ start, end })
-
-            const range = selection?.getRangeAt(0)
-            console.log('range: ', range)
-            const boundingClientRect = range.getBoundingClientRect()
-            console.log('boundingClientRect: ', boundingClientRect)
-            console.log('selected text: ', selectedText)
             fetchSuggestedWords(selectedText)
-            setSuggestedWordsPosition({
-              top: boundingClientRect.bottom + window.scrollY,
-              left: boundingClientRect.left + window.scrollX,
-            })
+            setSuggestedWordsPosition(determineSuggestedWordsPosition(selection))
             setSuggestedWordsVisible(true)
           }
         }}
@@ -625,6 +607,7 @@ function CardFront({
       }
     }
 
+    console.log(`selectionPosition: wordOrder = ${wordOrder}, startIndex = ${startIndex}, endIndex = ${endIndex}`)
     return { wordOrder, startIndex, endIndex }
   }
 
@@ -644,9 +627,19 @@ function CardFront({
     }
   }
 
+  function determineSuggestedWordsPosition(selection: Selection) {
+    const range = selection.getRangeAt(0)
+    const boundingClientRect = range.getBoundingClientRect()
+    console.log('boundingClientRect: ', boundingClientRect)
+    return {
+      top: boundingClientRect.bottom + window.scrollY,
+      left: boundingClientRect.left + window.scrollX,
+    }
+  }
+
   function calculateWordOrder(): number {
     console.log('calculateWordOrder: cardText= ', cardText)
-    const { start } = selectionIndices
+    const { startIndex: start } = selectionIndices
     console.log('start: ', start)
 
     let order = 0
@@ -671,8 +664,8 @@ function CardFront({
   }
 
   function addWordMarkings(cardText: string): string {
-    const { start, end } = selectionIndices
-    return cardText.slice(0, start) + '#' + cardText.slice(start, end) + '#' + cardText.slice(end)
+    const { startIndex, endIndex } = selectionIndices
+    return cardText.slice(0, startIndex) + '#' + cardText.slice(startIndex, endIndex) + '#' + cardText.slice(endIndex)
   }
 }
 
