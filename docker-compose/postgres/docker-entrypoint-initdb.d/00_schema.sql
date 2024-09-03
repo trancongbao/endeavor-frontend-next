@@ -113,14 +113,13 @@ CREATE TABLE LESSON
 -- Table definition for CARD
 CREATE TABLE CARD
 (
-    id                      SERIAL  PRIMARY KEY,    -- Unique identifier for the card
     course_id               INTEGER,                -- Foreign key referencing course_id in LESSON
     lesson_order            INTEGER,                -- Foreign key referencing "order" in LESSON
     "order"                 INTEGER NOT NULL,       -- Relative order of the card in the lesson
     text                    TEXT    NOT NULL,       -- Text (of the front side of the card)
     audio_uri               TEXT,                   -- URI for audio (associated with the front side)
     CONSTRAINT fk_lesson FOREIGN KEY (course_id, lesson_order) REFERENCES LESSON (course_id, "order"),
-    CONSTRAINT unique_course_id_lesson_order_order UNIQUE (course_id, lesson_order, "order")
+    PRIMARY KEY (course_id, lesson_order, "order")
 );
 
 -- Table definition for WORD
@@ -138,17 +137,20 @@ CREATE TABLE WORD
     audio_uri      TEXT,                    -- URI for audio associated with the word
     image_uri      TEXT,                    -- URI for image associated with the word
     PRIMARY KEY (text, definition),         -- Composite primary key
-        CONSTRAINT unique_text_definition UNIQUE (text, definition)  -- Unique constraint on text and definition
+    CONSTRAINT unique_text_definition UNIQUE (text, definition)  -- Unique constraint on text and definition
 );
 
 -- Table definition for CARD_WORD
 CREATE TABLE CARD_WORD
 (
-    card_id         INTEGER REFERENCES CARD (id),       -- Foreign key referencing card
-    word_text       VARCHAR(255),                       -- Foreign key referencing word
-    word_definition TEXT,                               -- Foreign key referencing word
-    start_index     INTEGER NOT NULL,                   -- Start index of the word in the card
-    end_index       INTEGER NOT NULL,                   -- End index of the word in the card
-    PRIMARY KEY (card_id, word_text, word_definition),  -- Composite primary key
-    CONSTRAINT fk_word FOREIGN KEY (word_text, word_definition) REFERENCES WORD (text, definition)
+    course_id       INTEGER,            -- Foreign key referencing course_id in LESSON
+    lesson_order    INTEGER,            -- Foreign key referencing "order" in LESSON
+    card_order      INTEGER NOT NULL,   -- Relative order of the card in the lesson
+    word_text       VARCHAR(255),       -- Foreign key referencing word
+    word_definition TEXT,               -- Foreign key referencing word
+    start_index     INTEGER NOT NULL,   -- Start index of the word in the card
+    end_index       INTEGER NOT NULL,   -- End index of the word in the card
+    CONSTRAINT fk_card FOREIGN KEY (course_id, lesson_order, card_order) REFERENCES CARD (course_id, lesson_order, "order"),
+    CONSTRAINT fk_word FOREIGN KEY (word_text, word_definition) REFERENCES WORD (text, definition),
+    PRIMARY KEY (course_id, lesson_order, card_order, word_text, word_definition)  -- Composite primary key
 );
