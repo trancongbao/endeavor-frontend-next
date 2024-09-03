@@ -197,17 +197,17 @@ VALUES (1, 0, 'Introduction', 'audio/intro_sql.mp3', null, null, null,
 
 -- Sample data for CARD table
 INSERT INTO CARD (course_id, lesson_order, "order", text, audio_uri)
-VALUES (1, 0, 0, '#There are# schools #all around the world#.', null),
-       (1, 0, 1, '#There are# big schools and little schools, new schools and old schools.', null),
-       (1, 0, 2, 'Is your school #big# or #little#?', null),
-       (1, 0, 3, 'Is your school #new# or #old#?', null),
-       (1, 1, 0, '#All around the world#, students go to school.', null),
-       (1, 1, 1, 'Some students #walk# to school, and some go by bus or by train.', null),
-       (1, 1, 2, 'Some students go by #bicycle#, and some go by #car#.', null),
-       (1, 1, 3, 'These students are in #the USA#. They go to school by bus.', null),
-       (1, 1, 4, 'In the snow in Canada, some students go to school by #sled#.', null),
-       (1, 1, 5, 'In India, some students go to school by #rickshaw#.', null),
-       (1, 1, 6, '#How# do you go to school?', null);
+VALUES (1, 0, 0, 'There are schools all around the world.', null),
+       (1, 0, 1, 'There are big schools and little schools, new schools and old schools.', null),
+       (1, 0, 2, 'Is your school big or little?', null),
+       (1, 0, 3, 'Is your school new or old?', null),
+       (1, 1, 0, 'All around the world, students go to school.', null),
+       (1, 1, 1, 'Some students walk to school, and some go by bus or by train.', null),
+       (1, 1, 2, 'Some students go by bicycle, and some go by car.', null),
+       (1, 1, 3, 'These students are in the USA. They go to school by bus.', null),
+       (1, 1, 4, 'In the snow in Canada, some students go to school by sled.', null),
+       (1, 1, 5, 'In India, some students go to school by rickshaw.', null),
+       (1, 1, 6, 'How do you go to school?', null);
 
 -- Sample data for WORD table
 INSERT INTO WORD (text, definition, phonetic, part_of_speech, audio_uri, image_uri)
@@ -216,6 +216,7 @@ VALUES ('there are', 'có', null, null, null, null),
        ('big', 'to, lớn', null, null, null, null),
        ('little', 'nhỏ', null, null, null, null),
        ('new', 'mới', null, null, null, null),
+       ('old', 'cũ', null, null, null, null),
        ('walk', 'đi', null, null, null, null),
        ('walk', 'a journey that you make by walking, often for enjoyment', null, null, null, null),
        ('bicycle', 'xe đạp', null, null, null, null),
@@ -227,18 +228,19 @@ VALUES ('there are', 'có', null, null, null, null),
        
 
 -- Sample data for CARD_WORD table
-INSERT INTO CARD_WORD (card_id, word_text, word_definition, start_index, end_index)
-VALUES (1, 'there are', 'có', 0, 5),
-       (1, 'all the around the word', 'khắp thế giới', 10, 15),
-       (2, 'there are', 'có', 0, 5),
-       (3, 'big', 'to, lớn', 0, 5),
-       (3, 'little', 'nhỏ', 0, 5),
-       (4, 'new', 'mới', 0, 5),
-       (5, 'all the around the word', 'khắp thế giới', 0, 5),
-       (6, 'walk', 'đi', 0, 5),
-       (7, 'bicycle', 'xe đạp', 0, 5),
-       (7, 'car', 'xe hơi', 0, 5),
-       (8, 'the USA', 'nước Mỹ', 0, 5),
-       (9, 'sled', 'xe kéo trượt tuyết', 0, 5),
-       (10, 'rickshaw', 'xe kéo', 0, 5),
-       (11, 'how', 'bằng cách nào', 0, 5);
+INSERT INTO CARD_WORD (course_id, lesson_order, card_order, word_text, word_definition, start_index, end_index)
+VALUES (1, 0, 0, 'there are', 'có', 0, 5),
+       (1, 0, 0, 'all the around the word', 'khắp thế giới', 10, 15),
+       (1, 0, 1, 'there are', 'có', 0, 5),
+       (1, 0, 2, 'big', 'to, lớn', 10, 15),
+       (1, 0, 2, 'little', 'nhỏ', 10, 15),
+       (1, 0, 3, 'new', 'mới', 0, 5),
+       (1, 0, 3, 'old', 'cũ', 10, 15),
+       (1, 1, 0, 'all the around the word', 'khắp thế giới', 0, 5),
+       (1, 1, 1, 'walk', 'đi', 0, 5),
+       (1, 1, 2, 'bicycle', 'xe đạp', 0, 5),
+       (1, 1, 2, 'car', 'xe hơi', 0, 5),
+       (1, 1, 3, 'the USA', 'nước Mỹ', 0, 5),
+       (1, 1, 4, 'sled', 'xe kéo trượt tuyết', 0, 5),
+       (1, 1, 5, 'rickshaw', 'xe kéo', 0, 5),
+       (1, 1, 6, 'how', 'bằng cách nào', 0, 5);
