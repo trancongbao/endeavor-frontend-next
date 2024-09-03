@@ -227,18 +227,18 @@ VALUES ('there are', 'có', null, null, null, null),
        
 
 -- Sample data for CARD_WORD table
-INSERT INTO CARD_WORD (card_id, word_id, start_index, end_index)
-VALUES (1, 1, 0, 5),
-       (1, 2, 10, 15),
-       (2, 1, 0, 5),
-       (3, 3, 0, 5),
-       (3, 4, 0, 5),
-       (4, 5, 0, 5),
-       (5, 2, 0, 5),
-       (6, 6, 0, 5),
-       (7, 7, 0, 5),
-       (7, 8, 0, 5),
-       (8, 9, 0, 5),
-       (9, 10, 0, 5),
-       (10, 11, 0, 5),
-       (11, 12, 0, 5);
+INSERT INTO CARD_WORD (card_id, word_text, word_definition, start_index, end_index)
+VALUES (1, 'there are', 'có', 0, 5),
+       (1, 'all the around the word', 'khắp thế giới', 10, 15),
+       (2, 'there are', 'có', 0, 5),
+       (3, 'big', 'to, lớn', 0, 5),
+       (3, 'little', 'nhỏ', 0, 5),
+       (4, 'new', 'mới', 0, 5),
+       (5, 'all the around the word', 'khắp thế giới', 0, 5),
+       (6, 'walk', 'đi', 0, 5),
+       (7, 'bicycle', 'xe đạp', 0, 5),
+       (7, 'car', 'xe hơi', 0, 5),
+       (8, 'the USA', 'nước Mỹ', 0, 5),
+       (9, 'sled', 'xe kéo trượt tuyết', 0, 5),
+       (10, 'rickshaw', 'xe kéo', 0, 5),
+       (11, 'how', 'bằng cách nào', 0, 5);

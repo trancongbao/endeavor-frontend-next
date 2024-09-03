@@ -54,7 +54,7 @@ CREATE TYPE COURSE_STATUS AS ENUM ('DRAFT', 'IN_REVIEW', 'APPROVED', 'PUBLISHED'
 -- Define table structure for courses
 /* 
     (level, title, version, status) can be used as a primary composite key.
-    But, using as a foreign key (in other tables) would be highly cubersome.
+    But, using as a foreign key would be highly cubersome, especially considering `course` is at the top of the course->lesson->card tree.
     So here, we opt to use `id` as the primary key and add a unique constraint on the composite key.
 */
 CREATE TABLE COURSE
@@ -131,23 +131,24 @@ CREATE TABLE CARD
 */
 CREATE TABLE WORD
 (
-    id             SERIAL PRIMARY KEY,    -- Unique identifier for the word
-    text           VARCHAR(255) NOT NULL, -- Text of the word
-    definition     TEXT         NOT NULL, -- Definition of the word
-    phonetic       VARCHAR(255),          -- Phonetic pronunciation of the word
-    part_of_speech VARCHAR(255),          -- Part of speech of the word
-    audio_uri      TEXT,                  -- URI for audio associated with the word
-    image_uri      TEXT,                  -- URI for image associated with the word
-    CONSTRAINT unique_text_definition UNIQUE (text, definition)
-
+    text           VARCHAR(255) NOT NULL,   -- Text of the word
+    definition     TEXT         NOT NULL,   -- Definition of the word
+    phonetic       VARCHAR(255),            -- Phonetic pronunciation of the word
+    part_of_speech VARCHAR(255),            -- Part of speech of the word
+    audio_uri      TEXT,                    -- URI for audio associated with the word
+    image_uri      TEXT,                    -- URI for image associated with the word
+    PRIMARY KEY (text, definition),         -- Composite primary key
+        CONSTRAINT unique_text_definition UNIQUE (text, definition)  -- Unique constraint on text and definition
 );
 
 -- Table definition for CARD_WORD
 CREATE TABLE CARD_WORD
 (
-    card_id     INTEGER REFERENCES CARD (id),   -- Foreign key referencing card
-    word_id     INTEGER REFERENCES WORD (id),   -- Foreign key referencing word
-    start_index INTEGER NOT NULL,               -- Start index of the word in the card
-    end_index   INTEGER NOT NULL,               -- End index of the word in the card
-    PRIMARY KEY (card_id, word_id)              -- Composite primary key
+    card_id         INTEGER REFERENCES CARD (id),       -- Foreign key referencing card
+    word_text       VARCHAR(255),                       -- Foreign key referencing word
+    word_definition TEXT,                               -- Foreign key referencing word
+    start_index     INTEGER NOT NULL,                   -- Start index of the word in the card
+    end_index       INTEGER NOT NULL,                   -- End index of the word in the card
+    PRIMARY KEY (card_id, word_text, word_definition),  -- Composite primary key
+    CONSTRAINT fk_word FOREIGN KEY (word_text, word_definition) REFERENCES WORD (text, definition)
 );
