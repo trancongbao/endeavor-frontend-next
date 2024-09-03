@@ -457,7 +457,10 @@ function EditCardTextForm({ currentCardText, setIsEditingCardText, editCardText 
 
 //TODO: use start and end indices to denote new words
 function Card({ selectedCardRows }: { selectedCardRows: Row[] }) {
-  console.log('selectedCardRows: ', selectedCardRows)
+  console.log('Card: selectedCardRows=', selectedCardRows)
+
+  const targetWordPositions = selectedCardRows.map((row) => ({ start: row.wordStartIndex, end: row.wordEndIndex }))
+  console.log('Card: targetWordPositions=', targetWordPositions)
 
   return (
     <div className="p-2 w-full flex flex-col items-center gap-3">
