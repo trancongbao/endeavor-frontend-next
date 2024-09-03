@@ -507,75 +507,88 @@ function CardFront({
          * Therefore, onMouseUp is used instead of onSelectChange.
          * Also, we need to check for selected text length, to account for the double-click selection.
          */
-        onMouseUp={(e) => {
-          const selection = window.getSelection()
+        onMouseUp={(event) => {
+          const selection = window.getSelection()!
           console.log('selection: ', selection)
-          if (selection !== null) {
-            const selectedText = selection.toString()
-            if (selectedText.length > 0) {
-              /*
-               * For each of the target words, there is a <b> node nested within a <p> node.
-               * Ref: https://javascript.info/selection-range
-               */
-              const containerNode = e.currentTarget
-              console.log('containerNode: ', containerNode)
-              const childNodes = containerNode.childNodes
-              console.log('childNodes: ', childNodes.values())
+          const selectedText = selection.toString()
+          console.log('selectedText: ', selectedText)
+          const paragraph = event.currentTarget
+          console.log('paragraph: ', paragraph)
 
-              const range = selection.getRangeAt(0)
-              console.log('range: ', range)
-              const startContainer = range.startContainer
-              console.log('startContainer: ', startContainer)
-              const startOffset = range.startOffset
-              console.log('startOffset: ', startOffset)
-              let wordOrder = -1
-              let startIndex = 0
-              for (let i = 0; i < childNodes.length; i++) {
-                const childNode = childNodes[i]
-                /*
-                 * Assume that the selected text is within a single node
-                 * So we only care about the startContainer, and not the endContainer
-                 */
-                if (childNode === startContainer) {
-                  wordOrder = i
-                  console.log('startContainerIndex: ', wordOrder)
-                  startIndex += startOffset
-                  break
-                } else {
-                  startIndex += childNode.textContent!.length
-                }
-              }
+          /*
+           * For each of the target words, there is a <b> node nested within a <p> node.
+           * Ref: https://javascript.info/selection-range
+           */
+          if (selectedText.length > 0 && !isOverlappingTargetWord(paragraph, selection)) {
+            const childNodes = paragraph.childNodes
+            console.log('childNodes: ', childNodes.values())
+            const boldElements = paragraph.querySelectorAll('b')
+            console.log('boldElements: ', boldElements)
 
-              console.log('startIndex: ', startIndex)
+            const range = selection.getRangeAt(0)
+            console.log('range: ', range)
 
-              containerNode.childNodes.forEach((node) => {
-                console.log('child node: ', node)
-                if (node === startContainer) {
-                  console.log('startContainer found')
-                }
-              })
+            const startContainer = range.startContainer
+            console.log('startContainer: ', startContainer)
+            console.log('startContainer.nodeName: ', startContainer.nodeName)
+            const endContainer = range.endContainer
+            console.log('endContainer: ', endContainer)
 
-              const anchorOffset = selection!.anchorOffset
-              console.log('anchorOffset: ', anchorOffset)
-              const focusOffset = selection!.focusOffset
-              console.log('focusOffset: ', focusOffset)
-              const start = Math.min(anchorOffset, focusOffset)
-              console.log('start: ', start)
-              const end = Math.max(anchorOffset, focusOffset)
-              setSelectionIndices({ start, end })
-
-              // const range = selection?.getRangeAt(0)
-              // console.log('range: ', range)
-              const boundingClientRect = range.getBoundingClientRect()
-              console.log('boundingClientRect: ', boundingClientRect)
-              console.log('selected text: ', selectedText)
-              fetchSuggestedWords(selectedText)
-              setSuggestedWordsPosition({
-                top: boundingClientRect.bottom + window.scrollY,
-                left: boundingClientRect.left + window.scrollX,
-              })
-              setSuggestedWordsVisible(true)
+            /*
+             * We ignore the case where startContainer !== endContainer, as it means the user has selected across a target word boundary.
+             * So here, we only care about the startContainer, and not the endContainer
+             */
+            if (startContainer === endContainer) {
             }
+            const startOffset = range.startOffset
+            console.log('startOffset: ', startOffset)
+            let wordOrder = -1
+            let startIndex = 0
+            for (let i = 0; i < childNodes.length; i++) {
+              const childNode = childNodes[i]
+              /*
+               * In practice though, only Firefox allows to select multiple ranges in the document.
+               * So here, we only care about the startContainer, and not the endContainer
+               */
+              if (childNode === startContainer) {
+                wordOrder = i
+                console.log('startContainerIndex: ', wordOrder)
+                startIndex += startOffset
+                break
+              } else {
+                startIndex += childNode.textContent!.length
+              }
+            }
+
+            console.log('startIndex: ', startIndex)
+
+            paragraph.childNodes.forEach((node) => {
+              console.log('child node: ', node)
+              if (node === startContainer) {
+                console.log('startContainer found')
+              }
+            })
+
+            const anchorOffset = selection!.anchorOffset
+            console.log('anchorOffset: ', anchorOffset)
+            const focusOffset = selection!.focusOffset
+            console.log('focusOffset: ', focusOffset)
+            const start = Math.min(anchorOffset, focusOffset)
+            console.log('start: ', start)
+            const end = Math.max(anchorOffset, focusOffset)
+            setSelectionIndices({ start, end })
+
+            // const range = selection?.getRangeAt(0)
+            // console.log('range: ', range)
+            const boundingClientRect = range.getBoundingClientRect()
+            console.log('boundingClientRect: ', boundingClientRect)
+            console.log('selected text: ', selectedText)
+            fetchSuggestedWords(selectedText)
+            setSuggestedWordsPosition({
+              top: boundingClientRect.bottom + window.scrollY,
+              left: boundingClientRect.left + window.scrollX,
+            })
+            setSuggestedWordsVisible(true)
           }
         }}
       ></p>
@@ -594,6 +607,25 @@ function CardFront({
       />
     </div>
   )
+
+  function isOverlappingTargetWord(paragraph: HTMLParagraphElement, selection: Selection) {
+    let isOverlappingTargetWord = false
+
+    const selectionRect = selection.getRangeAt(0).getBoundingClientRect()
+    paragraph.querySelectorAll('b').forEach((boldElement) => {
+      const targetWordRect = boldElement.getBoundingClientRect()
+      if (
+        selectionRect.right > targetWordRect.left &&
+        selectionRect.left < targetWordRect.right &&
+        selectionRect.bottom > targetWordRect.top &&
+        selectionRect.top < targetWordRect.bottom
+      ) {
+        isOverlappingTargetWord = true
+      }
+    })
+    console.log('isOverlappingTargetWord: ', isOverlappingTargetWord)
+    return isOverlappingTargetWord
+  }
 
   function getSelectionIndices(container: EventTarget & HTMLParagraphElement, selection: Selection) {
     console.log(`getSelectionIndices: container = ${container}, selection = ${selection}`)
