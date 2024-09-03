@@ -508,15 +508,16 @@ function CardFront({
          * Also, we need to check for selected text length, to account for the double-click selection.
          */
         onMouseUp={(event) => {
+          const paragraph = event.currentTarget
+          console.log('paragraph: ', paragraph)
           const selection = window.getSelection()!
           console.log('selection: ', selection)
           const selectedText = selection.toString()
           console.log('selectedText: ', selectedText)
-          const paragraph = event.currentTarget
-          console.log('paragraph: ', paragraph)
 
           /*
            * For each of the target words, there is a <b> node nested within a <p> node.
+           * We ignore the case where the selection overlaps with a target word.
            * Ref: https://javascript.info/selection-range
            */
           if (selectedText.length > 0 && !isOverlappingTargetWord(paragraph, selection)) {
@@ -534,12 +535,6 @@ function CardFront({
             const endContainer = range.endContainer
             console.log('endContainer: ', endContainer)
 
-            /*
-             * We ignore the case where startContainer !== endContainer, as it means the user has selected across a target word boundary.
-             * So here, we only care about the startContainer, and not the endContainer
-             */
-            if (startContainer === endContainer) {
-            }
             const startOffset = range.startOffset
             console.log('startOffset: ', startOffset)
             let wordOrder = -1
