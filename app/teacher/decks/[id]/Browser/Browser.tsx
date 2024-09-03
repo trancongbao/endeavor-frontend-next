@@ -521,53 +521,11 @@ function CardFront({
            * Ref: https://javascript.info/selection-range
            */
           if (selectedText.length > 0 && !isOverlappingTargetWord(paragraph, selection)) {
-            const childNodes = paragraph.childNodes
-            console.log('childNodes: ', childNodes.values())
-
-            const range = selection.getRangeAt(0)
-            console.log('range: ', range)
-            const startContainer = range.startContainer
-            console.log('startContainer: ', startContainer)
-            const startOffset = range.startOffset
-            console.log('startOffset: ', startOffset)
-            const endOffset = range.endOffset
-            console.log('endOffset: ', endOffset)
-
-            let wordOrder = 0
-            let startIndex = 0
-            let endIndex = 0
-
-            /*
-             * We traverse the paragragh's child nodes to find the start index of the selection.
-             */
-            for (let i = 0; i < childNodes.length; i++) {
-              const childNode = childNodes[i]
-              /*
-               * If the child node is not the startContainer, we add the text length of the node to the startIndex and endIndex,and increment wordOrder.
-               * If the child node is the startContainer, we add the startOffset to the startIndex and endOffset to endIndex, and stop the loop.
-               * We only care about the startContainer, and not the endContainer, because in practice, only Firefox allows to select multiple ranges.
-               */
-              if (childNode !== startContainer) {
-                wordOrder++
-                startIndex += childNode.textContent!.length
-                endIndex += childNode.textContent!.length
-              } else {
-                startIndex += startOffset
-                endIndex += endOffset
-                break
-              }
-            }
+            const { wordOrder, startIndex, endIndex } = getSelectionPosition(paragraph, selection)
 
             console.log('wordOrder: ', wordOrder)
             console.log('startIndex: ', startIndex)
             console.log('endIndex: ', endIndex)
-
-            paragraph.childNodes.forEach((node) => {
-              console.log('child node: ', node)
-              if (node === startContainer) {
-                console.log('startContainer found')
-              }
-            })
 
             const anchorOffset = selection!.anchorOffset
             console.log('anchorOffset: ', anchorOffset)
@@ -578,8 +536,8 @@ function CardFront({
             const end = Math.max(anchorOffset, focusOffset)
             setSelectionIndices({ start, end })
 
-            // const range = selection?.getRangeAt(0)
-            // console.log('range: ', range)
+            const range = selection?.getRangeAt(0)
+            console.log('range: ', range)
             const boundingClientRect = range.getBoundingClientRect()
             console.log('boundingClientRect: ', boundingClientRect)
             console.log('selected text: ', selectedText)
@@ -627,33 +585,47 @@ function CardFront({
     return isOverlappingTargetWord
   }
 
-  function getSelectionIndices(container: EventTarget & HTMLParagraphElement, selection: Selection) {
-    console.log(`getSelectionIndices: container = ${container}, selection = ${selection}`)
-    let start = 0
-    let end = 0
-    let currentNode = container
+  function getSelectionPosition(paragraph: EventTarget & HTMLParagraphElement, selection: Selection) {
+    /*
+     * We traverse the paragragh's child nodes to find the start/end indices of the selection, and the word order.
+     * If the child node is not the startContainer, we add the text length of the node to the startIndex and endIndex,and increment wordOrder.
+     * If the child node is the startContainer, we add the startOffset to the startIndex and endOffset to endIndex, and stop the loop.
+     * We only care about the startContainer, and not the endContainer, because in practice, only Firefox allows to select multiple ranges.
+     */
+    const childNodes = paragraph.childNodes
+    console.log('childNodes: ', childNodes.values())
     const range = selection.getRangeAt(0)
+    console.log('range: ', range)
+    const startContainer = range.startContainer
+    console.log('startContainer: ', startContainer)
+    const startOffset = range.startOffset
+    console.log('startOffset: ', startOffset)
+    const endOffset = range.endOffset
+    console.log('endOffset: ', endOffset)
 
-    traverseNodes(currentNode, true, range.startOffset)
+    let wordOrder = 0
+    let startIndex = 0
+    let endIndex = 0
 
-    return { start, end }
-
-    function traverseNodes(node: Node, isStartNode: boolean, offset: number) {
-      if (node === range.startContainer) {
-        start += offset
-      }
-      if (node === range.endContainer) {
-        end += offset
-      }
-      if (node.nodeType === Node.TEXT_NODE) {
-        if (node !== range.startContainer) start += node.textContent.length
-        if (node !== range.endContainer) end += node.textContent.length
-      }
-
-      for (let child = node.firstChild; child; child = child.nextSibling) {
-        traverseNodes(child, false, 0)
+    for (let i = 0; i < childNodes.length; i++) {
+      const childNode = childNodes[i]
+      /*
+       * If the child node is not the startContainer, we add the text length of the node to the startIndex and endIndex,and increment wordOrder.
+       * If the child node is the startContainer, we add the startOffset to the startIndex and endOffset to endIndex, and stop the loop.
+       * We only care about the startContainer, and not the endContainer, because in practice, only Firefox allows to select multiple ranges.
+       */
+      if (childNode !== startContainer) {
+        wordOrder++
+        startIndex += childNode.textContent!.length
+        endIndex += childNode.textContent!.length
+      } else {
+        startIndex += startOffset
+        endIndex += endOffset
+        break
       }
     }
+
+    return { wordOrder, startIndex, endIndex }
   }
 
   async function fetchSuggestedWords(selectedText: string) {
