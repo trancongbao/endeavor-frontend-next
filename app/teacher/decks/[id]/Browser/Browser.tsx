@@ -342,7 +342,7 @@ function CardTextListItem({ cardText, isSelected, onClick, deleteCard, editCardT
           <p
             onClick={() => onClick()}
             dangerouslySetInnerHTML={{
-              __html: highlightTargetWords(cardText as string),
+              __html: cardText as string,
             }}
           ></p>
           <KebabMenu
@@ -462,7 +462,7 @@ function Card({ selectedCardRows }: { selectedCardRows: Row[] }) {
   return (
     <div className="p-2 w-full flex flex-col items-center gap-3">
       <CardFront
-        cardText={selectedCardRows[0].cardText as string}
+        highlightedCardText={selectedCardRows[0].cardText as string}
         addWordToCard={(cardText: string, wordId: number) => {
           const { courseId, lessonOrder, cardOrder, cardId } = selectedCardRows[0]
           addWordToCard(
@@ -483,10 +483,10 @@ function Card({ selectedCardRows }: { selectedCardRows: Row[] }) {
 }
 
 function CardFront({
-  cardText,
+  highlightedCardText,
   addWordToCard,
 }: {
-  cardText: string
+  highlightedCardText: string
   addWordToCard: (cardText: string, wordId: number) => void
 }) {
   const [selectionPosition, setSelectionPosition] = useState({ startIndex: 0, endIndex: 0, wordOrder: 0 })
@@ -499,7 +499,7 @@ function CardFront({
       <p
         className="text-center text-lg"
         dangerouslySetInnerHTML={{
-          __html: highlightTargetWords(cardText as string),
+          __html: highlightedCardText,
         }}
         /* TODO: select whole words: select to the nearst whitespaces */
         /*
@@ -536,7 +536,7 @@ function CardFront({
         suggestedWords={suggestedWords}
         onSelect={(wordId: number) => {
           console.log('suggested word selected: ', wordId)
-          addWordToCard(addWordMarkings(cardText), wordId)
+          addWordToCard(addWordMarkings(highlightedCardText), wordId)
           setSuggestedWordsVisible(false)
         }}
       />
