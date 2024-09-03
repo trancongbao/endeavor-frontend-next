@@ -123,11 +123,6 @@ CREATE TABLE CARD
 );
 
 -- Table definition for WORD
-/* 
-    (text, definition) could be used as a primary composite key.
-    But, using as a foreign key (in other tables) would be highly cubersome.
-    So here, we opt to use `id` as the primary key and add a unique constraint on the composite key.
-*/
 CREATE TABLE WORD
 (
     text           VARCHAR(255) NOT NULL,   -- Text of the word
