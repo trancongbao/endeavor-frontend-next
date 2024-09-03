@@ -17,7 +17,7 @@ import {
   removeWordFromCard,
 } from '@/app/actions'
 import KebabMenu from './KebabMenu'
-import { styleNewWord } from './styleNewWord'
+import { highlightTargetWords as highlightTargetWords } from './highlightTargetWords'
 import Image from 'next/image'
 import { Edit, Delete, X, Edit2, XSquare } from 'react-feather'
 import { DropdownMenu, DropdownMenuItem, DropdownMenuSeparator } from '@/components/ui/dropdown-menu'
@@ -342,7 +342,7 @@ function CardTextListItem({ cardText, isSelected, onClick, deleteCard, editCardT
           <p
             onClick={() => onClick()}
             dangerouslySetInnerHTML={{
-              __html: styleNewWord(cardText as string),
+              __html: highlightTargetWords(cardText as string),
             }}
           ></p>
           <KebabMenu
@@ -499,7 +499,7 @@ function CardFront({
       <p
         className="text-center text-lg"
         dangerouslySetInnerHTML={{
-          __html: styleNewWord(cardText as string),
+          __html: highlightTargetWords(cardText as string),
         }}
         /* TODO: select whole words: select to the nearst whitespaces */
         /*

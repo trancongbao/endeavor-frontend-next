@@ -66,7 +66,8 @@ export type Row = {
   cardId: number | null
   cardOrder: number | null
   cardText: string | null
-  wordOrder: number | null
+  wordStartIndex: number | null
+  wordEndIndex: number | null
   wordId: number | null
   wordText: string | null
   wordDefinition: string | null

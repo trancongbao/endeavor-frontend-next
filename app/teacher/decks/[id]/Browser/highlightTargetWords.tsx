@@ -1,4 +1,4 @@
-export function styleNewWord(newWord: string) {
+export function highlightTargetWords(newWord: string) {
   let result = newWord
   let startIndex = result.indexOf('#')
   while (startIndex !== -1) {
