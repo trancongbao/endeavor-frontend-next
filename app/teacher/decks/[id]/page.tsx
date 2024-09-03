@@ -29,7 +29,9 @@ async function queryData(id: string) {
       join.onRef('card.course_id', '=', 'lesson.course_id').onRef('card.lesson_order', '=', 'lesson.order')
     )
     .leftJoin('card_word', 'card_word.card_id', 'card.id')
-    .leftJoin('word', 'word.id', 'card_word.word_id')
+    .leftJoin('word', (join) =>
+      join.onRef('word.text', '=', 'card_word.word_text').onRef('word.definition', '=', 'card_word.word_definition')
+    )
     .select([
       'course.id as courseId',
       'course.level as courseLevel',
@@ -41,7 +43,6 @@ async function queryData(id: string) {
       'card.text as cardText',
       'card_word.start_index as wordStartIndex',
       'card_word.end_index as wordEndIndex',
-      'word.id as wordId',
       'word.text as wordText',
       'word.definition as wordDefinition',
       'word.phonetic as wordPhonetic',
