@@ -512,25 +512,32 @@ function CardFront({
               console.log('containerNode: ', containerNode)
               const childNodes = containerNode.childNodes
               console.log('childNodes: ', childNodes.values())
-              const childNodeCounts = childNodes.length
-              console.log('childNodeCounts: ', childNodeCounts)
-              
+
               const range = selection.getRangeAt(0)
               console.log('range: ', range)
               const startContainer = range.startContainer
               console.log('startContainer: ', startContainer)
+              const startOffset = range.startOffset
+              console.log('startOffset: ', startOffset)
               let startContainerIndex = -1
+              let startIndex = 0
               for (let i = 0; i < childNodes.length; i++) {
+                const childNode = childNodes[i]
                 /*
                  * Assume that the selected text is within a single node
                  * So we only care about the startContainer, and not the endContainer
                  */
-                if (childNodes[i] === startContainer) {
+                if (childNode === startContainer) {
                   startContainerIndex = i
                   console.log('startContainerIndex: ', startContainerIndex)
+                  startIndex += startOffset
                   break
+                } else {
+                  startIndex += childNode.textContent!.length
                 }
               }
+
+              console.log('startIndex: ', startIndex)
 
               containerNode.childNodes.forEach((node) => {
                 console.log('child node: ', node)
