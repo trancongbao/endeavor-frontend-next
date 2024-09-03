@@ -1,5 +1,6 @@
 export function highlightTargetWords(cardText: string, targetWordPositions: { start: number; end: number }[]): string {
-  const bTag = '<b class="text-primary-600">'
+  const bTagOpening = '<b class="text-primary-600">'
+  const bTagClosing = '</b>'
   // Sort positions by start index to handle inserts correctly
   const sortedPositions = targetWordPositions.sort((a, b) => a.start - b.start)
   console.log(`highlightTargetWords: "sortedPositions=${sortedPositions}`)
@@ -12,15 +13,13 @@ export function highlightTargetWords(cardText: string, targetWordPositions: { st
     const endIndex = position.end + offset
 
     // Insert opening <b> tag
-    cardText = cardText.slice(0, startIndex) + bTag + cardText.slice(startIndex)
-    offset += 28 // Length of "<b class="text-primary-600">" is 3
+    cardText = cardText.slice(0, startIndex) + bTagOpening + cardText.slice(startIndex)
+    offset += bTagOpening.length
 
     // Insert closing </b> tag
     cardText =
-      cardText.slice(0, endIndex + 28) + // +3 to account for the added <b> tag
-      '</b>' +
-      cardText.slice(endIndex + 28)
-    offset += 4 // Length of "</b>" is 4
+      cardText.slice(0, endIndex + bTagOpening.length) + bTagClosing + cardText.slice(endIndex + bTagOpening.length)
+    offset += bTagClosing.length
   }
 
   return cardText
