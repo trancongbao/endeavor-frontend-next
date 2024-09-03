@@ -504,16 +504,52 @@ function CardFront({
         /* TODO: select whole words: select to the nearst whitespaces */
         onMouseUp={(e) => {
           const selection = window.getSelection()
-          const anchorOffset = selection!.anchorOffset
-          const focusOffset = selection!.focusOffset
-          const start = Math.min(anchorOffset, focusOffset)
-          const end = Math.max(anchorOffset, focusOffset)
-          setSelectionIndices({ start, end })
+          console.log('selection: ', selection)
           if (selection !== null) {
             const selectedText = selection.toString()
             if (selectedText.length > 0) {
-              const range = selection?.getRangeAt(0)
+              const containerNode = e.currentTarget
+              console.log('containerNode: ', containerNode)
+              const childNodes = containerNode.childNodes
+              console.log('childNodes: ', childNodes.values())
+              const childNodeCounts = childNodes.length
+              console.log('childNodeCounts: ', childNodeCounts)
+              
+              const range = selection.getRangeAt(0)
               console.log('range: ', range)
+              const startContainer = range.startContainer
+              console.log('startContainer: ', startContainer)
+              let startContainerIndex = -1
+              for (let i = 0; i < childNodes.length; i++) {
+                /*
+                 * Assume that the selected text is within a single node
+                 * So we only care about the startContainer, and not the endContainer
+                 */
+                if (childNodes[i] === startContainer) {
+                  startContainerIndex = i
+                  console.log('startContainerIndex: ', startContainerIndex)
+                  break
+                }
+              }
+
+              containerNode.childNodes.forEach((node) => {
+                console.log('child node: ', node)
+                if (node === startContainer) {
+                  console.log('startContainer found')
+                }
+              })
+
+              const anchorOffset = selection!.anchorOffset
+              console.log('anchorOffset: ', anchorOffset)
+              const focusOffset = selection!.focusOffset
+              console.log('focusOffset: ', focusOffset)
+              const start = Math.min(anchorOffset, focusOffset)
+              console.log('start: ', start)
+              const end = Math.max(anchorOffset, focusOffset)
+              setSelectionIndices({ start, end })
+
+              // const range = selection?.getRangeAt(0)
+              // console.log('range: ', range)
               const boundingClientRect = range.getBoundingClientRect()
               console.log('boundingClientRect: ', boundingClientRect)
               console.log('selected text: ', selectedText)
@@ -543,6 +579,35 @@ function CardFront({
     </div>
   )
 
+  function getSelectionIndices(container: EventTarget & HTMLParagraphElement, selection: Selection) {
+    console.log(`getSelectionIndices: container = ${container}, selection = ${selection}`)
+    let start = 0
+    let end = 0
+    let currentNode = container
+    const range = selection.getRangeAt(0)
+
+    traverseNodes(currentNode, true, range.startOffset)
+
+    return { start, end }
+
+    function traverseNodes(node: Node, isStartNode: boolean, offset: number) {
+      if (node === range.startContainer) {
+        start += offset
+      }
+      if (node === range.endContainer) {
+        end += offset
+      }
+      if (node.nodeType === Node.TEXT_NODE) {
+        if (node !== range.startContainer) start += node.textContent.length
+        if (node !== range.endContainer) end += node.textContent.length
+      }
+
+      for (let child = node.firstChild; child; child = child.nextSibling) {
+        traverseNodes(child, false, 0)
+      }
+    }
+  }
+
   async function fetchSuggestedWords(selectedText: string) {
     try {
       const response = await fetch(`/api/word/search?query=${encodeURIComponent(selectedText)}`)
@@ -560,10 +625,13 @@ function CardFront({
   }
 
   function calculateWordOrder(): number {
+    console.log('calculateWordOrder: cardText= ', cardText)
     const { start } = selectionIndices
+    console.log('start: ', start)
 
     let order = 0
     let index = cardText.indexOf('#')
+    console.log('index: ', index)
 
     while (index !== -1 && index < start) {
       // Check if the next '#' is also within bounds
