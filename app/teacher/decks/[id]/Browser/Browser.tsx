@@ -459,13 +459,16 @@ function EditCardTextForm({ currentCardText, setIsEditingCardText, editCardText 
 function Card({ selectedCardRows }: { selectedCardRows: Row[] }) {
   console.log('Card: selectedCardRows=', selectedCardRows)
 
-  const targetWordPositions = selectedCardRows.map((row) => ({ start: row.wordStartIndex, end: row.wordEndIndex }))
+  const targetWordPositions = selectedCardRows.map((row) => ({
+    start: row.wordStartIndex as number,
+    end: row.wordEndIndex as number,
+  }))
   console.log('Card: targetWordPositions=', targetWordPositions)
 
   return (
     <div className="p-2 w-full flex flex-col items-center gap-3">
       <CardFront
-        highlightedCardText={selectedCardRows[0].cardText as string}
+        highlightedCardText={highlightTargetWords(selectedCardRows[0].cardText as string, targetWordPositions)}
         addWordToCard={(cardText: string, wordId: number) => {
           const { courseId, lessonOrder, cardOrder, cardId } = selectedCardRows[0]
           addWordToCard(
