@@ -227,18 +227,18 @@ VALUES ('there are', 'có', null, null, null, null),
        
 
 -- Sample data for CARD_WORD table
-INSERT INTO CARD_WORD (card_id, word_id, word_order)
-VALUES (1, 1, 0),
-       (1, 2, 1),
-       (2, 1, 0),
-       (3, 3, 0),
-       (3, 4, 1),
-       (4, 5, 0),
-       (5, 2, 0),
-       (6, 6, 0),
-       (7, 7, 0),
-       (7, 8, 0),
-       (8, 9, 0),
-       (9, 10, 0),
-       (10, 11, 0),
-       (11, 12, 0);
+INSERT INTO CARD_WORD (card_id, word_id, start_index, end_index)
+VALUES (1, 1, 0, 5),
+       (1, 2, 10, 15),
+       (2, 1, 0, 5),
+       (3, 3, 0, 5),
+       (3, 4, 0, 5),
+       (4, 5, 0, 5),
+       (5, 2, 0, 5),
+       (6, 6, 0, 5),
+       (7, 7, 0, 5),
+       (7, 8, 0, 5),
+       (8, 9, 0, 5),
+       (9, 10, 0, 5),
+       (10, 11, 0, 5),
+       (11, 12, 0, 5);

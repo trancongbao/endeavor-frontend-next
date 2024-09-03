@@ -145,10 +145,9 @@ CREATE TABLE WORD
 -- Table definition for CARD_WORD
 CREATE TABLE CARD_WORD
 (
-    card_id    INTEGER REFERENCES CARD (id), -- Foreign key referencing card
-    word_id    INTEGER REFERENCES WORD (id), -- Foreign key referencing word
-    -- TODO: Check if is necessary to use a linked-list-like structure (i.e. a nullable prev_word_id column) for (re-)ordering 
-    -- TODO: use start and end indices instead of order
-    word_order INTEGER NOT NULL,             -- Relative order of the word in the card
-    PRIMARY KEY (card_id, word_id)           -- Composite primary key
+    card_id     INTEGER REFERENCES CARD (id),   -- Foreign key referencing card
+    word_id     INTEGER REFERENCES WORD (id),   -- Foreign key referencing word
+    start_index INTEGER NOT NULL,               -- Start index of the word in the card
+    end_index   INTEGER NOT NULL,               -- End index of the word in the card
+    PRIMARY KEY (card_id, word_id)              -- Composite primary key
 );
