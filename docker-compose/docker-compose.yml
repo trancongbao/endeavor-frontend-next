@@ -10,7 +10,7 @@ services:
       POSTGRES_PASSWORD: postgres_password
       POSTGRES_DB: postgres_db
     volumes:
-      - ./postgres/var_lib_postgresql_data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
       - ./postgres/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d/
     ports:
       - 5432:5432
@@ -23,7 +23,7 @@ services:
       PGADMIN_DEFAULT_EMAIL: pgadmin_default_email@gmail.com
       PGADMIN_DEFAULT_PASSWORD: pgadmin_default_password
     volumes:
-      - ./postgres/var_lib_pgadmin:/var/lib/pgadmin
+      - pgadmin_data:/var/lib/pgadmin
       - ./postgres/pgadmin4/servers.json:/pgadmin4/servers.json
       - ./postgres/pgadmin4/preferences.json:/pgadmin4/preferences.json
     ports:
@@ -34,8 +34,11 @@ services:
     image: redis:latest
     restart: always
     ports:
-      - "6379:6379"
+      - '6379:6379'
     volumes:
       - redis:/root/redis
+
 volumes:
+  postgres_data:
+  pgadmin_data:
   redis:
