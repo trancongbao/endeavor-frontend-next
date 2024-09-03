@@ -530,9 +530,12 @@ function CardFront({
             console.log('startContainer: ', startContainer)
             const startOffset = range.startOffset
             console.log('startOffset: ', startOffset)
+            const endOffset = range.endOffset
+            console.log('endOffset: ', endOffset)
 
             let wordOrder = 0
             let startIndex = 0
+            let endIndex = 0
 
             /*
              * We traverse the paragragh's child nodes to find the start index of the selection.
@@ -540,21 +543,24 @@ function CardFront({
             for (let i = 0; i < childNodes.length; i++) {
               const childNode = childNodes[i]
               /*
-               * If the child node is not the startContainer, we add the text length of the node to the startIndex,and increment wordOrder.
-               * If the child node is the startContainer, we add the startOffset to the startIndex, and break the loop.
+               * If the child node is not the startContainer, we add the text length of the node to the startIndex and endIndex,and increment wordOrder.
+               * If the child node is the startContainer, we add the startOffset to the startIndex and endOffset to endIndex, and stop the loop.
                * We only care about the startContainer, and not the endContainer, because in practice, only Firefox allows to select multiple ranges.
                */
               if (childNode !== startContainer) {
                 wordOrder++
                 startIndex += childNode.textContent!.length
+                endIndex += childNode.textContent!.length
               } else {
                 startIndex += startOffset
+                endIndex += endOffset
                 break
               }
             }
 
             console.log('wordOrder: ', wordOrder)
             console.log('startIndex: ', startIndex)
+            console.log('endIndex: ', endIndex)
 
             paragraph.childNodes.forEach((node) => {
               console.log('child node: ', node)
