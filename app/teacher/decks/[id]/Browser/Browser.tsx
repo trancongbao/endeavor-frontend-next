@@ -536,7 +536,6 @@ function CardFront({
         suggestedWords={suggestedWords}
         onSelect={(wordId: number) => {
           console.log('suggested word selected: ', wordId)
-          console.log('calculateWordOrder: ', calculateWordOrder())
           addWordToCard(addWordMarkings(cardText), wordId)
           setSuggestedWordsVisible(false)
         }}
@@ -631,32 +630,6 @@ function CardFront({
       top: boundingClientRect.bottom + window.scrollY,
       left: boundingClientRect.left + window.scrollX,
     }
-  }
-
-  function calculateWordOrder(): number {
-    console.log('calculateWordOrder: cardText= ', cardText)
-    const { startIndex: start } = selectionPosition
-    console.log('start: ', start)
-
-    let order = 0
-    let index = cardText.indexOf('#')
-    console.log('index: ', index)
-
-    while (index !== -1 && index < start) {
-      // Check if the next '#' is also within bounds
-      const nextIndex = cardText.indexOf('#', index + 1)
-      if (nextIndex !== -1 && nextIndex < start) {
-        // Found a pair of '#'
-        order++
-        // Move to the next potential '#'
-        index = cardText.indexOf('#', nextIndex + 1)
-      } else {
-        // No valid pair found, break the loop
-        break
-      }
-    }
-
-    return order
   }
 
   function addWordMarkings(cardText: string): string {
