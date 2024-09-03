@@ -502,12 +502,21 @@ function CardFront({
           __html: styleNewWord(cardText as string),
         }}
         /* TODO: select whole words: select to the nearst whitespaces */
+        /*
+         * We want to show suggested words only when the user finishes selecting a text.
+         * Therefore, onMouseUp is used instead of onSelectChange.
+         * Also, we need to check for selected text length, to account for the double-click selection.
+         */
         onMouseUp={(e) => {
           const selection = window.getSelection()
           console.log('selection: ', selection)
           if (selection !== null) {
             const selectedText = selection.toString()
             if (selectedText.length > 0) {
+              /*
+               * For each of the target words, there is a <b> node nested within a <p> node.
+               * Ref: https://javascript.info/selection-range
+               */
               const containerNode = e.currentTarget
               console.log('containerNode: ', containerNode)
               const childNodes = containerNode.childNodes
@@ -519,7 +528,7 @@ function CardFront({
               console.log('startContainer: ', startContainer)
               const startOffset = range.startOffset
               console.log('startOffset: ', startOffset)
-              let startContainerIndex = -1
+              let wordOrder = -1
               let startIndex = 0
               for (let i = 0; i < childNodes.length; i++) {
                 const childNode = childNodes[i]
@@ -528,8 +537,8 @@ function CardFront({
                  * So we only care about the startContainer, and not the endContainer
                  */
                 if (childNode === startContainer) {
-                  startContainerIndex = i
-                  console.log('startContainerIndex: ', startContainerIndex)
+                  wordOrder = i
+                  console.log('startContainerIndex: ', wordOrder)
                   startIndex += startOffset
                   break
                 } else {
