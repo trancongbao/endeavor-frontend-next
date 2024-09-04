@@ -476,47 +476,36 @@ function EditCardTextForm({ currentCardText, setIsEditingCardText, editCardText 
   )
 }
 
-//TODO: use start and end indices to denote new words
 function Card({ selectedCardRows }: { selectedCardRows: Row[] }) {
   console.log('Card: selectedCardRows=', selectedCardRows)
 
-  const targetWordPositions = selectedCardRows.map((row) => ({
-    start: row.wordStartIndex as number,
-    end: row.wordEndIndex as number,
-  }))
-  console.log('Card: targetWordPositions=', targetWordPositions)
-
   return (
     <div className="p-2 w-full flex flex-col items-center gap-3">
-      <CardFront
-        selectedCardRows={selectedCardRows}
-        highlightedCardText={highlightTargetWords(selectedCardRows[0].cardText as string, targetWordPositions)}
-        addWordToCard={(cardText: string, wordId: number) => {}}
-      />
+      <CardFront selectedCardRows={selectedCardRows} />
       <Separator className="w-full h-1 bg-gray-200" />
       <CardBack selectedCardRows={selectedCardRows} />
     </div>
   )
 }
 
-function CardFront({
-  selectedCardRows,
-  highlightedCardText,
-}: {
-  selectedCardRows: Row[]
-  highlightedCardText: string
-}) {
+function CardFront({ selectedCardRows }: { selectedCardRows: Row[] }) {
   const [selectionPosition, setSelectionPosition] = useState({ startIndex: 0, endIndex: 0 })
   const [suggestedWords, setSuggestedWords] = useState([])
   const [suggestedWordsVisible, setSuggestedWordsVisible] = useState(false)
   const [suggestedWordsPosition, setSuggestedWordsPosition] = useState({ top: 0, left: 0 })
+
+  const targetWordPositions = selectedCardRows.map((row) => ({
+    start: row.wordStartIndex as number,
+    end: row.wordEndIndex as number,
+  }))
+  console.log('CardFront: targetWordPositions=', targetWordPositions)
 
   return (
     <div>
       <p
         className="text-center text-lg"
         dangerouslySetInnerHTML={{
-          __html: highlightedCardText,
+          __html: highlightTargetWords(selectedCardRows[0].cardText as string, targetWordPositions),
         }}
         /* TODO: select whole words: select to the nearst whitespaces */
         /*
