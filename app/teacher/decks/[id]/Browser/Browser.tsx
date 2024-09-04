@@ -683,8 +683,8 @@ function CardBack({ selectedCardRows }: { selectedCardRows: Row[] }) {
 
   return (
     <div className="w-full flex flex-col items-center gap-3">
-      {selectedCardRows.map((word, index) => (
-        <Word key={index} word={word} />
+      {selectedCardRows.map((wordRow, index) => (
+        <Word key={index} wordRow={wordRow} />
       ))}
       {!isAddingWord ? (
         <Button
@@ -701,8 +701,8 @@ function CardBack({ selectedCardRows }: { selectedCardRows: Row[] }) {
   )
 }
 
-function Word({ word }: { word: Row }) {
-  console.log('Word: word=', word)
+function Word({ wordRow }: { wordRow: Row }) {
+  console.log('Word: wordRow=', wordRow)
 
   const [isEditingWord, setIsEditingWord] = useState(false)
 
@@ -711,11 +711,11 @@ function Word({ word }: { word: Row }) {
       <div></div>
       <div className="flex flex-col items-center">
         <div>
-          <span className="font-bold text-primary-600">{word.wordText}</span>
-          <span className=""> :: {word.wordDefinition}</span>
+          <span className="font-bold text-primary-600">{wordRow.wordText}</span>
+          <span className=""> :: {wordRow.wordDefinition}</span>
         </div>
-        {word.wordImageUri && (
-          <Image src={word.wordImageUri} alt={word.wordText as string} width={200} height={100}></Image>
+        {wordRow.wordImageUri && (
+          <Image src={wordRow.wordImageUri} alt={wordRow.wordText as string} width={200} height={100}></Image>
         )}
       </div>
       <div className="flex flex-col">
@@ -726,11 +726,11 @@ function Word({ word }: { word: Row }) {
           variant="ghost"
           onClick={() =>
             removeWordFromCard(
-              word.courseId,
-              word.lessonOrder as number,
-              word.cardOrder,
-              word.wordText,
-              word.wordDefinition
+              wordRow.courseId,
+              wordRow.lessonOrder as number,
+              wordRow.cardOrder as number,
+              wordRow.wordText as string,
+              wordRow.wordDefinition as string
             )
           }
         >
