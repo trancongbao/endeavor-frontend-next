@@ -115,8 +115,8 @@ interface Card {
 interface Word {
   text: string
   definition: string
-  phonetic: string
-  part_of_speech: string
+  phonetic?: string
+  part_of_speech?: string
   audio_uri?: string
   image_uri?: string
 }

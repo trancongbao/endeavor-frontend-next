@@ -145,4 +145,9 @@ export async function removeWordFromCard(
 
 export async function addWord(text: string, definition: string) {
   console.log(`addWord: text = ${text}, definition = ${definition}`)
+  const addedWord = await kysely
+    .insertInto('word')
+    .values({ text, definition })
+    .returningAll()
+    .executeTakeFirstOrThrow()
 }
