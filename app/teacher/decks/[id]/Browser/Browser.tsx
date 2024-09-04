@@ -9,6 +9,7 @@ import { useRef, useEffect } from 'react'
 import {
   addCard,
   addSubdeck,
+  addWord,
   addWordToCard,
   deleteCard,
   deleteSubdeck,
@@ -699,7 +700,12 @@ function CardBack({ selectedCardRows, isAddingWord }: { selectedCardRows: Row[];
     <div className="w-full flex flex-col items-center gap-3">
       {selectedCardRows[0].wordText !== null &&
         selectedCardRows.map((wordRow, index) => <Word key={index} wordRow={wordRow} />)}
-      {isAddingWord && <div>Word Form</div>}
+      {isAddingWord && (
+        <AddWordForm
+          onSave={(text: string, definition: string) => addWord(text, definition)}
+          onCancel={() => console.log('cancel')}
+        />
+      )}
     </div>
   )
 }
@@ -744,30 +750,33 @@ function Word({ wordRow }: { wordRow: Row }) {
   )
 }
 
-interface AddWordFormProps {
-  courseId: string | number
-  lessonOrder: number
-  order: number
-  setIsAddingCard: (value: boolean) => void
-}
+function AddWordForm({
+  onSave,
+  onCancel,
+}: {
+  onSave: (text: string, definition: string) => void
+  onCancel: () => void
+}) {
+  const textInputRef = useRef<HTMLInputElement>(null)
+  const definitionInputRef = useRef<HTMLInputElement>(null)
 
-function AddWordForm({ courseId, lessonOrder, order, setIsAddingCard }: AddCardFormProps) {
-  const cardTextInputRef = useRef<HTMLInputElement>(null)
-
-  useEffect(() => cardTextInputRef.current!.focus(), [])
+  useEffect(() => textInputRef.current!.focus(), [])
 
   return (
     <div>
-      <form action={addCard} onSubmit={() => setIsAddingCard(false)}>
-        <Input type="hidden" name="courseId" value={courseId} />
-        <Input type="hidden" name="lessonOrder" value={lessonOrder as number} />
-        <Input type="hidden" name="order" value={order} />
-        <Input name="text" ref={cardTextInputRef} placeholder="Enter the card text and press Return." />
-      </form>
+      <Input name="text" ref={textInputRef} placeholder="Enter the word text." />
+      <Input name="text" ref={definitionInputRef} placeholder="Enter the word text." />
       <Button
         variant="outline"
         className="w-36 bg-orange-400  text-white text-md hover:bg-orange-300 hover:text-black py-2 px-4 rounded"
-        onClick={() => setIsAddingCard(false)}
+        onClick={() => onSave(textInputRef.current?.value || '', definitionInputRef.current?.value || '')}
+      >
+        Save
+      </Button>
+      <Button
+        variant="outline"
+        className="w-36 bg-orange-400  text-white text-md hover:bg-orange-300 hover:text-black py-2 px-4 rounded"
+        onClick={() => onCancel()}
       >
         Cancel
       </Button>

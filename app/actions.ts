@@ -142,3 +142,7 @@ export async function removeWordFromCard(
   console.log('Deleted card word: ', deletedCardWord)
   revalidatePath('/teacher/decks/[id]', 'page')
 }
+
+export async function addWord(text: string, definition: string) {
+  console.log(`addWord: text = ${text}, definition = ${definition}`)
+}
