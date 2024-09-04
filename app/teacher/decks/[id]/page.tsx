@@ -68,12 +68,10 @@ export type Row = {
   courseTitle: string
   lessonOrder: number | null
   lessonTitle: string | null
-  cardId: number | null
   cardOrder: number | null
   cardText: string | null
   wordStartIndex: number | null
   wordEndIndex: number | null
-  wordId: number | null
   wordText: string | null
   wordDefinition: string | null
   wordPhonetic: string | null

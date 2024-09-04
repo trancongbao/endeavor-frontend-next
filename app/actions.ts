@@ -63,7 +63,6 @@ export async function addCard(formData: FormData) {
 }
 
 export async function deleteCard(courseId: number, subdeckOrder: number, cardOrder: number) {
-  //TODO: authorization with courseId
   console.log(`deleteCard: courseId = ${courseId}, subdeckOrder = ${subdeckOrder}, cardOrder = ${cardOrder}`)
   const deletedSubdeck = await kysely
     .deleteFrom('card')

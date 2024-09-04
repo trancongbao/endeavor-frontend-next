@@ -145,7 +145,7 @@ CREATE TABLE CARD_WORD
     word_definition TEXT,               -- Foreign key referencing word
     start_index     INTEGER NOT NULL,   -- Start index of the word in the card
     end_index       INTEGER NOT NULL,   -- End index of the word in the card
-    CONSTRAINT fk_card FOREIGN KEY (course_id, lesson_order, card_order) REFERENCES CARD (course_id, lesson_order, "order"),
+    CONSTRAINT fk_card FOREIGN KEY (course_id, lesson_order, card_order) REFERENCES CARD (course_id, lesson_order, "order") ON DELETE CASCADE,
     CONSTRAINT fk_word FOREIGN KEY (word_text, word_definition) REFERENCES WORD (text, definition),
     PRIMARY KEY (course_id, lesson_order, card_order, word_text, word_definition)  -- Composite primary key
 );
