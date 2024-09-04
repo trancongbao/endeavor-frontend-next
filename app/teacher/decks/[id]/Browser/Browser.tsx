@@ -722,6 +722,7 @@ function Word({ wordRow }: { wordRow: Row }) {
         <div>
           <span className="font-bold text-primary-600">{wordRow.wordText}</span>
           <span className=""> :: {wordRow.wordDefinition}</span>
+          <p>TODO: upload image button</p>
         </div>
         {wordRow.wordImageUri && (
           <Image src={wordRow.wordImageUri} alt={wordRow.wordText as string} width={200} height={100}></Image>
@@ -769,7 +770,6 @@ function AddWordForm({
         <span>::</span>
         <Input name="text" ref={definitionInputRef} placeholder="definition" />
       </div>
-      <p>TODO: upload image</p> 
       <div className="flex justify-center gap-2">
         <Button
           variant="outline"
