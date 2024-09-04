@@ -705,20 +705,6 @@ function Word({ word }: { word: Row }) {
       </div>
     </div>
   )
-
-  // function removeWordMarkings(cardText: string, wordOrder: number): string {
-  //   let order = 0
-  //   let startIndex = cardText.indexOf('#')
-  //   let endIndex = cardText.indexOf('#', startIndex + 1)
-
-  //   while (order < wordOrder) {
-  //     order++
-  //     startIndex = cardText.indexOf('#', endIndex + 1)
-  //     endIndex = cardText.indexOf('#', startIndex + 1)
-  //   }
-
-  //   return cardText.slice(0, startIndex) + cardText.slice(startIndex + 1, endIndex) + cardText.slice(endIndex + 1)
-  // }
 }
 
 function SuggestedWords({
