@@ -285,7 +285,16 @@ function CardTextList({ selectedSubdeckRows }: { selectedSubdeckRows: Row[] }) {
                 cardText={groupedCardRows[cardOrder][0].cardText as string}
                 isSelected={selectedCardOrder === parseInt(cardOrder)}
                 onClick={() => setSelectedCardOrder(parseInt(cardOrder))}
-                deleteCard={() => deleteCard(courseId, lessonOrder as number, parseInt(cardOrder))}
+                deleteCard={() => {
+                  if (parseInt(cardOrder) === selectedCardOrder) {
+                    if (selectedCardOrder === getFirstCardOrder(groupedCardRows)) {
+                      setSelectedCardOrder(getFirstCardOrder(groupedCardRows) + 1)
+                    } else {
+                      setSelectedCardOrder(getFirstCardOrder(groupedCardRows))
+                    }
+                  }
+                  deleteCard(courseId, lessonOrder as number, parseInt(cardOrder))
+                }}
                 editCardText={(newCardText: string) => {
                   editCardText(courseId, lessonOrder as number, parseInt(cardOrder), newCardText)
                 }}
