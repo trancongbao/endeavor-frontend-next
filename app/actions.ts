@@ -126,12 +126,23 @@ export async function addWordToCard(
   revalidatePath('/teacher/decks/[id]', 'page')
 }
 
-export async function removeWordFromCard(cardId: number, wordId: number) {
-  console.log(`removeWordFromCard: cardId = ${cardId}, wordId = ${wordId}`)
+export async function removeWordFromCard(
+  courseId: number,
+  lessonOrder: number,
+  cardOrder: number,
+  wordText: string,
+  wordDefinition: string
+) {
+  console.log(
+    `removeWordFromCard: courseId = ${courseId}, lessonOrder = ${lessonOrder}, cardOrder = ${cardOrder}, wordText = ${wordText}, wordDefinition = ${wordDefinition}`
+  )
   const deletedCardWord = await kysely
     .deleteFrom('card_word')
-    .where('card_id', '=', cardId)
-    .where('word_id', '=', wordId)
+    .where('course_id', '=', courseId)
+    .where('lesson_order', '=', lessonOrder)
+    .where('card_order', '=', cardOrder)
+    .where('word_text', '=', wordText)
+    .where('word_definition', '=', wordDefinition)
     .returningAll()
     .executeTakeFirstOrThrow()
   console.log('Deleted card word: ', deletedCardWord)

@@ -668,6 +668,8 @@ function CardBack({ selectedCardRows }: { selectedCardRows: Row[] }) {
 }
 
 function Word({ word }: { word: Row }) {
+  console.log('Word: word=', word)
+
   const [isEditingWord, setIsEditingWord] = useState(false)
 
   return (
@@ -686,37 +688,26 @@ function Word({ word }: { word: Row }) {
         <Button variant="ghost" size={'sm'} onClick={() => setIsEditingWord(true)}>
           <Edit />
         </Button>
-        <Button
-          variant="ghost"
-          onClick={() => {
-            editCardText(
-              word.courseId,
-              word.lessonOrder as number,
-              word.cardOrder as number,
-              removeWordMarkings(word.cardText as string, word.wordOrder as number)
-            )
-            removeWordFromCard(word.cardId as number, word.cardId as number)
-          }}
-        >
+        <Button variant="ghost" onClick={() => removeWordFromCard(word.cardId as number, word.cardId as number)}>
           <XSquare />
         </Button>
       </div>
     </div>
   )
 
-  function removeWordMarkings(cardText: string, wordOrder: number): string {
-    let order = 0
-    let startIndex = cardText.indexOf('#')
-    let endIndex = cardText.indexOf('#', startIndex + 1)
+  // function removeWordMarkings(cardText: string, wordOrder: number): string {
+  //   let order = 0
+  //   let startIndex = cardText.indexOf('#')
+  //   let endIndex = cardText.indexOf('#', startIndex + 1)
 
-    while (order < wordOrder) {
-      order++
-      startIndex = cardText.indexOf('#', endIndex + 1)
-      endIndex = cardText.indexOf('#', startIndex + 1)
-    }
+  //   while (order < wordOrder) {
+  //     order++
+  //     startIndex = cardText.indexOf('#', endIndex + 1)
+  //     endIndex = cardText.indexOf('#', startIndex + 1)
+  //   }
 
-    return cardText.slice(0, startIndex) + cardText.slice(startIndex + 1, endIndex) + cardText.slice(endIndex + 1)
-  }
+  //   return cardText.slice(0, startIndex) + cardText.slice(startIndex + 1, endIndex) + cardText.slice(endIndex + 1)
+  // }
 }
 
 function SuggestedWords({
