@@ -479,6 +479,7 @@ function EditCardTextForm({ currentCardText, setIsEditingCardText, editCardText 
 
 function Card({ selectedCardRows }: { selectedCardRows: Row[] }) {
   console.log('Card: selectedCardRows=', selectedCardRows)
+  const { courseId, lessonOrder, cardOrder } = selectedCardRows[0]
 
   const [isAddingWord, setIsAddingWord] = useState(false)
   const [selectedText, setSelectedText] = useState<string | null>(null)
@@ -498,7 +499,8 @@ function Card({ selectedCardRows }: { selectedCardRows: Row[] }) {
           onSave={async (text: string, definition: string) => {
             const addedWord = await addWord(text, definition)
             console.log('addedWord: ', addedWord)
-            // addWordToCard()
+            await addWordToCard(courseId, lessonOrder as number, cardOrder as number, text, definition, 0, 0)
+            setIsAddingWord(false)
           }}
           onCancel={() => console.log('cancel')}
         />
