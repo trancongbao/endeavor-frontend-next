@@ -283,6 +283,10 @@ function CardTextList({ selectedSubdeckRows }: { selectedSubdeckRows: Row[] }) {
               <CardTextListItem
                 key={cardOrder}
                 cardText={groupedCardRows[cardOrder][0].cardText as string}
+                targetWordPositions={groupedCardRows[cardOrder].map((row) => ({
+                  start: row.wordStartIndex as number,
+                  end: row.wordEndIndex as number,
+                }))}
                 isSelected={selectedCardOrder === parseInt(cardOrder)}
                 onClick={() => setSelectedCardOrder(parseInt(cardOrder))}
                 deleteCard={() => {
@@ -332,13 +336,21 @@ function hasCard(selectedSubdeckRows: Row[]) {
 
 interface CardTextListItemProps {
   cardText: string
+  targetWordPositions: { start: number; end: number }[]
   isSelected: boolean
   onClick: () => void
   deleteCard: () => void
   editCardText: (newCardText: string) => void
 }
 
-function CardTextListItem({ cardText, isSelected, onClick, deleteCard, editCardText }: CardTextListItemProps) {
+function CardTextListItem({
+  cardText,
+  targetWordPositions,
+  isSelected,
+  onClick,
+  deleteCard,
+  editCardText,
+}: CardTextListItemProps) {
   const [isEditingCardText, setIsEditingCardText] = useState(false)
 
   return (
@@ -351,7 +363,7 @@ function CardTextListItem({ cardText, isSelected, onClick, deleteCard, editCardT
           <p
             onClick={() => onClick()}
             dangerouslySetInnerHTML={{
-              __html: cardText as string,
+              __html: highlightTargetWords(cardText as string, targetWordPositions),
             }}
           ></p>
           <KebabMenu
