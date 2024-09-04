@@ -645,37 +645,37 @@ function CardFront({ selectedCardRows }: { selectedCardRows: Row[] }) {
       left: boundingClientRect.left + window.scrollX,
     }
   }
-}
 
-function SuggestedWords({
-  open,
-  onOpenChange,
-  position,
-  suggestedWords,
-  onSelect,
-}: {
-  open: boolean
-  onOpenChange: (value: boolean) => void
-  position: { top: number; left: number }
-  suggestedWords: { id: number; text: string; definition: string }[]
-  onSelect: (wordText: string, wordDefinition: string) => void
-}) {
-  return (
-    <DropdownMenu open={open} onOpenChange={onOpenChange}>
-      <DropdownMenuContent
-        className={`fixed bg-white border border-gray-500`}
-        style={{ top: position.top, left: position.left }}
-      >
-        {suggestedWords.map(({ text, definition }, index) => (
-          <DropdownMenuItem key={index} onSelect={() => onSelect(text, definition)}>
-            <Button variant="ghost" className="flex items-center gap-2">
-              <span>{`${text} :: ${definition}`}</span>
-            </Button>
-          </DropdownMenuItem>
-        ))}
-      </DropdownMenuContent>
-    </DropdownMenu>
-  )
+  function SuggestedWords({
+    open,
+    onOpenChange,
+    position,
+    suggestedWords,
+    onSelect,
+  }: {
+    open: boolean
+    onOpenChange: (value: boolean) => void
+    position: { top: number; left: number }
+    suggestedWords: { id: number; text: string; definition: string }[]
+    onSelect: (wordText: string, wordDefinition: string) => void
+  }) {
+    return (
+      <DropdownMenu open={open} onOpenChange={onOpenChange}>
+        <DropdownMenuContent
+          className={`fixed bg-white border border-gray-500`}
+          style={{ top: position.top, left: position.left }}
+        >
+          {suggestedWords.map(({ text, definition }, index) => (
+            <DropdownMenuItem key={index} onSelect={() => onSelect(text, definition)}>
+              <Button variant="ghost" className="flex items-center gap-2">
+                <span>{`${text} :: ${definition}`}</span>
+              </Button>
+            </DropdownMenuItem>
+          ))}
+        </DropdownMenuContent>
+      </DropdownMenu>
+    )
+  }
 }
 
 function CardBack({ selectedCardRows }: { selectedCardRows: Row[] }) {
