@@ -489,19 +489,9 @@ function Card({ selectedCardRows }: { selectedCardRows: Row[] }) {
   return (
     <div className="p-2 w-full flex flex-col items-center gap-3">
       <CardFront
+        selectedCardRows={selectedCardRows}
         highlightedCardText={highlightTargetWords(selectedCardRows[0].cardText as string, targetWordPositions)}
-        addWordToCard={(cardText: string, wordId: number) => {
-          const { courseId, lessonOrder, cardOrder, cardId } = selectedCardRows[0]
-          addWordToCard(
-            selectedCardRows[0].courseId as number,
-            selectedCardRows[0].lessonOrder as number,
-            cardId as number,
-            cardOrder as number,
-            cardText,
-            wordId as number,
-            0 //TODO: wordOrder
-          )
-        }}
+        addWordToCard={(cardText: string, wordId: number) => {}}
       />
       <Separator className="w-full h-1 bg-gray-200" />
       <CardBack selectedCardRows={selectedCardRows} />
@@ -510,13 +500,13 @@ function Card({ selectedCardRows }: { selectedCardRows: Row[] }) {
 }
 
 function CardFront({
+  selectedCardRows,
   highlightedCardText,
-  addWordToCard,
 }: {
+  selectedCardRows: Row[]
   highlightedCardText: string
-  addWordToCard: (cardText: string, wordId: number) => void
 }) {
-  const [selectionPosition, setSelectionPosition] = useState({ startIndex: 0, endIndex: 0, wordOrder: 0 })
+  const [selectionPosition, setSelectionPosition] = useState({ startIndex: 0, endIndex: 0 })
   const [suggestedWords, setSuggestedWords] = useState([])
   const [suggestedWordsVisible, setSuggestedWordsVisible] = useState(false)
   const [suggestedWordsPosition, setSuggestedWordsPosition] = useState({ top: 0, left: 0 })
@@ -561,9 +551,17 @@ function CardFront({
         onOpenChange={setSuggestedWordsVisible}
         position={suggestedWordsPosition}
         suggestedWords={suggestedWords}
-        onSelect={(wordId: number) => {
-          console.log('suggested word selected: ', wordId)
-          addWordToCard(addWordMarkings(highlightedCardText), wordId)
+        onSelect={(wordText: string, wordDefinition: string) => {
+          const { courseId, lessonOrder, cardOrder } = selectedCardRows[0]
+          addWordToCard(
+            courseId as number,
+            lessonOrder as number,
+            cardOrder as number,
+            wordText as string,
+            wordDefinition as string,
+            selectionPosition.startIndex,
+            selectionPosition.endIndex
+          )
           setSuggestedWordsVisible(false)
         }}
       />
@@ -658,11 +656,37 @@ function CardFront({
       left: boundingClientRect.left + window.scrollX,
     }
   }
+}
 
-  function addWordMarkings(cardText: string): string {
-    const { startIndex, endIndex } = selectionPosition
-    return cardText.slice(0, startIndex) + '#' + cardText.slice(startIndex, endIndex) + '#' + cardText.slice(endIndex)
-  }
+function SuggestedWords({
+  open,
+  onOpenChange,
+  position,
+  suggestedWords,
+  onSelect,
+}: {
+  open: boolean
+  onOpenChange: (value: boolean) => void
+  position: { top: number; left: number }
+  suggestedWords: { id: number; text: string; definition: string }[]
+  onSelect: (wordText: string, wordDefinition: string) => void
+}) {
+  return (
+    <DropdownMenu open={open} onOpenChange={onOpenChange}>
+      <DropdownMenuContent
+        className={`fixed bg-white border border-gray-500`}
+        style={{ top: position.top, left: position.left }}
+      >
+        {suggestedWords.map(({ text, definition }, index) => (
+          <DropdownMenuItem key={index} onSelect={() => onSelect(text, definition)}>
+            <Button variant="ghost" className="flex items-center gap-2">
+              <span>{`${text} :: ${definition}`}</span>
+            </Button>
+          </DropdownMenuItem>
+        ))}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  )
 }
 
 function CardBack({ selectedCardRows }: { selectedCardRows: Row[] }) {
@@ -725,37 +749,6 @@ function Word({ word }: { word: Row }) {
         </Button>
       </div>
     </div>
-  )
-}
-
-function SuggestedWords({
-  open,
-  onOpenChange,
-  position,
-  suggestedWords,
-  onSelect,
-}: {
-  open: boolean
-  onOpenChange: (value: boolean) => void
-  position: { top: number; left: number }
-  suggestedWords: { id: number; text: string; definition: string }[]
-  onSelect: (wordId: number) => void
-}) {
-  return (
-    <DropdownMenu open={open} onOpenChange={onOpenChange}>
-      <DropdownMenuContent
-        className={`fixed bg-white border border-gray-500`}
-        style={{ top: position.top, left: position.left }}
-      >
-        {suggestedWords.map(({ id, text, definition }, index) => (
-          <DropdownMenuItem key={index} onSelect={() => onSelect(id)}>
-            <Button variant="ghost" className="flex items-center gap-2">
-              <span>{`${text} :: ${definition}`}</span>
-            </Button>
-          </DropdownMenuItem>
-        ))}
-      </DropdownMenuContent>
-    </DropdownMenu>
   )
 }
 

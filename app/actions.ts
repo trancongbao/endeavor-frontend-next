@@ -94,34 +94,29 @@ export async function editCardText(courseId: number, subdeckOrder: number, cardO
 export async function addWordToCard(
   courseId: number,
   lessonOrder: number,
-  cardId: number,
   cardOrder: number,
-  cardText: string,
-  wordId: number,
-  wordOrder: number
+  wordText: string,
+  wordDefinition: string,
+  startIndex: number,
+  endIndex: number
 ) {
-  console.log(`addWordToCard: cardId = ${cardId}, wordId = ${wordId}, wordOrder = ${wordOrder}`)
+  console.log(
+    `addWordToCard: courseId = ${courseId}, lessonOrder = ${lessonOrder}, cardOrder = ${cardOrder}, wordText = ${wordText}, wordDefinition = ${wordDefinition}, startIndex = ${startIndex}, endIndex = ${endIndex}`
+  )
   const addedCardWord = await kysely
     .insertInto('card_word')
     .values({
-      card_id: cardId,
-      word_id: wordId,
-      word_order: wordOrder,
+      course_id: courseId,
+      lesson_order: lessonOrder,
+      card_order: cardOrder,
+      word_text: wordText,
+      word_definition: wordDefinition,
+      start_index: startIndex,
+      end_index: endIndex,
     })
     .returningAll()
     .executeTakeFirstOrThrow()
   console.log('Added card word: ', addedCardWord)
-  const updatedCard = await kysely
-    .updateTable('card')
-    .where('course_id', '=', courseId)
-    .where('lesson_order', '=', lessonOrder)
-    .where('order', '=', cardOrder)
-    .set({
-      text: cardText,
-    })
-    .returningAll()
-    .executeTakeFirstOrThrow()
-  console.log('Updated card: ', updatedCard)
   revalidatePath('/teacher/decks/[id]', 'page')
 }
 
