@@ -28,7 +28,12 @@ async function queryData(id: string) {
     .leftJoin('card', (join) =>
       join.onRef('card.course_id', '=', 'lesson.course_id').onRef('card.lesson_order', '=', 'lesson.order')
     )
-    .leftJoin('card_word', 'card_word.card_id', 'card.id')
+    .leftJoin('card_word', (join) =>
+      join
+        .onRef('card_word.course_id', '=', 'card.course_id')
+        .onRef('card_word.lesson_order', '=', 'card.lesson_order')
+        .onRef('card_word.card_order', '=', 'card.order')
+    )
     .leftJoin('word', (join) =>
       join.onRef('word.text', '=', 'card_word.word_text').onRef('word.definition', '=', 'card_word.word_definition')
     )
@@ -38,7 +43,6 @@ async function queryData(id: string) {
       'course.title as courseTitle',
       'lesson.order as lessonOrder',
       'lesson.title as lessonTitle',
-      'card.id as cardId',
       'card.order as cardOrder',
       'card.text as cardText',
       'card_word.start_index as wordStartIndex',

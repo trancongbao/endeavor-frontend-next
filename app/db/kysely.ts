@@ -105,7 +105,6 @@ interface Lesson {
 }
 
 interface Card {
-  id: Generated<number>
   course_id: number
   lesson_order: number
   order: number
@@ -123,7 +122,9 @@ interface Word {
 }
 
 interface CardWord {
-  card_id: number
+  course_id: number
+  lesson_order: number
+  card_order: number
   word_text: string
   word_definition: string
   start_index: number
