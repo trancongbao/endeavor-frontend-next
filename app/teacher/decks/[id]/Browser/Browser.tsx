@@ -688,7 +688,18 @@ function Word({ word }: { word: Row }) {
         <Button variant="ghost" size={'sm'} onClick={() => setIsEditingWord(true)}>
           <Edit />
         </Button>
-        <Button variant="ghost" onClick={() => removeWordFromCard(word.cardId as number, word.cardId as number)}>
+        <Button
+          variant="ghost"
+          onClick={() =>
+            removeWordFromCard(
+              word.courseId,
+              word.lessonOrder as number,
+              word.cardOrder,
+              word.wordText,
+              word.wordDefinition
+            )
+          }
+        >
           <XSquare />
         </Button>
       </div>
