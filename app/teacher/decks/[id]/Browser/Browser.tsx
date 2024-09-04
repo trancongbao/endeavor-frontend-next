@@ -763,23 +763,28 @@ function AddWordForm({
   useEffect(() => textInputRef.current!.focus(), [])
 
   return (
-    <div>
-      <Input name="text" ref={textInputRef} placeholder="Enter the word text." />
-      <Input name="text" ref={definitionInputRef} placeholder="Enter the word text." />
-      <Button
-        variant="outline"
-        className="w-36 bg-orange-400  text-white text-md hover:bg-orange-300 hover:text-black py-2 px-4 rounded"
-        onClick={() => onSave(textInputRef.current?.value || '', definitionInputRef.current?.value || '')}
-      >
-        Save
-      </Button>
-      <Button
-        variant="outline"
-        className="w-36 bg-orange-400  text-white text-md hover:bg-orange-300 hover:text-black py-2 px-4 rounded"
-        onClick={() => onCancel()}
-      >
-        Cancel
-      </Button>
+    <div className='flex flex-col gap-2'>
+      <div className="flex gap-2 items-center">
+        <Input name="text" ref={textInputRef} placeholder="text" />
+        <span>::</span>
+        <Input name="text" ref={definitionInputRef} placeholder="definition" />
+      </div>
+      <div className="flex justify-center gap-2">
+        <Button
+          variant="outline"
+          className="w-28 bg-orange-400  text-white text-md hover:bg-orange-300 hover:text-black py-2 px-4 rounded"
+          onClick={() => onSave(textInputRef.current?.value || '', definitionInputRef.current?.value || '')}
+        >
+          Save
+        </Button>
+        <Button
+          variant="outline"
+          className="w-28 bg-orange-400  text-white text-md hover:bg-orange-300 hover:text-black py-2 px-4 rounded"
+          onClick={() => onCancel()}
+        >
+          Cancel
+        </Button>
+      </div>
     </div>
   )
 }
