@@ -479,16 +479,18 @@ function EditCardTextForm({ currentCardText, setIsEditingCardText, editCardText 
 function Card({ selectedCardRows }: { selectedCardRows: Row[] }) {
   console.log('Card: selectedCardRows=', selectedCardRows)
 
+  const [isAddingWord, setIsAddingWord] = useState(false)
+
   return (
     <div className="p-2 w-full flex flex-col items-center gap-3">
-      <CardFront selectedCardRows={selectedCardRows} />
+      <CardFront selectedCardRows={selectedCardRows} onAddWord={() => setIsAddingWord(true)} />
       <Separator className="w-full h-1 bg-gray-200" />
-      <CardBack selectedCardRows={selectedCardRows} />
+      <CardBack selectedCardRows={selectedCardRows} isAddingWord={isAddingWord} />
     </div>
   )
 }
 
-function CardFront({ selectedCardRows }: { selectedCardRows: Row[] }) {
+function CardFront({ selectedCardRows, onAddWord }: { selectedCardRows: Row[]; onAddWord: () => void }) {
   const [selectionPosition, setSelectionPosition] = useState({ startIndex: 0, endIndex: 0 })
   const [suggestedWords, setSuggestedWords] = useState([])
   const [suggestedWordsVisible, setSuggestedWordsVisible] = useState(false)
@@ -551,6 +553,10 @@ function CardFront({ selectedCardRows }: { selectedCardRows: Row[] }) {
             selectionPosition.startIndex,
             selectionPosition.endIndex
           )
+          setSuggestedWordsVisible(false)
+        }}
+        onAddWord={() => {
+          onAddWord()
           setSuggestedWordsVisible(false)
         }}
       />
@@ -652,12 +658,14 @@ function CardFront({ selectedCardRows }: { selectedCardRows: Row[] }) {
     position,
     suggestedWords,
     onSelect,
+    onAddWord,
   }: {
     open: boolean
     onOpenChange: (value: boolean) => void
     position: { top: number; left: number }
     suggestedWords: { id: number; text: string; definition: string }[]
     onSelect: (wordText: string, wordDefinition: string) => void
+    onAddWord: () => void
   }) {
     return (
       <DropdownMenu open={open} onOpenChange={onOpenChange}>
@@ -672,31 +680,26 @@ function CardFront({ selectedCardRows }: { selectedCardRows: Row[] }) {
               </Button>
             </DropdownMenuItem>
           ))}
+          <Button
+            variant="outline"
+            className="self-start w-20 bg-orange-400  text-white text-md hover:bg-orange-300 hover:text-black py-2 px-4 rounded"
+            onClick={() => onAddWord()}
+          >
+            Add Word
+          </Button>
         </DropdownMenuContent>
       </DropdownMenu>
     )
   }
 }
 
-function CardBack({ selectedCardRows }: { selectedCardRows: Row[] }) {
-  const [isAddingWord, setIsAddingWord] = useState(false)
-
+function CardBack({ selectedCardRows, isAddingWord }: { selectedCardRows: Row[]; isAddingWord: boolean }) {
+  console.log('CardBack: selectedCardRows=', selectedCardRows)
   return (
     <div className="w-full flex flex-col items-center gap-3">
-      {selectedCardRows.map((wordRow, index) => (
-        <Word key={index} wordRow={wordRow} />
-      ))}
-      {!isAddingWord ? (
-        <Button
-          variant="outline"
-          className="self-start w-20 bg-orange-400  text-white text-md hover:bg-orange-300 hover:text-black py-2 px-4 rounded"
-          onClick={() => setIsAddingWord(true)}
-        >
-          Add Word
-        </Button>
-      ) : (
-        <div>Word Form</div>
-      )}
+      {selectedCardRows[0].wordText !== null &&
+        selectedCardRows.map((wordRow, index) => <Word key={index} wordRow={wordRow} />)}
+      {isAddingWord && <div>Word Form</div>}
     </div>
   )
 }
