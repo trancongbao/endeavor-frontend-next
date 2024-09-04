@@ -3,12 +3,12 @@ export function highlightTargetWords(cardText: string, targetWordPositions: { st
   const bTagClosing = '</b>'
   // Sort positions by start index to handle inserts correctly
   const sortedPositions = targetWordPositions.sort((a, b) => a.start - b.start)
-  console.log(`highlightTargetWords: "sortedPositions=${sortedPositions}`)
+  console.log(`highlightTargetWords: sortedPositions=${sortedPositions}`)
 
   // Offset to keep track of the shift in indices after insertion
   let offset = 0
 
-  for (const position of sortedPositions) {
+  sortedPositions.forEach((position) => {
     const startIndex = position.start + offset
     const endIndex = position.end + offset
 
@@ -18,9 +18,11 @@ export function highlightTargetWords(cardText: string, targetWordPositions: { st
 
     // Insert closing </b> tag
     cardText =
-      cardText.slice(0, endIndex + bTagOpening.length + 1) + bTagClosing + cardText.slice(endIndex + bTagOpening.length + 1)
+      cardText.slice(0, endIndex + bTagOpening.length + 1) +
+      bTagClosing +
+      cardText.slice(endIndex + bTagOpening.length + 1)
     offset += bTagClosing.length
-  }
+  })
 
   return cardText
 }
