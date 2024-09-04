@@ -481,14 +481,20 @@ function Card({ selectedCardRows }: { selectedCardRows: Row[] }) {
   console.log('Card: selectedCardRows=', selectedCardRows)
 
   const [isAddingWord, setIsAddingWord] = useState(false)
+  const [selectedText, setSelectedText] = useState<string | null>(null)
 
   return (
     <div className="p-2 w-full flex flex-col items-center gap-3">
-      <CardFront selectedCardRows={selectedCardRows} onAddWord={() => setIsAddingWord(true)} />
+      <CardFront
+        selectedCardRows={selectedCardRows}
+        setSelectedText={setSelectedText}
+        onAddWord={() => setIsAddingWord(true)}
+      />
       <Separator className="w-full h-1 bg-gray-200" />
       <CardBack selectedCardRows={selectedCardRows} />
       {isAddingWord && (
         <AddWordForm
+          text={selectedText as string}
           onSave={(text: string, definition: string) => addWord(text, definition)}
           onCancel={() => console.log('cancel')}
         />
@@ -497,7 +503,15 @@ function Card({ selectedCardRows }: { selectedCardRows: Row[] }) {
   )
 }
 
-function CardFront({ selectedCardRows, onAddWord }: { selectedCardRows: Row[]; onAddWord: () => void }) {
+function CardFront({
+  selectedCardRows,
+  setSelectedText,
+  onAddWord,
+}: {
+  selectedCardRows: Row[]
+  setSelectedText: (text: string) => void
+  onAddWord: () => void
+}) {
   const [selectionPosition, setSelectionPosition] = useState({ startIndex: 0, endIndex: 0 })
   const [suggestedWords, setSuggestedWords] = useState([])
   const [suggestedWordsVisible, setSuggestedWordsVisible] = useState(false)
@@ -536,6 +550,7 @@ function CardFront({ selectedCardRows, onAddWord }: { selectedCardRows: Row[]; o
            * Ref: https://javascript.info/selection-range
            */
           if (selectedText.length > 0 && !isOverlappingTargetWord(paragraph, selection)) {
+            setSelectedText(selectedText)
             fetchSuggestedWords(selectedText)
             setSelectionPosition(determineSelectionPosition(paragraph, selection))
             setSuggestedWordsPosition(determineSuggestedWordsPosition(selection))
@@ -752,21 +767,22 @@ function Word({ wordRow }: { wordRow: Row }) {
 }
 
 function AddWordForm({
+  text,
   onSave,
   onCancel,
 }: {
+  text: string
   onSave: (text: string, definition: string) => void
   onCancel: () => void
 }) {
-  const textInputRef = useRef<HTMLInputElement>(null)
   const definitionInputRef = useRef<HTMLInputElement>(null)
 
-  useEffect(() => textInputRef.current!.focus(), [])
+  useEffect(() => definitionInputRef.current!.focus(), [])
 
   return (
     <div className="flex flex-col gap-2 items-center">
       <div className="flex gap-2 items-center">
-        <Input name="text" ref={textInputRef} placeholder="text" />
+        <p>{text}</p>
         <span>::</span>
         <Input name="text" ref={definitionInputRef} placeholder="definition" />
       </div>
@@ -774,7 +790,7 @@ function AddWordForm({
         <Button
           variant="outline"
           className="w-28 bg-orange-400  text-white text-md hover:bg-orange-300 hover:text-black py-2 px-4 rounded"
-          onClick={() => onSave(textInputRef.current?.value || '', definitionInputRef.current?.value || '')}
+          onClick={() => onSave(text || '', definitionInputRef.current?.value || '')}
         >
           Save
         </Button>
