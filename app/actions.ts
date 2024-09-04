@@ -150,4 +150,6 @@ export async function addWord(text: string, definition: string) {
     .values({ text, definition })
     .returningAll()
     .executeTakeFirstOrThrow()
+
+  return addedWord
 }

@@ -495,7 +495,11 @@ function Card({ selectedCardRows }: { selectedCardRows: Row[] }) {
       {isAddingWord && (
         <AddWordForm
           text={selectedText as string}
-          onSave={(text: string, definition: string) => addWord(text, definition)}
+          onSave={async (text: string, definition: string) => {
+            const addedWord = await addWord(text, definition)
+            console.log('addedWord: ', addedWord)
+            // addWordToCard()
+          }}
           onCancel={() => console.log('cancel')}
         />
       )}
