@@ -763,12 +763,13 @@ function AddWordForm({
   useEffect(() => textInputRef.current!.focus(), [])
 
   return (
-    <div className='flex flex-col gap-2'>
+    <div className="flex flex-col gap-2 items-center">
       <div className="flex gap-2 items-center">
         <Input name="text" ref={textInputRef} placeholder="text" />
         <span>::</span>
         <Input name="text" ref={definitionInputRef} placeholder="definition" />
       </div>
+      <p>TODO: upload image</p> 
       <div className="flex justify-center gap-2">
         <Button
           variant="outline"
