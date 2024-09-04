@@ -486,7 +486,13 @@ function Card({ selectedCardRows }: { selectedCardRows: Row[] }) {
     <div className="p-2 w-full flex flex-col items-center gap-3">
       <CardFront selectedCardRows={selectedCardRows} onAddWord={() => setIsAddingWord(true)} />
       <Separator className="w-full h-1 bg-gray-200" />
-      <CardBack selectedCardRows={selectedCardRows} isAddingWord={isAddingWord} />
+      <CardBack selectedCardRows={selectedCardRows} />
+      {isAddingWord && (
+        <AddWordForm
+          onSave={(text: string, definition: string) => addWord(text, definition)}
+          onCancel={() => console.log('cancel')}
+        />
+      )}
     </div>
   )
 }
@@ -694,18 +700,12 @@ function CardFront({ selectedCardRows, onAddWord }: { selectedCardRows: Row[]; o
   }
 }
 
-function CardBack({ selectedCardRows, isAddingWord }: { selectedCardRows: Row[]; isAddingWord: boolean }) {
+function CardBack({ selectedCardRows }: { selectedCardRows: Row[] }) {
   console.log('CardBack: selectedCardRows=', selectedCardRows)
   return (
     <div className="w-full flex flex-col items-center gap-3">
       {selectedCardRows[0].wordText !== null &&
         selectedCardRows.map((wordRow, index) => <Word key={index} wordRow={wordRow} />)}
-      {isAddingWord && (
-        <AddWordForm
-          onSave={(text: string, definition: string) => addWord(text, definition)}
-          onCancel={() => console.log('cancel')}
-        />
-      )}
     </div>
   )
 }
