@@ -16,6 +16,7 @@ export default function Card({ selectedCardRows }: { selectedCardRows: Row[] }) 
   console.log('Card: selectedCardRows=', selectedCardRows)
   const { courseId, lessonOrder, cardOrder } = selectedCardRows[0]
 
+  // TODO: selection state
   const [selectionPosition, setSelectionPosition] = useState({ startIndex: 0, endIndex: 0 })
   const [suggestedWords, setSuggestedWords] = useState([])
   const [suggestedWordsVisible, setSuggestedWordsVisible] = useState(false)
@@ -27,7 +28,6 @@ export default function Card({ selectedCardRows }: { selectedCardRows: Row[] }) 
   }))
   console.log('CardFront: targetWordPositions=', targetWordPositions)
 
-  // TODO: selection state
   const [isAddingWord, setIsAddingWord] = useState(false)
   const [selectedText, setSelectedText] = useState<string | null>(null)
 
@@ -71,7 +71,6 @@ export default function Card({ selectedCardRows }: { selectedCardRows: Row[] }) 
         position={suggestedWordsPosition}
         suggestedWords={suggestedWords}
         onSelect={(wordText: string, wordDefinition: string) => {
-          const { courseId, lessonOrder, cardOrder } = selectedCardRows[0]
           addWordToCard(
             courseId as number,
             lessonOrder as number,
@@ -103,8 +102,15 @@ export default function Card({ selectedCardRows }: { selectedCardRows: Row[] }) 
           onSave={async (text: string, definition: string) => {
             const addedWord = await addWord(text, definition)
             console.log('addedWord: ', addedWord)
-            //TODO: indices
-            await addWordToCard(courseId, lessonOrder as number, cardOrder as number, text, definition, 0, 0)
+            await addWordToCard(
+              courseId,
+              lessonOrder as number,
+              cardOrder as number,
+              text,
+              definition,
+              selectionPosition.startIndex,
+              selectionPosition.endIndex
+            )
             setIsAddingWord(false)
           }}
           onCancel={() => console.log('cancel')}
