@@ -90,13 +90,15 @@ export default function Card({ selectedCardRows }: { selectedCardRows: Row[] }) 
           setSuggestedWordsVisible(false)
         }}
       />
-      {/* <CardFront
-          selectedCardRows={selectedCardRows}
-          setSelectedText={setSelectedText}
-          onAddWord={() => setIsAddingWord(true)}
-        /> */}
+
       <Separator className="w-full h-1 bg-gray-200" />
-      <CardBack selectedCardRows={selectedCardRows} />
+
+      {/* List of words */}
+      <div className="w-full flex flex-col items-center gap-3">
+        {selectedCardRows[0].wordText !== null &&
+          selectedCardRows.map((wordRow, index) => <Word key={index} wordRow={wordRow} />)}
+      </div>
+
       {isAddingWord && (
         <AddWordForm
           text={selectedText as string}
@@ -241,16 +243,6 @@ export default function Card({ selectedCardRows }: { selectedCardRows: Row[] }) 
       </DropdownMenu>
     )
   }
-}
-
-function CardBack({ selectedCardRows }: { selectedCardRows: Row[] }) {
-  console.log('CardBack: selectedCardRows=', selectedCardRows)
-  return (
-    <div className="w-full flex flex-col items-center gap-3">
-      {selectedCardRows[0].wordText !== null &&
-        selectedCardRows.map((wordRow, index) => <Word key={index} wordRow={wordRow} />)}
-    </div>
-  )
 }
 
 function Word({ wordRow }: { wordRow: Row }) {
