@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { FormEvent, useEffect, useRef, useState } from 'react'
 import { highlightTargetWords } from './highlightTargetWords'
 import { Separator } from '@/components/ui/separator'
 import { addWord, addWordToCard, removeWordFromCard } from '@/app/actions'
@@ -311,10 +311,7 @@ function AddWordForm({
         <span>::</span>
         <Input name="text" ref={definitionInputRef} placeholder="definition" />
       </div>
-      <div className="flex gap-2">
-        <Input id="file" type="file" placeholder="File" accept="image/*" />
-        <Button size="lg">Upload image</Button>
-      </div>
+      <ImageUpload />
       <div className="flex justify-center gap-2">
         <Button
           variant="outline"
@@ -333,4 +330,52 @@ function AddWordForm({
       </div>
     </div>
   )
+}
+
+const ImageUpload = () => {
+  const [selectedFile, setSelectedFile] = useState(null)
+  const [uploadStatus, setUploadStatus] = useState('')
+
+  return (
+    <form className="flex gap-2">
+      <form onSubmit={handleSubmit}>
+        <Input type="file" onChange={handleFileChange} accept="image/*" />
+        <Button type="submit">Upload</Button>
+      </form>
+      {uploadStatus && <p>{uploadStatus}</p>}
+    </form>
+  )
+
+  function handleFileChange(event) {
+    console.log('handleFileChange: event.target.files[0]=', event.target.files[0])
+    setSelectedFile(event.target.files[0])
+  }
+
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    console.log(`handleSubmit: selectedFile=${selectedFile}`)
+    event.preventDefault()
+    if (!selectedFile) {
+      setUploadStatus('No file selected')
+      return
+    }
+
+    const formData = new FormData()
+    formData.append('file', selectedFile)
+
+    try {
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      })
+
+      if (res.ok) {
+        setUploadStatus('File uploaded successfully!')
+      } else {
+        setUploadStatus('File upload failed.')
+      }
+    } catch (error) {
+      console.error('Error uploading the file:', error)
+      setUploadStatus('File upload failed.')
+    }
+  }
 }
