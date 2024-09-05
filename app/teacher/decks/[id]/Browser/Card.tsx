@@ -333,7 +333,7 @@ function AddWordForm({
 }
 
 const ImageUpload = () => {
-  const [selectedFile, setSelectedFile] = useState(null)
+  const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [uploadStatus, setUploadStatus] = useState('')
 
   return (
@@ -346,9 +346,9 @@ const ImageUpload = () => {
     </form>
   )
 
-  function handleFileChange(event) {
-    console.log('handleFileChange: event.target.files[0]=', event.target.files[0])
-    setSelectedFile(event.target.files[0])
+  function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
+    console.log('handleFileChange: event.target.files[0]=', event.target.files![0])
+    setSelectedFile(event.target.files![0])
   }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
