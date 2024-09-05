@@ -46,11 +46,9 @@ export default function Card({ selectedCardRows }: { selectedCardRows: Row[] }) 
          */
         onMouseUp={(event) => {
           const paragraph = event.currentTarget
-          console.log('paragraph: ', paragraph)
           const selection = window.getSelection()!
-          console.log('selection: ', selection)
           const selectedText = selection.toString()
-          console.log('selectedText: ', selectedText)
+          console.log(`onMouseUp: paragraph=${paragraph}, selection=${selection}, selectedText=${selectedText}`)
 
           /*
            * For each of the target words, there is a <b> node nested within a <p> node.
@@ -203,46 +201,46 @@ export default function Card({ selectedCardRows }: { selectedCardRows: Row[] }) 
       left: boundingClientRect.left + window.scrollX,
     }
   }
+}
 
-  function SuggestedWords({
-    open,
-    onOpenChange,
-    position,
-    suggestedWords,
-    onSelect,
-    onAddWord,
-  }: {
-    open: boolean
-    onOpenChange: (value: boolean) => void
-    position: { top: number; left: number }
-    suggestedWords: { id: number; text: string; definition: string }[]
-    onSelect: (wordText: string, wordDefinition: string) => void
-    onAddWord: () => void
-  }) {
-    return (
-      <DropdownMenu open={open} onOpenChange={onOpenChange}>
-        <DropdownMenuContent
-          className={`fixed bg-white border border-gray-500`}
-          style={{ top: position.top, left: position.left }}
+function SuggestedWords({
+  open,
+  onOpenChange,
+  position,
+  suggestedWords,
+  onSelect,
+  onAddWord,
+}: {
+  open: boolean
+  onOpenChange: (value: boolean) => void
+  position: { top: number; left: number }
+  suggestedWords: { id: number; text: string; definition: string }[]
+  onSelect: (wordText: string, wordDefinition: string) => void
+  onAddWord: () => void
+}) {
+  return (
+    <DropdownMenu open={open} onOpenChange={onOpenChange}>
+      <DropdownMenuContent
+        className={`fixed bg-white border border-gray-500`}
+        style={{ top: position.top, left: position.left }}
+      >
+        {suggestedWords.map(({ text, definition }, index) => (
+          <DropdownMenuItem key={index} onSelect={() => onSelect(text, definition)}>
+            <Button variant="ghost" className="flex items-center gap-2">
+              <span>{`${text} :: ${definition}`}</span>
+            </Button>
+          </DropdownMenuItem>
+        ))}
+        <Button
+          variant="outline"
+          className="self-start w-20 bg-orange-400  text-white text-md hover:bg-orange-300 hover:text-black py-2 px-4 rounded"
+          onClick={() => onAddWord()}
         >
-          {suggestedWords.map(({ text, definition }, index) => (
-            <DropdownMenuItem key={index} onSelect={() => onSelect(text, definition)}>
-              <Button variant="ghost" className="flex items-center gap-2">
-                <span>{`${text} :: ${definition}`}</span>
-              </Button>
-            </DropdownMenuItem>
-          ))}
-          <Button
-            variant="outline"
-            className="self-start w-20 bg-orange-400  text-white text-md hover:bg-orange-300 hover:text-black py-2 px-4 rounded"
-            onClick={() => onAddWord()}
-          >
-            Add Word
-          </Button>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    )
-  }
+          Add Word
+        </Button>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  )
 }
 
 function Word({ wordRow }: { wordRow: Row }) {
