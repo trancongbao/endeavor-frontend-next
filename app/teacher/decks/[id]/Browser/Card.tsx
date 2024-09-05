@@ -5,9 +5,10 @@ import { addWord, addWordToCard, removeWordFromCard } from '@/app/actions'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Edit, XSquare } from 'react-feather'
+import { Edit, Upload, XSquare } from 'react-feather'
 import { Row } from '../page'
 import Image from 'next/image'
+import { FileUpload } from '@/components/file-upload'
 
 /*
  * Card is moved to its own file due to its complexity.
@@ -261,7 +262,6 @@ function Word({ wordRow }: { wordRow: Row }) {
         <div>
           <span className="font-bold text-primary-600">{wordRow.wordText}</span>
           <span className=""> :: {wordRow.wordDefinition}</span>
-          <p>TODO: upload image button</p>
         </div>
         {wordRow.wordImageUri && (
           <Image src={wordRow.wordImageUri} alt={wordRow.wordText as string} width={200} height={100}></Image>
@@ -310,6 +310,7 @@ function AddWordForm({
         <span>::</span>
         <Input name="text" ref={definitionInputRef} placeholder="definition" />
       </div>
+      <FileUpload />
       <div className="flex justify-center gap-2">
         <Button
           variant="outline"
