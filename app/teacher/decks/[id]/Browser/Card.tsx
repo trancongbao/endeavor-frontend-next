@@ -9,6 +9,7 @@ import { Edit, Upload, XSquare } from 'react-feather'
 import { Row } from '../page'
 import Image from 'next/image'
 import { FileUpload } from '@/components/file-upload'
+import { Label } from '@/components/ui/label'
 
 /*
  * Card is moved to its own file due to its complexity.
@@ -304,13 +305,16 @@ function AddWordForm({
   useEffect(() => definitionInputRef.current!.focus(), [])
 
   return (
-    <div className="flex flex-col gap-2 items-center">
+    <div className="flex flex-col gap-3 items-center">
       <div className="flex gap-2 items-center">
         <p>{text}</p>
         <span>::</span>
         <Input name="text" ref={definitionInputRef} placeholder="definition" />
       </div>
-      <FileUpload />
+      <div className="flex gap-2">
+        <Input id="file" type="file" placeholder="File" accept="image/*" />
+        <Button size="lg">Upload image</Button>
+      </div>
       <div className="flex justify-center gap-2">
         <Button
           variant="outline"
