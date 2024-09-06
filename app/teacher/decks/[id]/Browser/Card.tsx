@@ -331,18 +331,7 @@ function AddWordForm({
           className="w-28 bg-orange-400  text-white text-md hover:bg-orange-300 hover:text-black py-2 px-4 rounded"
           onClick={async (event) => {
             event.preventDefault()
-            const formData = new FormData()
-            formData.append('text', textInputRef.current!.value)
-            if (fileInputRef.current && fileInputRef.current.files && fileInputRef.current.files.length > 0) {
-              formData.append('image', fileInputRef.current?.files![0])
-              const imageSrc = await uploadWordImage(formData)
-              if (imageSrc) {
-                formData.append('imageSrc', imageSrc as string)
-              }
-            }
-            formData.append('definition', definitionInputRef.current!.value)
-            addWord(formData)
-            onSave(text, definition)
+            handleSaveButtonClick()
           }}
         >
           Save
@@ -357,4 +346,19 @@ function AddWordForm({
       </div>
     </form>
   )
+
+  async function handleSaveButtonClick() {
+    const formData = new FormData()
+    formData.append('text', textInputRef.current!.value)
+    if (fileInputRef.current && fileInputRef.current.files && fileInputRef.current.files.length > 0) {
+      formData.append('image', fileInputRef.current?.files![0])
+      const imageSrc = await uploadWordImage(formData)
+      if (imageSrc) {
+        formData.append('imageSrc', imageSrc as string)
+      }
+    }
+    formData.append('definition', definitionInputRef.current!.value)
+    addWord(formData)
+    onSave(text, definition)
+  }
 }
