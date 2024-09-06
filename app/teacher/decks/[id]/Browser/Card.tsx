@@ -115,7 +115,7 @@ export default function Card({ selectedCardRows }: { selectedCardRows: Row[] }) 
             )
             setIsAddingWord(false)
           }}
-          onCancel={() => console.log('cancel')}
+          onCancel={() => setIsAddingWord(false)}
         />
       )}
     </div>
