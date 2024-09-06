@@ -1,6 +1,8 @@
 'use server'
 import { revalidatePath } from 'next/cache'
 import { kysely } from './db/kysely'
+import path from 'path'
+import { promises as fs } from 'fs'
 
 export async function addSubdeck(formData: FormData) {
   const addedSubdeck = await kysely
@@ -158,4 +160,25 @@ export async function uploadImage(formData: FormData) {
   console.log('uploadImage: formData = ', formData)
   const file = formData.get('file') as File | null
   console.log('uploadImage: file=', file)
+  console.log('cwd: ', process.cwd())
+  const uploadDir = path.join(process.cwd(), 'public', 'words')
+  if (!file) {
+    return 'No file selected'
+  }
+
+  // Ensure the uploads directory exists
+  await fs.mkdir(uploadDir, { recursive: true })
+
+  const buffer = await file.arrayBuffer()
+  const uint8Array = new Uint8Array(buffer)
+  const filePath = path.join(uploadDir, file.name)
+
+  // Save the file
+  try {
+    await fs.writeFile(filePath, uint8Array)
+    return 'File uploaded successfully!'
+  } catch (error) {
+    console.error('Error uploading the file:', error)
+    return 'File upload failed.'
+  }
 }
