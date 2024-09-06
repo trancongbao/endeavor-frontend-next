@@ -157,28 +157,52 @@ export async function addWord(text: string, definition: string) {
 }
 
 export async function uploadImage(formData: FormData) {
-  console.log('uploadImage: formData = ', formData)
   const file = formData.get('file') as File | null
   console.log('uploadImage: file=', file)
-  console.log('cwd: ', process.cwd())
-  const uploadDir = path.join(process.cwd(), 'public', 'words')
+
   if (!file) {
     return 'No file selected'
   }
 
+  const uploadDir = path.join(process.cwd(), 'public', 'words')
+
   // Ensure the uploads directory exists
   await fs.mkdir(uploadDir, { recursive: true })
 
-  const buffer = await file.arrayBuffer()
-  const uint8Array = new Uint8Array(buffer)
-  const filePath = path.join(uploadDir, file.name)
-
   // Save the file
   try {
-    await fs.writeFile(filePath, uint8Array)
+    await fs.writeFile(
+      await generateUniqueFilePath(uploadDir, path.parse(file.name).name, path.parse(file.name).ext),
+      new Uint8Array(await file.arrayBuffer())
+    )
     return 'File uploaded successfully!'
   } catch (error) {
     console.error('Error uploading the file:', error)
     return 'File upload failed.'
+  }
+}
+
+// Helper function to generate a unique file name by adding a suffix if needed
+async function generateUniqueFilePath(uploadDir: string, fileName: string, fileExtension: string): Promise<string> {
+  let counter = 1
+  let uniqueFilePath = path.join(uploadDir, `${fileName}${fileExtension}`)
+
+  // Check if the file already exists
+  while (await fileExists(uniqueFilePath)) {
+    // Add a suffix (e.g., _2, _3) if a file with the same name exists
+    uniqueFilePath = path.join(uploadDir, `${fileName}_${counter}${fileExtension}`)
+    counter++
+  }
+
+  return uniqueFilePath
+}
+
+// Check if a file exists
+async function fileExists(filePath: string): Promise<boolean> {
+  try {
+    await fs.access(filePath)
+    return true
+  } catch (error) {
+    return false // File does not exist
   }
 }
