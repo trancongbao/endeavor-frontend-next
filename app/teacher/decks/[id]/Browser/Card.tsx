@@ -131,6 +131,7 @@ export default function Card({ selectedCardRows }: { selectedCardRows: Row[] }) 
                   return (
                     <WordForm
                       key={index}
+                      mode="edit"
                       prefilledText={wordRow.wordText as string}
                       prefilledDefinition={wordRow.wordDefinition as string}
                       onCancel={() => setCardRows(selectedCardRows)}
@@ -140,6 +141,7 @@ export default function Card({ selectedCardRows }: { selectedCardRows: Row[] }) 
                   return (
                     <Word
                       key={index}
+                      mode="add"
                       wordRow={wordRow}
                       onEdit={(updatedWordRow) => {
                         setCardRows((previousCardRows) => {
@@ -326,11 +328,13 @@ function Word({ wordRow, onEdit }: { wordRow: Row }) {
 }
 
 function WordForm({
+  mode,
   prefilledText,
   prefilledDefinition,
   onSave,
   onCancel,
 }: {
+  mode: string
   prefilledText: string
   prefilledDefinition?: string
   onSave?: (text: string, definition: string) => void
@@ -371,7 +375,8 @@ function WordForm({
           className="w-28 bg-orange-400  text-white text-md hover:bg-orange-300 hover:text-black py-2 px-4 rounded"
           onClick={async (event) => {
             event.preventDefault()
-            handleSaveButtonClick()
+            await handleSaveButtonClick()
+            onSave && onSave(text, definition)
           }}
         >
           Save
@@ -398,7 +403,10 @@ function WordForm({
       }
     }
     formData.append('definition', definitionInputRef.current!.value)
-    addWord(formData)
-    onSave(text, definition)
+    if (mode === 'add') {
+      addWord(formData)
+    } else {
+      console.log('editWordXXXX')
+    }
   }
 }
