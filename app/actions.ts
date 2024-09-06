@@ -171,7 +171,7 @@ export async function addWord(formData: FormData) {
   // Save the file
   try {
     await fs.writeFile(
-      await generateUniqueFilePath(uploadDir, path.parse(file.name).name, path.parse(file.name).ext),
+      await generateUniqueFilePath(uploadDir, formData.get('text') as string, path.parse(file.name).ext),
       new Uint8Array(await file.arrayBuffer())
     )
     return 'File uploaded successfully!'
