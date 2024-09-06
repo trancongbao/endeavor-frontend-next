@@ -201,7 +201,7 @@ export async function addWord(formData: FormData) {
     .values({
       text,
       definition,
-      image_uri: `/world/${imageFilename}`,
+      image_uri: `/words/${imageFilename}`,
     })
     .returningAll()
     .executeTakeFirstOrThrow()
