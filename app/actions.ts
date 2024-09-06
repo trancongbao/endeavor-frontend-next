@@ -147,37 +147,40 @@ export async function removeWordFromCard(
 
 export async function addWord(formData: FormData) {
   console.log(`addWord: formData = ${formData}`)
+  const image = formData.get('file') as File | null
+  const imageUri = image ? await saveImage(image) : undefined
   const addedWord = await kysely
     .insertInto('word')
     .values({
       text: formData.get('text') as string,
       definition: formData.get('definition') as string,
+      image_uri: imageUri,
     })
     .returningAll()
     .executeTakeFirstOrThrow()
 
-  const file = formData.get('file') as File | null
-  console.log('uploadImage: file=', file)
+  revalidatePath('/teacher/decks/[id]', 'page')
+  return addedWord
 
-  if (!file) {
-    return 'No file selected'
-  }
+  async function saveImage(image: File): Promise<string | undefined> {
+    const uploadDir = path.join(process.cwd(), 'public', 'words')
 
-  const uploadDir = path.join(process.cwd(), 'public', 'words')
+    // Ensure the uploads directory exists
+    await fs.mkdir(uploadDir, { recursive: true })
 
-  // Ensure the uploads directory exists
-  await fs.mkdir(uploadDir, { recursive: true })
-
-  // Save the file
-  try {
-    await fs.writeFile(
-      await generateUniqueFilePath(uploadDir, formData.get('text') as string, path.parse(file.name).ext),
-      new Uint8Array(await file.arrayBuffer())
+    const uniqueFilePath = await generateUniqueFilePath(
+      uploadDir,
+      formData.get('text') as string,
+      path.parse(image.name).ext
     )
-    return 'File uploaded successfully!'
-  } catch (error) {
-    console.error('Error uploading the file:', error)
-    return 'File upload failed.'
+    // Save the file
+    try {
+      await fs.writeFile(uniqueFilePath, new Uint8Array(await image.arrayBuffer()))
+      return uniqueFilePath
+    } catch (error) {
+      console.error('Error uploading the file:', error)
+      return undefined
+    }
   }
 
   // Helper function to generate a unique file name by adding a suffix if needed
