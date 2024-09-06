@@ -333,13 +333,14 @@ function AddWordForm({
             event.preventDefault()
             const formData = new FormData()
             formData.append('text', textInputRef.current!.value)
-            let imageFilename
             if (fileInputRef.current && fileInputRef.current.files && fileInputRef.current.files.length > 0) {
               formData.append('image', fileInputRef.current?.files![0])
-              imageFilename = await uploadWordImage(formData)
+              const imageSrc = await uploadWordImage(formData)
+              if (imageSrc) {
+                formData.append('imageSrc', imageSrc as string)
+              }
             }
             formData.append('definition', definitionInputRef.current!.value)
-            formData.append('imageFilename', imageFilename as string)
             addWord(formData)
             onSave(text, definition)
           }}

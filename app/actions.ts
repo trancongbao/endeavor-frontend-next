@@ -148,25 +148,25 @@ export async function removeWordFromCard(
 export async function uploadWordImage(formData: FormData): Promise<string | undefined> {
   const text = formData.get('text') as string
   const image = formData.get('image') as File
-  console.log(`uploadWordImage: text=${text} image=${image}`)
-  const uploadDir = path.join(process.cwd(), 'public', 'words')
+  console.log(`uploadWordImage: text=${text} image=${image.name}`)
+  const publicDir = path.join(process.cwd(), 'public')
 
   // Ensure the uploads directory exists
-  await fs.mkdir(uploadDir, { recursive: true })
+  await fs.mkdir(publicDir, { recursive: true })
 
-  const uniqueFilename = await generateUniqueFilename(uploadDir, text, path.parse(image.name).ext)
+  const uniqueImageSrc = await generateUniqueImageSrc(publicDir, text, path.parse(image.name).ext)
 
   // Save the file
   try {
-    await fs.writeFile(path.join(uploadDir, uniqueFilename), new Uint8Array(await image.arrayBuffer()))
-    return uniqueFilename
+    await fs.writeFile(path.join(publicDir, uniqueImageSrc), new Uint8Array(await image.arrayBuffer()))
+    return uniqueImageSrc
   } catch (error) {
     console.error('Error uploading the file:', error)
     return undefined
   }
 
   // Helper function to generate a unique file name by adding a suffix if needed
-  async function generateUniqueFilename(uploadDir: string, fileName: string, fileExtension: string): Promise<string> {
+  async function generateUniqueImageSrc(uploadDir: string, fileName: string, fileExtension: string): Promise<string> {
     let counter = 1
     let uniqueFilename = `${fileName}${fileExtension}`
 
@@ -176,7 +176,7 @@ export async function uploadWordImage(formData: FormData): Promise<string | unde
       counter++
       uniqueFilename = `${fileName}_${counter}${fileExtension}`
     }
-    return uniqueFilename
+    return `/words/${uniqueFilename}`
   }
 
   // Check if a file exists
@@ -193,15 +193,15 @@ export async function uploadWordImage(formData: FormData): Promise<string | unde
 export async function addWord(formData: FormData) {
   const text = formData.get('text') as string
   const definition = formData.get('definition') as string
-  const imageFilename = formData.get('imageFilename') as string
-  console.log(`addWord: text=${text}, definition=${definition}, imageFilename=${imageFilename}`)
+  const imageSrc = formData.get('imageSrc') as string
+  console.log(`addWord: text=${text}, definition=${definition}, imageSrc=${imageSrc}`)
 
   const addedWord = await kysely
     .insertInto('word')
     .values({
       text,
       definition,
-      image_uri: `/words/${imageFilename}`,
+      image_uri: imageSrc,
     })
     .returningAll()
     .executeTakeFirstOrThrow()
