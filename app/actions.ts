@@ -148,13 +148,13 @@ export async function removeWordFromCard(
 export async function addWord(formData: FormData) {
   console.log(`addWord: formData = ${formData}`)
   const image = formData.get('file') as File | null
-  const imageUri = image ? await saveImage(image) : undefined
+  const filename = image ? await saveImage(image) : undefined
   const addedWord = await kysely
     .insertInto('word')
     .values({
       text: formData.get('text') as string,
       definition: formData.get('definition') as string,
-      image_uri: imageUri,
+      image_uri: `/world/${filename}`,
     })
     .returningAll()
     .executeTakeFirstOrThrow()
@@ -168,15 +168,16 @@ export async function addWord(formData: FormData) {
     // Ensure the uploads directory exists
     await fs.mkdir(uploadDir, { recursive: true })
 
-    const uniqueFilePath = await generateUniqueFilePath(
+    const uniqueFilename = await generateUniqueFilename(
       uploadDir,
       formData.get('text') as string,
       path.parse(image.name).ext
     )
+
     // Save the file
     try {
-      await fs.writeFile(uniqueFilePath, new Uint8Array(await image.arrayBuffer()))
-      return uniqueFilePath
+      await fs.writeFile(path.join(uploadDir, uniqueFilename), new Uint8Array(await image.arrayBuffer()))
+      return uniqueFilename
     } catch (error) {
       console.error('Error uploading the file:', error)
       return undefined
@@ -184,18 +185,17 @@ export async function addWord(formData: FormData) {
   }
 
   // Helper function to generate a unique file name by adding a suffix if needed
-  async function generateUniqueFilePath(uploadDir: string, fileName: string, fileExtension: string): Promise<string> {
+  async function generateUniqueFilename(uploadDir: string, fileName: string, fileExtension: string): Promise<string> {
     let counter = 1
-    let uniqueFilePath = path.join(uploadDir, `${fileName}${fileExtension}`)
+    let uniqueFilename = `${fileName}${fileExtension}`
 
     // Check if the file already exists
-    while (await fileExists(uniqueFilePath)) {
+    while (await fileExists(path.join(uploadDir, uniqueFilename))) {
       // Add a suffix (e.g., _2, _3) if a file with the same name exists
-      uniqueFilePath = path.join(uploadDir, `${fileName}_${counter}${fileExtension}`)
       counter++
+      uniqueFilename = `${fileName}_${counter}${fileExtension}`
     }
-
-    return uniqueFilePath
+    return uniqueFilename
   }
 
   // Check if a file exists
