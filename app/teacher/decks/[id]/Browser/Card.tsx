@@ -309,7 +309,7 @@ function AddWordForm({
   useEffect(() => textInputRef.current!.focus(), [])
 
   return (
-    <div className="flex flex-col gap-3 items-center">
+    <form action={uploadImage} className="flex flex-col gap-3 items-center">
       <div className="flex gap-2 items-center">
         <Input
           name="text"
@@ -327,9 +327,10 @@ function AddWordForm({
           onChange={(e) => setDefinition(e.target.value)}
         />
       </div>
-      <ImageUpload />
+      <Input name="file" type="file" accept="image/*" />
       <div className="flex justify-center gap-2">
         <Button
+          type="submit"
           variant="outline"
           className="w-28 bg-orange-400  text-white text-md hover:bg-orange-300 hover:text-black py-2 px-4 rounded"
           onClick={() => onSave(selectedText || '', definitionInputRef.current?.value || '')}
@@ -344,15 +345,6 @@ function AddWordForm({
           Cancel
         </Button>
       </div>
-    </div>
-  )
-}
-
-function ImageUpload() {
-  return (
-    <form className="flex gap-2" action={uploadImage}>
-      <Input name="file" type="file" accept="image/*" />
-      <Button type="submit">Upload</Button>
     </form>
   )
 }
