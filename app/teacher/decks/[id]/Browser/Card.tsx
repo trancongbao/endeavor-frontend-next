@@ -100,7 +100,7 @@ export default function Card({ selectedCardRows }: { selectedCardRows: Row[] }) 
 
       {isAddingWord && (
         <AddWordForm
-          text={selectedText as string}
+          selectedText={selectedText as string}
           onSave={async (text: string, definition: string) => {
             const addedWord = await addWord(text, definition)
             console.log('addedWord: ', addedWord)
@@ -292,31 +292,32 @@ function Word({ wordRow }: { wordRow: Row }) {
 }
 
 function AddWordForm({
-  text,
+  selectedText,
   onSave,
   onCancel,
 }: {
-  text: string
+  selectedText: string
   onSave: (text: string, definition: string) => void
   onCancel: () => void
 }) {
+  const textInputRef = useRef<HTMLInputElement>(null)
   const definitionInputRef = useRef<HTMLInputElement>(null)
 
-  useEffect(() => definitionInputRef.current!.focus(), [])
+  useEffect(() => textInputRef.current!.focus(), [])
 
   return (
     <div className="flex flex-col gap-3 items-center">
       <div className="flex gap-2 items-center">
-        <p>{text}</p>
+        <Input name="text" ref={textInputRef} value={selectedText} placeholder="word text" />
         <span>::</span>
-        <Input name="text" ref={definitionInputRef} placeholder="definition" />
+        <Input name="definition" ref={definitionInputRef} placeholder="definition" />
       </div>
       <ImageUpload />
       <div className="flex justify-center gap-2">
         <Button
           variant="outline"
           className="w-28 bg-orange-400  text-white text-md hover:bg-orange-300 hover:text-black py-2 px-4 rounded"
-          onClick={() => onSave(text || '', definitionInputRef.current?.value || '')}
+          onClick={() => onSave(selectedText || '', definitionInputRef.current?.value || '')}
         >
           Save
         </Button>
