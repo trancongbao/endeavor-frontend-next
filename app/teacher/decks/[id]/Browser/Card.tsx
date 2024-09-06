@@ -31,8 +31,11 @@ export default function Card({ selectedCardRows }: { selectedCardRows: Row[] }) 
   }))
   console.log('CardFront: targetWordPositions=', targetWordPositions)
 
-  const [isAddingWord, setIsAddingWord] = useState(false)
   const [selectedText, setSelectedText] = useState<string | null>(null)
+
+  useEffect(() => {
+    setCardRows(selectedCardRows)
+  }, [selectedCardRows])
 
   return (
     <div className="p-2 w-full flex flex-col items-center gap-3">
@@ -86,7 +89,6 @@ export default function Card({ selectedCardRows }: { selectedCardRows: Row[] }) 
           setSuggestedWordsVisible(false)
         }}
         onAddWord={() => {
-          setIsAddingWord(true)
           setCardRows((previousCardRows) =>
             [
               ...previousCardRows,
@@ -104,29 +106,52 @@ export default function Card({ selectedCardRows }: { selectedCardRows: Row[] }) 
         {selectedCardRows[0].wordText !== null &&
           cardRows
             .sort((a, b) => (a.wordStartIndex as number) - (b.wordStartIndex as number))
-            .map((wordRow, index) =>
-              wordRow.mode === 'add' ? <AddWordForm selectedText={selectedText}/> : <Word key={index} wordRow={wordRow} />
-            )}
+            .map((wordRow, index) => {
+              switch (wordRow.mode) {
+                case 'add':
+                  return (
+                    <WordForm
+                      key={index}
+                      prefilledText={selectedText}
+                      onSave={async (text: string, definition: string) => {
+                        await addWordToCard(
+                          courseId,
+                          lessonOrder as number,
+                          cardOrder as number,
+                          text,
+                          definition,
+                          selectionPosition.startIndex,
+                          selectionPosition.endIndex
+                        )
+                      }}
+                      onCancel={() => setCardRows(selectedCardRows)}
+                    />
+                  )
+                case 'edit':
+                  return (
+                    <WordForm
+                      key={index}
+                      prefilledText={wordRow.wordText as string}
+                      prefilledDefinition={wordRow.wordDefinition as string}
+                      onCancel={() => setCardRows(selectedCardRows)}
+                    />
+                  )
+                default:
+                  return (
+                    <Word
+                      key={index}
+                      wordRow={wordRow}
+                      onEdit={(updatedWordRow) => {
+                        setCardRows((previousCardRows) => {
+                          previousCardRows[index] = { ...updatedWordRow, mode: 'edit' }
+                          return [...previousCardRows]
+                        })
+                      }}
+                    />
+                  )
+              }
+            })}
       </div>
-
-      {/* {isAddingWord && (
-        <AddWordForm
-          selectedText={selectedText as string}
-          onSave={async (text: string, definition: string) => {
-            await addWordToCard(
-              courseId,
-              lessonOrder as number,
-              cardOrder as number,
-              text,
-              definition,
-              selectionPosition.startIndex,
-              selectionPosition.endIndex
-            )
-            setIsAddingWord(false)
-          }}
-          onCancel={() => setIsAddingWord(false)}
-        />
-      )} */}
     </div>
   )
 
@@ -260,7 +285,7 @@ function SuggestedWords({
   )
 }
 
-function Word({ wordRow }: { wordRow: Row }) {
+function Word({ wordRow, onEdit }: { wordRow: Row }) {
   console.log('Word: wordRow=', wordRow)
 
   const [isEditingWord, setIsEditingWord] = useState(false)
@@ -278,7 +303,7 @@ function Word({ wordRow }: { wordRow: Row }) {
         )}
       </div>
       <div className="flex flex-col">
-        <Button variant="ghost" size={'sm'} onClick={() => setIsEditingWord(true)}>
+        <Button variant="ghost" size={'sm'} onClick={() => onEdit(wordRow)}>
           <Edit />
         </Button>
         <Button
@@ -300,21 +325,23 @@ function Word({ wordRow }: { wordRow: Row }) {
   )
 }
 
-function AddWordForm({
-  selectedText,
+function WordForm({
+  prefilledText,
+  prefilledDefinition,
   onSave,
   onCancel,
 }: {
-  selectedText: string
-  onSave: (text: string, definition: string) => void
+  prefilledText: string
+  prefilledDefinition?: string
+  onSave?: (text: string, definition: string) => void
   onCancel: () => void
 }) {
   const textInputRef = useRef<HTMLInputElement>(null)
   const definitionInputRef = useRef<HTMLInputElement>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  const [text, setText] = useState(selectedText.toLowerCase())
-  const [definition, setDefinition] = useState('')
+  const [text, setText] = useState(prefilledText.toLowerCase())
+  const [definition, setDefinition] = useState(prefilledDefinition ? prefilledDefinition.toLocaleLowerCase() : '')
 
   useEffect(() => textInputRef.current!.focus(), [])
 
