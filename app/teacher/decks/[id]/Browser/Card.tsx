@@ -255,7 +255,7 @@ function Word({ wordRow }: { wordRow: Row }) {
   return (
     <div className="w-full grid grid-cols-[1fr_8fr_1fr] items-start">
       <div></div>
-      <div className="flex flex-col items-center">
+      <div className="flex flex-col items-center gap-2">
         <div>
           <span className="font-bold text-primary-600">{wordRow.wordText}</span>
           <span className=""> :: {wordRow.wordDefinition}</span>

@@ -5,6 +5,7 @@ import { Book, Layers, Phone } from 'react-feather'
 
 export default function Menu() {
   const pathname = usePathname()
+  console.log(pathname)
 
   const items = [
     { text: 'My Courses', icon: Book, href: '/teacher/courses' },
@@ -12,15 +13,11 @@ export default function Menu() {
     { text: 'Contact Us', icon: Phone, href: '/teacher/contact' },
   ]
   return (
-    <nav className="self-start p-10 flex flex-col gap-4 text-[18px]">
+    <nav className="p-10 flex flex-col gap-4 text-lg">
       {items.map((item, index) => (
-        <Link
-          href={item.href}
-          key={index}
-          className={`flex gap-3 items-center ${pathname === item.href ? 'text-sky-500' : ''}`}
-        >
+        <Link href={item.href} key={index} className={`flex gap-3 items-center `}>
           <item.icon color="hsl(180, 70%, 50%)" />
-          {item.text}
+          <p className={`${pathname === item.href ? 'text-primary-600' : ''}`}>{item.text}</p>
         </Link>
       ))}
     </nav>
