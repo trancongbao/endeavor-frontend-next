@@ -299,7 +299,7 @@ function AddWordForm({
   const textInputRef = useRef<HTMLInputElement>(null)
   const definitionInputRef = useRef<HTMLInputElement>(null)
 
-  const [text, setText] = useState(selectedText)
+  const [text, setText] = useState(selectedText.toLowerCase())
   const [definition, setDefinition] = useState('')
 
   useEffect(() => textInputRef.current!.focus(), [])
