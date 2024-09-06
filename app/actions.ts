@@ -153,3 +153,9 @@ export async function addWord(text: string, definition: string) {
 
   return addedWord
 }
+
+export async function uploadImage(formData: FormData) {
+  console.log('uploadImage: formData = ', formData)
+  const file = formData.get('file') as File | null
+  console.log('uploadImage: file=', file)
+}
