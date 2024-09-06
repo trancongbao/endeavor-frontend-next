@@ -327,14 +327,22 @@ function AddWordForm({
       <Input name="file" ref={fileInputRef} type="file" accept="image/*" />
       <div className="flex justify-center gap-2">
         <Button
-          type="submit"
           variant="outline"
           className="w-28 bg-orange-400  text-white text-md hover:bg-orange-300 hover:text-black py-2 px-4 rounded"
-          onClick={async () => {
-            const image = fileInputRef.current?.files![0]
-            const imageFilename = image !== null ? await uploadWordImage(text, image as File) : undefined
-            addWord(text, definition, imageFilename)
-            onSave(text, definition)
+          onClick={async (event) => {
+            event.preventDefault()
+            const formData = new FormData()
+            formData.append('text', textInputRef.current!.value)
+            let imageFilename
+            if (fileInputRef.current && fileInputRef.current.files && fileInputRef.current.files.length > 0) {
+              formData.append('image', fileInputRef.current?.files![0])
+              imageFilename = await uploadWordImage(formData)
+            }
+            console.log('imageFilename: ', imageFilename)
+            formData.append('definition', definitionInputRef.current!.value)
+
+            // addWord(text, definition, imageFilename)
+            // onSave(text, definition)
           }}
         >
           Save

@@ -145,7 +145,10 @@ export async function removeWordFromCard(
   revalidatePath('/teacher/decks/[id]', 'page')
 }
 
-export async function uploadWordImage(text: string, image: File): Promise<string | undefined> {
+export async function uploadWordImage(formData: FormData): Promise<string | undefined> {
+  const text = formData.get('text') as string
+  const image = formData.get('image') as File
+  console.log(`uploadWordImage: text=${text} image=${image}`)
   const uploadDir = path.join(process.cwd(), 'public', 'words')
 
   // Ensure the uploads directory exists
