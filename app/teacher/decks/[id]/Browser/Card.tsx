@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { highlightTargetWords } from './highlightTargetWords'
 import { Separator } from '@/components/ui/separator'
-import { addWord, addWordToCard, removeWordFromCard } from '@/app/actions'
+import { addWord, addWordToCard, removeWordFromCard, uploadWordImage } from '@/app/actions'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -298,6 +298,7 @@ function AddWordForm({
 }) {
   const textInputRef = useRef<HTMLInputElement>(null)
   const definitionInputRef = useRef<HTMLInputElement>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   const [text, setText] = useState(selectedText.toLowerCase())
   const [definition, setDefinition] = useState('')
@@ -305,7 +306,7 @@ function AddWordForm({
   useEffect(() => textInputRef.current!.focus(), [])
 
   return (
-    <form action={addWord} className="flex flex-col gap-3 items-center">
+    <form className="flex flex-col gap-3 items-center">
       <div className="flex gap-2 items-center">
         <Input
           name="text"
@@ -323,13 +324,18 @@ function AddWordForm({
           onChange={(e) => setDefinition(e.target.value)}
         />
       </div>
-      <Input name="file" type="file" accept="image/*" />
+      <Input name="file" ref={fileInputRef} type="file" accept="image/*" />
       <div className="flex justify-center gap-2">
         <Button
           type="submit"
           variant="outline"
           className="w-28 bg-orange-400  text-white text-md hover:bg-orange-300 hover:text-black py-2 px-4 rounded"
-          onClick={() => onSave(selectedText || '', definitionInputRef.current?.value || '')}
+          onClick={async () => {
+            const image = fileInputRef.current?.files![0]
+            const imageFilename = image !== null ? await uploadWordImage(text, image as File) : undefined
+            addWord(text, definition, imageFilename)
+            onSave(text, definition)
+          }}
         >
           Save
         </Button>

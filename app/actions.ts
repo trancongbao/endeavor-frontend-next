@@ -145,43 +145,21 @@ export async function removeWordFromCard(
   revalidatePath('/teacher/decks/[id]', 'page')
 }
 
-export async function addWord(formData: FormData) {
-  console.log(`addWord: formData = ${formData}`)
-  const image = formData.get('file') as File | null
-  const filename = image ? await saveImage(image) : undefined
-  const addedWord = await kysely
-    .insertInto('word')
-    .values({
-      text: formData.get('text') as string,
-      definition: formData.get('definition') as string,
-      image_uri: `/world/${filename}`,
-    })
-    .returningAll()
-    .executeTakeFirstOrThrow()
+export async function uploadWordImage(text: string, image: File): Promise<string | undefined> {
+  const uploadDir = path.join(process.cwd(), 'public', 'words')
 
-  revalidatePath('/teacher/decks/[id]', 'page')
-  return addedWord
+  // Ensure the uploads directory exists
+  await fs.mkdir(uploadDir, { recursive: true })
 
-  async function saveImage(image: File): Promise<string | undefined> {
-    const uploadDir = path.join(process.cwd(), 'public', 'words')
+  const uniqueFilename = await generateUniqueFilename(uploadDir, text, path.parse(image.name).ext)
 
-    // Ensure the uploads directory exists
-    await fs.mkdir(uploadDir, { recursive: true })
-
-    const uniqueFilename = await generateUniqueFilename(
-      uploadDir,
-      formData.get('text') as string,
-      path.parse(image.name).ext
-    )
-
-    // Save the file
-    try {
-      await fs.writeFile(path.join(uploadDir, uniqueFilename), new Uint8Array(await image.arrayBuffer()))
-      return uniqueFilename
-    } catch (error) {
-      console.error('Error uploading the file:', error)
-      return undefined
-    }
+  // Save the file
+  try {
+    await fs.writeFile(path.join(uploadDir, uniqueFilename), new Uint8Array(await image.arrayBuffer()))
+    return uniqueFilename
+  } catch (error) {
+    console.error('Error uploading the file:', error)
+    return undefined
   }
 
   // Helper function to generate a unique file name by adding a suffix if needed
@@ -207,4 +185,20 @@ export async function addWord(formData: FormData) {
       return false // File does not exist
     }
   }
+}
+
+export async function addWord(text: string, definition: string, imageFilename: string | undefined) {
+  console.log(`addWord: text=${text}, definition=${definition}, imageFilename=${imageFilename}`)
+  const addedWord = await kysely
+    .insertInto('word')
+    .values({
+      text,
+      definition,
+      image_uri: `/world/${imageFilename}`,
+    })
+    .returningAll()
+    .executeTakeFirstOrThrow()
+
+  revalidatePath('/teacher/decks/[id]', 'page')
+  return addedWord
 }
