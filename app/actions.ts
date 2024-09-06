@@ -145,18 +145,17 @@ export async function removeWordFromCard(
   revalidatePath('/teacher/decks/[id]', 'page')
 }
 
-export async function addWord(text: string, definition: string) {
-  console.log(`addWord: text = ${text}, definition = ${definition}`)
+export async function addWord(formData: FormData) {
+  console.log(`addWord: formData = ${formData}`)
   const addedWord = await kysely
     .insertInto('word')
-    .values({ text, definition })
+    .values({
+      text: formData.get('text') as string,
+      definition: formData.get('definition') as string,
+    })
     .returningAll()
     .executeTakeFirstOrThrow()
 
-  return addedWord
-}
-
-export async function uploadImage(formData: FormData) {
   const file = formData.get('file') as File | null
   console.log('uploadImage: file=', file)
 
@@ -180,29 +179,29 @@ export async function uploadImage(formData: FormData) {
     console.error('Error uploading the file:', error)
     return 'File upload failed.'
   }
-}
 
-// Helper function to generate a unique file name by adding a suffix if needed
-async function generateUniqueFilePath(uploadDir: string, fileName: string, fileExtension: string): Promise<string> {
-  let counter = 1
-  let uniqueFilePath = path.join(uploadDir, `${fileName}${fileExtension}`)
+  // Helper function to generate a unique file name by adding a suffix if needed
+  async function generateUniqueFilePath(uploadDir: string, fileName: string, fileExtension: string): Promise<string> {
+    let counter = 1
+    let uniqueFilePath = path.join(uploadDir, `${fileName}${fileExtension}`)
 
-  // Check if the file already exists
-  while (await fileExists(uniqueFilePath)) {
-    // Add a suffix (e.g., _2, _3) if a file with the same name exists
-    uniqueFilePath = path.join(uploadDir, `${fileName}_${counter}${fileExtension}`)
-    counter++
+    // Check if the file already exists
+    while (await fileExists(uniqueFilePath)) {
+      // Add a suffix (e.g., _2, _3) if a file with the same name exists
+      uniqueFilePath = path.join(uploadDir, `${fileName}_${counter}${fileExtension}`)
+      counter++
+    }
+
+    return uniqueFilePath
   }
 
-  return uniqueFilePath
-}
-
-// Check if a file exists
-async function fileExists(filePath: string): Promise<boolean> {
-  try {
-    await fs.access(filePath)
-    return true
-  } catch (error) {
-    return false // File does not exist
+  // Check if a file exists
+  async function fileExists(filePath: string): Promise<boolean> {
+    try {
+      await fs.access(filePath)
+      return true
+    } catch (error) {
+      return false // File does not exist
+    }
   }
 }

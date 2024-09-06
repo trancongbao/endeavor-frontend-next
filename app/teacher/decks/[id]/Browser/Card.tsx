@@ -1,15 +1,13 @@
-import { FormEvent, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { highlightTargetWords } from './highlightTargetWords'
 import { Separator } from '@/components/ui/separator'
-import { addWord, addWordToCard, removeWordFromCard, uploadImage } from '@/app/actions'
+import { addWord, addWordToCard, removeWordFromCard } from '@/app/actions'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Edit, Upload, XSquare } from 'react-feather'
+import { Edit, XSquare } from 'react-feather'
 import { Row } from '../page'
 import Image from 'next/image'
-import { FileUpload } from '@/components/file-upload'
-import { Label } from '@/components/ui/label'
 
 /*
  * Card is moved to its own file due to its complexity.
@@ -102,8 +100,6 @@ export default function Card({ selectedCardRows }: { selectedCardRows: Row[] }) 
         <AddWordForm
           selectedText={selectedText as string}
           onSave={async (text: string, definition: string) => {
-            const addedWord = await addWord(text, definition)
-            console.log('addedWord: ', addedWord)
             await addWordToCard(
               courseId,
               lessonOrder as number,
@@ -309,7 +305,7 @@ function AddWordForm({
   useEffect(() => textInputRef.current!.focus(), [])
 
   return (
-    <form action={uploadImage} className="flex flex-col gap-3 items-center">
+    <form action={addWord} className="flex flex-col gap-3 items-center">
       <div className="flex gap-2 items-center">
         <Input
           name="text"
