@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input'
 import { Edit, XSquare } from 'react-feather'
 import { Row } from '../page'
 import Image from 'next/image'
+import { add } from 'lodash'
 
 /*
  * Card is moved to its own file due to its complexity.
@@ -17,6 +18,8 @@ export default function Card({ selectedCardRows }: { selectedCardRows: Row[] }) 
   const { courseId, lessonOrder, cardOrder } = selectedCardRows[0]
 
   // TODO: selection state
+  const [cardRows, setCardRows] =
+    useState<(Row | { mode: string; wordStartIndex: number; wordEndIndex: number })[]>(selectedCardRows)
   const [selectionPosition, setSelectionPosition] = useState({ startIndex: 0, endIndex: 0 })
   const [suggestedWords, setSuggestedWords] = useState([])
   const [suggestedWordsVisible, setSuggestedWordsVisible] = useState(false)
@@ -84,6 +87,12 @@ export default function Card({ selectedCardRows }: { selectedCardRows: Row[] }) 
         }}
         onAddWord={() => {
           setIsAddingWord(true)
+          setCardRows((previousCardRows) =>
+            [
+              ...previousCardRows,
+              { mode: 'add', wordStartIndex: selectionPosition.startIndex, wordEndIndex: selectionPosition.endIndex },
+            ].sort((a, b) => (a.wordStartIndex as number) - (b.wordStartIndex as number))
+          )
           setSuggestedWordsVisible(false)
         }}
       />
@@ -93,12 +102,14 @@ export default function Card({ selectedCardRows }: { selectedCardRows: Row[] }) 
       {/* List of words */}
       <div className="w-full flex flex-col items-center gap-3">
         {selectedCardRows[0].wordText !== null &&
-          selectedCardRows
+          cardRows
             .sort((a, b) => (a.wordStartIndex as number) - (b.wordStartIndex as number))
-            .map((wordRow, index) => <Word key={index} wordRow={wordRow} />)}
+            .map((wordRow, index) =>
+              wordRow.mode === 'add' ? <AddWordForm selectedText={selectedText}/> : <Word key={index} wordRow={wordRow} />
+            )}
       </div>
 
-      {isAddingWord && (
+      {/* {isAddingWord && (
         <AddWordForm
           selectedText={selectedText as string}
           onSave={async (text: string, definition: string) => {
@@ -115,7 +126,7 @@ export default function Card({ selectedCardRows }: { selectedCardRows: Row[] }) 
           }}
           onCancel={() => setIsAddingWord(false)}
         />
-      )}
+      )} */}
     </div>
   )
 
@@ -308,7 +319,7 @@ function AddWordForm({
   useEffect(() => textInputRef.current!.focus(), [])
 
   return (
-    <form className="flex flex-col gap-3 items-center">
+    <form className="flex flex-col gap-3 items-center p-4 border-2 border-violet-900 border-dotted">
       <div className="flex gap-2 items-center">
         <Input
           name="text"
