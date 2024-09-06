@@ -190,8 +190,12 @@ export async function uploadWordImage(formData: FormData): Promise<string | unde
   }
 }
 
-export async function addWord(text: string, definition: string, imageFilename: string | undefined) {
+export async function addWord(formData: FormData) {
+  const text = formData.get('text') as string
+  const definition = formData.get('definition') as string
+  const imageFilename = formData.get('imageFilename') as string
   console.log(`addWord: text=${text}, definition=${definition}, imageFilename=${imageFilename}`)
+
   const addedWord = await kysely
     .insertInto('word')
     .values({

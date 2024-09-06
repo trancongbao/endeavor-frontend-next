@@ -339,9 +339,10 @@ function AddWordForm({
               imageFilename = await uploadWordImage(formData)
             }
             console.log('imageFilename: ', imageFilename)
-            formData.append('definition', definitionInputRef.current!.value)
 
-            // addWord(text, definition, imageFilename)
+            formData.append('definition', definitionInputRef.current!.value)
+            formData.append('imageFilename', imageFilename as string)
+            addWord(formData)
             // onSave(text, definition)
           }}
         >
