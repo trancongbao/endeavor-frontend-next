@@ -303,14 +303,29 @@ function AddWordForm({
   const textInputRef = useRef<HTMLInputElement>(null)
   const definitionInputRef = useRef<HTMLInputElement>(null)
 
+  const [text, setText] = useState(selectedText)
+  const [definition, setDefinition] = useState('')
+
   useEffect(() => textInputRef.current!.focus(), [])
 
   return (
     <div className="flex flex-col gap-3 items-center">
       <div className="flex gap-2 items-center">
-        <Input name="text" ref={textInputRef} value={selectedText} placeholder="word text" />
+        <Input
+          name="text"
+          ref={textInputRef}
+          placeholder="word text"
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+        />
         <span>::</span>
-        <Input name="definition" ref={definitionInputRef} placeholder="definition" />
+        <Input
+          name="definition"
+          ref={definitionInputRef}
+          placeholder="word definition"
+          value={definition}
+          onChange={(e) => setDefinition(e.target.value)}
+        />
       </div>
       <ImageUpload />
       <div className="flex justify-center gap-2">
