@@ -93,7 +93,9 @@ export default function Card({ selectedCardRows }: { selectedCardRows: Row[] }) 
       {/* List of words */}
       <div className="w-full flex flex-col items-center gap-3">
         {selectedCardRows[0].wordText !== null &&
-          selectedCardRows.map((wordRow, index) => <Word key={index} wordRow={wordRow} />)}
+          selectedCardRows
+            .sort((a, b) => (a.wordStartIndex as number) - (b.wordStartIndex as number))
+            .map((wordRow, index) => <Word key={index} wordRow={wordRow} />)}
       </div>
 
       {isAddingWord && (
