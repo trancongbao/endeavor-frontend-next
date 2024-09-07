@@ -209,3 +209,38 @@ export async function addWord(formData: FormData) {
   revalidatePath('/teacher/decks/[id]', 'page')
   return addedWord
 }
+
+export async function updateWord(formData: FormData) {
+  console.log(`updateWord: formData=${formData}`)
+  const text = formData.get('text') as string
+  const definition = formData.get('definition') as string
+
+  // First, check if the word exists
+  const existingWord = await kysely
+    .selectFrom('word')
+    .selectAll()
+    .where('text', '=', text)
+    .where('definition', '=', definition)
+    .executeTakeFirst()
+
+  if (!existingWord) {
+    console.log('Word does not exist in the database.')
+    // You can return here or handle this case as needed (e.g., throw an error)
+    return null
+  }
+
+  const updatedWord = await kysely
+    .updateTable('word')
+    .where('text', '=', formData.get('text') as string)
+    .where('definition', '=', formData.get('definition') as string)
+    .set({
+      text: formData.get('text') as string,
+      definition: formData.get('definition') as string,
+      image_uri: formData.get('imageSrc') as string,
+    })
+    .returningAll()
+    .executeTakeFirstOrThrow()
+
+  revalidatePath('/teacher/decks/[id]', 'page')
+  return updatedWord
+}

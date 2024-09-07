@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { highlightTargetWords } from './highlightTargetWords'
 import { Separator } from '@/components/ui/separator'
-import { addWord, addWordToCard, removeWordFromCard, uploadWordImage } from '@/app/actions'
+import { addWord, addWordToCard, removeWordFromCard, updateWord, uploadWordImage } from '@/app/actions'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -356,7 +356,7 @@ function WordForm({
           name="text"
           ref={textInputRef}
           placeholder="word text"
-          value={text}
+          value={text} //TODO: readonly in edit mode
           onChange={(e) => setText(e.target.value)}
         />
         <span>::</span>
@@ -393,6 +393,9 @@ function WordForm({
   )
 
   async function handleSaveButtonClick() {
+    const newText = textInputRef.current!.value
+    const newDefinition = definitionInputRef.current!.value
+
     const formData = new FormData()
     formData.append('text', textInputRef.current!.value)
     if (fileInputRef.current && fileInputRef.current.files && fileInputRef.current.files.length > 0) {
@@ -406,7 +409,7 @@ function WordForm({
     if (mode === 'add') {
       addWord(formData)
     } else {
-      console.log('editWordXXXX')
+      updateWord(formData)
     }
   }
 }
