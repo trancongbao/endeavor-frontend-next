@@ -215,15 +215,7 @@ export async function updateWord(formData: FormData) {
   const text = formData.get('text') as string
   const definition = formData.get('definition') as string
 
-  // First, check if the word exists
-  const existingWord = await kysely
-    .selectFrom('word')
-    .selectAll()
-    .where('text', '=', text)
-    .where('definition', '=', definition)
-    .executeTakeFirst()
-
-  if (!existingWord) {
+  if (!(await isWordExisting(text, definition))) {
     console.log('Word does not exist in the database.')
     const addedWord = await addWord(formData)
     console.log('Added word: ', addedWord)
@@ -244,4 +236,13 @@ export async function updateWord(formData: FormData) {
 
   revalidatePath('/teacher/decks/[id]', 'page')
   return { updatedWord }
+
+  async function isWordExisting(text: string, definition: string) {
+    return await kysely
+      .selectFrom('word')
+      .selectAll()
+      .where('text', '=', text)
+      .where('definition', '=', definition)
+      .executeTakeFirst()
+  }
 }
