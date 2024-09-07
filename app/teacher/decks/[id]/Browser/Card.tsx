@@ -15,7 +15,6 @@ import { Input } from '@/components/ui/input'
 import { Edit, XSquare } from 'react-feather'
 import { Row } from '../page'
 import Image from 'next/image'
-import { add } from 'lodash'
 
 /*
  * Card is moved to its own file due to its complexity.
@@ -168,7 +167,6 @@ export default function Card({ selectedCardRows }: { selectedCardRows: Row[] }) 
                   return (
                     <Word
                       key={index}
-                      mode="add"
                       wordRow={wordRow}
                       onEdit={(updatedWordRow) => {
                         setCardRows((previousCardRows) => {
@@ -419,9 +417,6 @@ function WordForm({
   )
 
   async function handleSaveButtonClick() {
-    const newText = textInputRef.current!.value
-    const newDefinition = definitionInputRef.current!.value
-
     const formData = new FormData()
     formData.append('text', textInputRef.current!.value)
     if (fileInputRef.current && fileInputRef.current.files && fileInputRef.current.files.length > 0) {
