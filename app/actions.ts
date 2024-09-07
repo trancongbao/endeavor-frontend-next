@@ -145,6 +145,39 @@ export async function removeWordFromCard(
   revalidatePath('/teacher/decks/[id]', 'page')
 }
 
+export async function replaceWordInCard(currentWord: any, newWord: any) {
+  console.log(`replaceWordInCard: currentWord = ${JSON.stringify(currentWord)}, newWord = ${JSON.stringify(newWord)}`)
+  await kysely.transaction().execute(async (trx) => {
+    const deletedCardWord = await trx
+      .deleteFrom('card_word')
+      .where('course_id', '=', currentWord.courseId)
+      .where('lesson_order', '=', currentWord.lessonOrder)
+      .where('card_order', '=', currentWord.cardOrder)
+      .where('word_text', '=', currentWord.text)
+      .where('word_definition', '=', currentWord.definition)
+      .returningAll()
+      .executeTakeFirstOrThrow()
+    console.log('Deleted card word: ', deletedCardWord)
+
+    const addedCardWord = await trx
+      .insertInto('card_word')
+      .values({
+        course_id: newWord.courseId,
+        lesson_order: newWord.lessonOrder,
+        card_order: newWord.cardOrder,
+        word_text: newWord.text,
+        word_definition: newWord.definition,
+        start_index: newWord.startIndex,
+        end_index: newWord.endIndex,
+      })
+      .returningAll()
+      .executeTakeFirstOrThrow()
+    console.log('Added card word: ', addedCardWord)
+  })
+
+  revalidatePath('/teacher/decks/[id]', 'page')
+}
+
 export async function uploadWordImage(formData: FormData): Promise<string | undefined> {
   const text = formData.get('text') as string
   const image = formData.get('image') as File

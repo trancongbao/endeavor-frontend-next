@@ -1,7 +1,14 @@
 import { useEffect, useRef, useState } from 'react'
 import { highlightTargetWords } from './highlightTargetWords'
 import { Separator } from '@/components/ui/separator'
-import { addWord, addWordToCard, removeWordFromCard, updateWord, uploadWordImage } from '@/app/actions'
+import {
+  addWord,
+  addWordToCard,
+  removeWordFromCard,
+  replaceWordInCard,
+  updateWord,
+  uploadWordImage,
+} from '@/app/actions'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -136,21 +143,23 @@ export default function Card({ selectedCardRows }: { selectedCardRows: Row[] }) 
                       prefilledDefinition={wordRow.wordDefinition as string}
                       onCancel={() => setCardRows(selectedCardRows)}
                       onSave={async (text: string, definition: string) => {
-                        await removeWordFromCard(
-                          courseId,
-                          lessonOrder as number,
-                          cardOrder as number,
-                          wordRow.wordText as string,
-                          wordRow.wordDefinition as string
-                        )
-                        await addWordToCard(
-                          courseId,
-                          lessonOrder as number,
-                          cardOrder as number,
-                          text,
-                          definition,
-                          selectionPosition.startIndex,
-                          selectionPosition.endIndex
+                        await replaceWordInCard(
+                          {
+                            courseId,
+                            lessonOrder,
+                            cardOrder,
+                            text: wordRow.wordText,
+                            definition: wordRow.wordDefinition,
+                          },
+                          {
+                            courseId,
+                            lessonOrder,
+                            cardOrder,
+                            text,
+                            definition,
+                            startIndex: selectionPosition.startIndex,
+                            endIndex: selectionPosition.endIndex,
+                          }
                         )
                       }}
                     />
