@@ -135,6 +135,24 @@ export default function Card({ selectedCardRows }: { selectedCardRows: Row[] }) 
                       prefilledText={wordRow.wordText as string}
                       prefilledDefinition={wordRow.wordDefinition as string}
                       onCancel={() => setCardRows(selectedCardRows)}
+                      onSave={async (text: string, definition: string) => {
+                        await removeWordFromCard(
+                          courseId,
+                          lessonOrder as number,
+                          cardOrder as number,
+                          wordRow.wordText as string,
+                          wordRow.wordDefinition as string
+                        )
+                        await addWordToCard(
+                          courseId,
+                          lessonOrder as number,
+                          cardOrder as number,
+                          text,
+                          definition,
+                          selectionPosition.startIndex,
+                          selectionPosition.endIndex
+                        )
+                      }}
                     />
                   )
                 default:
@@ -337,7 +355,7 @@ function WordForm({
   mode: string
   prefilledText: string
   prefilledDefinition?: string
-  onSave?: (text: string, definition: string) => void
+  onSave: (text: string, definition: string) => void
   onCancel: () => void
 }) {
   const textInputRef = useRef<HTMLInputElement>(null)
@@ -376,7 +394,6 @@ function WordForm({
           onClick={async (event) => {
             event.preventDefault()
             await handleSaveButtonClick()
-            onSave && onSave(text, definition)
           }}
         >
           Save
@@ -408,8 +425,13 @@ function WordForm({
     formData.append('definition', definitionInputRef.current!.value)
     if (mode === 'add') {
       addWord(formData)
+      onSave(text, definition)
     } else {
-      updateWord(formData)
+      const { addedWord } = await updateWord(formData)
+      console.log('addedWord: ', addedWord)
+      if (addedWord) {
+        onSave(addedWord.text, addedWord.definition)
+      }
     }
   }
 }

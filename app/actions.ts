@@ -225,8 +225,9 @@ export async function updateWord(formData: FormData) {
 
   if (!existingWord) {
     console.log('Word does not exist in the database.')
-    // You can return here or handle this case as needed (e.g., throw an error)
-    return null
+    const addedWord = await addWord(formData)
+    console.log('Added word: ', addedWord)
+    return { addedWord }
   }
 
   const updatedWord = await kysely
@@ -242,5 +243,5 @@ export async function updateWord(formData: FormData) {
     .executeTakeFirstOrThrow()
 
   revalidatePath('/teacher/decks/[id]', 'page')
-  return updatedWord
+  return { updatedWord }
 }
