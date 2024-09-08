@@ -340,7 +340,7 @@ function Word({ wordRow, onEdit }: { wordRow: Row }) {
       </div>
       <div className="flex flex-col">
         <Button variant="ghost" size={'sm'} onClick={() => onEdit(wordRow)}>
-          <Edit />
+          <Edit color="hsl(180, 70%, 40%)" />
         </Button>
         <Button
           variant="ghost"
@@ -354,7 +354,7 @@ function Word({ wordRow, onEdit }: { wordRow: Row }) {
             )
           }
         >
-          <XSquare />
+          <XSquare color="red" />
         </Button>
       </div>
     </div>

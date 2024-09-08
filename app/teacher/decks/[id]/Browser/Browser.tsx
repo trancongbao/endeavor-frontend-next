@@ -9,7 +9,7 @@ import { useRef, useEffect } from 'react'
 import { addCard, addSubdeck, deleteCard, deleteSubdeck, editCardText, editSubdeckTitle } from '@/app/actions'
 import KebabMenu from './KebabMenu'
 import { highlightTargetWords as highlightTargetWords } from './highlightTargetWords'
-import { Edit, Delete } from 'react-feather'
+import { Edit, Delete, XSquare } from 'react-feather'
 import Card from './Card'
 
 export default function Browser({ deckRows }: { deckRows: Row[] }) {
@@ -145,11 +145,16 @@ function SubdeckListItem({
           </p>
           <KebabMenu
             menuOptions={[
-              { id: 'edit', label: 'Edit', icon: <Edit />, onSelect: (id) => setIsEditingSubdeckTitle(true) },
+              {
+                id: 'edit',
+                label: 'Edit',
+                icon: <Edit color="hsl(180, 70%, 50%)" />,
+                onSelect: (id) => setIsEditingSubdeckTitle(true),
+              },
               {
                 id: 'delete',
                 label: 'Delete',
-                icon: <Delete />,
+                icon: <XSquare color="red" />,
                 onSelect: (id) => deleteSubdeck(subdeckOrder),
               },
             ]}
@@ -359,13 +364,13 @@ function CardTextListItem({
               {
                 id: 'edit',
                 label: 'Edit',
-                icon: <Edit />,
+                icon: <Edit color="hsl(180, 70%, 50%)" />,
                 onSelect: (id) => setIsEditingCardText(true),
               },
               {
                 id: 'delete',
                 label: 'Delete',
-                icon: <Delete />,
+                icon: <XSquare color="red" />,
                 onSelect: (id) => deleteCard(),
               },
             ]}
