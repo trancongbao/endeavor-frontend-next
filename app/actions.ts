@@ -127,12 +127,14 @@ export async function removeWordFromCard(
   lessonOrder: number,
   cardOrder: number,
   wordText: string,
-  wordDefinition: string
+  wordDefinition: string,
+  trx?: any
 ) {
   console.log(
     `removeWordFromCard: courseId = ${courseId}, lessonOrder = ${lessonOrder}, cardOrder = ${cardOrder}, wordText = ${wordText}, wordDefinition = ${wordDefinition}`
   )
-  const deletedCardWord = await kysely
+  const db = trx || kysely
+  const deletedCardWord = await (trx || kysely)
     .deleteFrom('card_word')
     .where('course_id', '=', courseId)
     .where('lesson_order', '=', lessonOrder)
@@ -148,16 +150,14 @@ export async function removeWordFromCard(
 export async function replaceWordInCard(currentWord: any, newWord: any) {
   console.log(`replaceWordInCard: currentWord = ${JSON.stringify(currentWord)}, newWord = ${JSON.stringify(newWord)}`)
   await kysely.transaction().execute(async (trx) => {
-    const deletedCardWord = await trx
-      .deleteFrom('card_word')
-      .where('course_id', '=', currentWord.courseId)
-      .where('lesson_order', '=', currentWord.lessonOrder)
-      .where('card_order', '=', currentWord.cardOrder)
-      .where('word_text', '=', currentWord.text)
-      .where('word_definition', '=', currentWord.definition)
-      .returningAll()
-      .executeTakeFirstOrThrow()
-    console.log('Deleted card word: ', deletedCardWord)
+    removeWordFromCard(
+      currentWord.courseId,
+      currentWord.lessonOrder,
+      currentWord.cardOrder,
+      currentWord.text,
+      currentWord.definition,
+      trx
+    )
 
     const addedCardWord = await trx
       .insertInto('card_word')
