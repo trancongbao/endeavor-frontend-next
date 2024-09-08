@@ -1,6 +1,5 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
-import SideBar from '@/app/components/SideBar/SideBar'
 import './globals.css'
 import { redirect } from 'next/navigation'
 
