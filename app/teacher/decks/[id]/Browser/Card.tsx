@@ -16,6 +16,7 @@ import { Edit, XSquare } from 'react-feather'
 import { Row } from '../page'
 import Image from 'next/image'
 
+type SelectionInfo = { text: string; startIndex: number; endIndex: number; position: { top: number; left: number } }
 /*
  * Card is moved to its own file due to its complexity.
  */
@@ -23,16 +24,9 @@ export default function Card({ selectedCardRows }: { selectedCardRows: Row[] }) 
   console.log('Card: selectedCardRows=', selectedCardRows)
   const { courseId, lessonOrder, cardOrder } = selectedCardRows[0]
 
-  // TODO: selection state
   const [cardRows, setCardRows] =
     useState<(Row | { mode: string; wordStartIndex: number; wordEndIndex: number })[]>(selectedCardRows)
-  const [selection, setSelection] = useState<{
-    text: string
-    startIndex: number
-    endIndex: number
-    position: { top: number; left: number }
-  } | null>(null)
-  const [suggestedWords, setSuggestedWords] = useState([])
+  const [selection, setSelection] = useState<SelectionInfo | null>(null)
   const [suggestedWordsVisible, setSuggestedWordsVisible] = useState(false)
 
   const targetWordPositions = selectedCardRows.map((row) => ({
@@ -75,7 +69,6 @@ export default function Card({ selectedCardRows }: { selectedCardRows: Row[] }) 
               ...determineSelectionPosition(paragraph, selection),
               position: determineSuggestedWordsPosition(selection),
             })
-            fetchSuggestedWords(selectedText)
             setSuggestedWordsVisible(true)
           }
         }}
@@ -83,10 +76,9 @@ export default function Card({ selectedCardRows }: { selectedCardRows: Row[] }) 
 
       {selection && (
         <SuggestedWords
+          selection={selection}
           open={suggestedWordsVisible}
           onOpenChange={setSuggestedWordsVisible}
-          position={selection.position}
-          suggestedWords={suggestedWords}
           onSelect={(wordText: string, wordDefinition: string) => {
             addWordToCard(
               courseId as number,
@@ -249,22 +241,6 @@ export default function Card({ selectedCardRows }: { selectedCardRows: Row[] }) 
     return { startIndex, endIndex }
   }
 
-  async function fetchSuggestedWords(selectedText: string) {
-    try {
-      const response = await fetch(`/api/word/search?query=${encodeURIComponent(selectedText)}`)
-
-      if (response.ok) {
-        const suggestedWords = await response.json()
-        console.log('suggestedWords: ', suggestedWords)
-        setSuggestedWords(suggestedWords)
-      } else {
-        console.error('Failed to fetch suggestions')
-      }
-    } catch (error) {
-      console.error('Error fetching suggestions:', error)
-    }
-  }
-
   function determineSuggestedWordsPosition(selection: Selection) {
     const range = selection.getRangeAt(0)
     const boundingClientRect = range.getBoundingClientRect()
@@ -277,26 +253,35 @@ export default function Card({ selectedCardRows }: { selectedCardRows: Row[] }) 
 }
 
 function SuggestedWords({
+  selection,
   open,
   onOpenChange,
-  position,
-  suggestedWords,
   onSelect,
   onAddWord,
 }: {
+  selection: SelectionInfo
   open: boolean
   onOpenChange: (value: boolean) => void
-  position: { top: number; left: number }
-  suggestedWords: { id: number; text: string; definition: string }[]
   onSelect: (wordText: string, wordDefinition: string) => void
   onAddWord: () => void
 }) {
+  const [suggestedWords, setSuggestedWords] = useState([])
+
+  useEffect(() => {
+    fetch(`/api/word/search?query=${encodeURIComponent(selection.text)}`).then(async (response) => {
+      if (response.ok) {
+        const suggestedWords = await response.json()
+        console.log('suggestedWords: ', suggestedWords)
+        setSuggestedWords(suggestedWords)
+      } else {
+        console.error('Failed to fetch suggestions')
+      }
+    })
+  }, [selection.text])
+
   return (
     <DropdownMenu open={open} onOpenChange={onOpenChange}>
-      <DropdownMenuContent
-        className={`fixed bg-white border border-gray-500`}
-        style={{ top: position.top, left: position.left }}
-      >
+      <DropdownMenuContent className={`fixed bg-white border border-gray-500`} style={selection.position}>
         {suggestedWords.map(({ text, definition }, index) => (
           <DropdownMenuItem key={index} onSelect={() => onSelect(text, definition)}>
             <Button variant="ghost" className="flex items-center gap-2">
