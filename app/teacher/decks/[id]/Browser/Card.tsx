@@ -265,7 +265,7 @@ function SuggestedWords({
   onSelect: (wordText: string, wordDefinition: string) => void
   onAddWord: () => void
 }) {
-  const [suggestedWords, setSuggestedWords] = useState([])
+  const [suggestedWords, setSuggestedWords] = useState<{ text: string; definition: string }[] | null>(null)
 
   useEffect(() => {
     fetch(`/api/word/search?query=${encodeURIComponent(selection.text)}`).then(async (response) => {
@@ -280,33 +280,35 @@ function SuggestedWords({
   }, [selection.text])
 
   return (
-    <DropdownMenu open={open} onOpenChange={onOpenChange}>
-      <DropdownMenuContent className={`fixed bg-white border border-gray-500`} style={selection.position}>
-        {suggestedWords.map(({ text, definition }, index) => (
-          <DropdownMenuItem key={index} onSelect={() => onSelect(text, definition)}>
-            <Button variant="ghost" className="flex items-center gap-2">
-              <span>{`${text} :: ${definition}`}</span>
+    suggestedWords !== null && (
+      <DropdownMenu open={open} onOpenChange={onOpenChange}>
+        <DropdownMenuContent className={`fixed bg-white border border-gray-500`} style={selection.position}>
+          {suggestedWords.map(({ text, definition }, index) => (
+            <DropdownMenuItem key={index} onSelect={() => onSelect(text, definition)}>
+              <Button variant="ghost" className="flex items-center gap-2">
+                <span>{`${text} :: ${definition}`}</span>
+              </Button>
+            </DropdownMenuItem>
+          ))}
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              className="self-start w-20 bg-orange-400  text-white text-md hover:bg-orange-300 hover:text-black py-2 px-4 rounded"
+              onClick={() => onAddWord()}
+            >
+              Add Word
             </Button>
-          </DropdownMenuItem>
-        ))}
-        <div className="flex gap-2">
-          <Button
-            variant="outline"
-            className="self-start w-20 bg-orange-400  text-white text-md hover:bg-orange-300 hover:text-black py-2 px-4 rounded"
-            onClick={() => onAddWord()}
-          >
-            Add Word
-          </Button>
-          <Button
-            variant="outline"
-            className="self-start w-20 bg-orange-400  text-white text-md hover:bg-orange-300 hover:text-black py-2 px-4 rounded"
-            onClick={() => onAddWord()}
-          >
-            See details
-          </Button>
-        </div>
-      </DropdownMenuContent>
-    </DropdownMenu>
+            <Button
+              variant="outline"
+              className="self-start w-20 bg-orange-400  text-white text-md hover:bg-orange-300 hover:text-black py-2 px-4 rounded"
+              onClick={() => onAddWord()}
+            >
+              See details
+            </Button>
+          </div>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    )
   )
 }
 
