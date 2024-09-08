@@ -26,6 +26,7 @@ export default function Card({ selectedCardRows }: { selectedCardRows: Row[] }) 
   // TODO: selection state
   const [cardRows, setCardRows] =
     useState<(Row | { mode: string; wordStartIndex: number; wordEndIndex: number })[]>(selectedCardRows)
+  const [selection, setSelection] = useState<{ text: string } | null>(null)
   const [selectionPosition, setSelectionPosition] = useState({ startIndex: 0, endIndex: 0 })
   const [suggestedWords, setSuggestedWords] = useState([])
   const [suggestedWordsVisible, setSuggestedWordsVisible] = useState(false)
@@ -36,8 +37,6 @@ export default function Card({ selectedCardRows }: { selectedCardRows: Row[] }) 
     end: row.wordEndIndex as number,
   }))
   console.log('CardFront: targetWordPositions=', targetWordPositions)
-
-  const [selectedText, setSelectedText] = useState<string | null>(null)
 
   useEffect(() => {
     setCardRows(selectedCardRows)
@@ -68,7 +67,7 @@ export default function Card({ selectedCardRows }: { selectedCardRows: Row[] }) 
            * Ref: https://javascript.info/selection-range
            */
           if (selectedText.length > 0 && !isOverlappingTargetWord(paragraph, selection)) {
-            setSelectedText(selectedText)
+            setSelection({ text: selectedText })
             fetchSuggestedWords(selectedText)
             setSelectionPosition(determineSelectionPosition(paragraph, selection))
             setSuggestedWordsPosition(determineSuggestedWordsPosition(selection))
@@ -118,7 +117,7 @@ export default function Card({ selectedCardRows }: { selectedCardRows: Row[] }) 
                   return (
                     <WordForm
                       key={index}
-                      prefilledText={selectedText}
+                      prefilledText={selection!.text}
                       onSave={async (text: string, definition: string) => {
                         await addWordToCard(
                           courseId,
