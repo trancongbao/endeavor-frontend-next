@@ -74,9 +74,9 @@ export default function Card({ selectedCardRows }: { selectedCardRows: Row[] }) 
         }}
       ></p>
 
-      {selection && (
+      {suggestedWordsVisible && (
         <SuggestedWords
-          selection={selection}
+          selection={selection!}
           open={suggestedWordsVisible}
           onOpenChange={setSuggestedWordsVisible}
           onSelect={(wordText: string, wordDefinition: string) => {
@@ -86,8 +86,8 @@ export default function Card({ selectedCardRows }: { selectedCardRows: Row[] }) 
               cardOrder as number,
               wordText as string,
               wordDefinition as string,
-              selection.startIndex,
-              selection.endIndex
+              selection!.startIndex,
+              selection!.endIndex
             )
             setSuggestedWordsVisible(false)
           }}
@@ -95,7 +95,7 @@ export default function Card({ selectedCardRows }: { selectedCardRows: Row[] }) 
             setCardRows((previousCardRows) =>
               [
                 ...previousCardRows,
-                { mode: 'add', wordStartIndex: selection.startIndex, wordEndIndex: selection.endIndex },
+                { mode: 'add', wordStartIndex: selection!.startIndex, wordEndIndex: selection!.endIndex },
               ].sort((a, b) => (a.wordStartIndex as number) - (b.wordStartIndex as number))
             )
             setSuggestedWordsVisible(false)
