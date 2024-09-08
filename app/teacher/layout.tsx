@@ -1,5 +1,6 @@
 import Image from 'next/image'
 import Menu from '../components/Menu'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 
 export default function RootLayout({
   children,
@@ -30,13 +31,10 @@ function Profile() {
 
   return (
     <div className="w-full flex flex-col items-center gap-2">
-      <Image
-        className="rounded-full border border-zinc-950"
-        src="/sidebar/avatar.webp"
-        alt=""
-        width={100}
-        height={100}
-      />
+      <Avatar className="size-24">
+        <AvatarImage src="/sidebar/avatar.webp" alt=""  />
+        <AvatarFallback>CB</AvatarFallback>
+      </Avatar>
       {/* <h3>{authenticatedUser.username}</h3> */}
       <p className="text-xl">Tran Cong Bao</p>
       {/* <div>{authenticatedUser.userType.toUpperCase()}</div> */}
