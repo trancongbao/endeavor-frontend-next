@@ -26,10 +26,14 @@ export default function Card({ selectedCardRows }: { selectedCardRows: Row[] }) 
   // TODO: selection state
   const [cardRows, setCardRows] =
     useState<(Row | { mode: string; wordStartIndex: number; wordEndIndex: number })[]>(selectedCardRows)
-  const [selection, setSelection] = useState<{ text: string; startIndex: number; endIndex: number } | null>(null)
+  const [selection, setSelection] = useState<{
+    text: string
+    startIndex: number
+    endIndex: number
+    position: { top: number; left: number }
+  } | null>(null)
   const [suggestedWords, setSuggestedWords] = useState([])
   const [suggestedWordsVisible, setSuggestedWordsVisible] = useState(false)
-  const [suggestedWordsPosition, setSuggestedWordsPosition] = useState({ top: 0, left: 0 })
 
   const targetWordPositions = selectedCardRows.map((row) => ({
     start: row.wordStartIndex as number,
@@ -66,9 +70,12 @@ export default function Card({ selectedCardRows }: { selectedCardRows: Row[] }) 
            * Ref: https://javascript.info/selection-range
            */
           if (selectedText.length > 0 && !isOverlappingTargetWord(paragraph, selection)) {
-            setSelection({ text: selectedText, ...determineSelectionPosition(paragraph, selection) })
+            setSelection({
+              text: selectedText,
+              ...determineSelectionPosition(paragraph, selection),
+              position: determineSuggestedWordsPosition(selection),
+            })
             fetchSuggestedWords(selectedText)
-            setSuggestedWordsPosition(determineSuggestedWordsPosition(selection))
             setSuggestedWordsVisible(true)
           }
         }}
@@ -78,7 +85,7 @@ export default function Card({ selectedCardRows }: { selectedCardRows: Row[] }) 
         <SuggestedWords
           open={suggestedWordsVisible}
           onOpenChange={setSuggestedWordsVisible}
-          position={suggestedWordsPosition}
+          position={selection.position}
           suggestedWords={suggestedWords}
           onSelect={(wordText: string, wordDefinition: string) => {
             addWordToCard(
