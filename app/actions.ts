@@ -1,8 +1,9 @@
 'use server'
 import { revalidatePath } from 'next/cache'
-import { kysely } from './db/kysely'
+import { EndeavorDB, kysely } from './db/kysely'
 import path from 'path'
 import { promises as fs } from 'fs'
+import { Transaction } from 'kysely'
 
 export async function addSubdeck(formData: FormData) {
   const addedSubdeck = await kysely
@@ -128,7 +129,7 @@ export async function removeWordFromCard(
   cardOrder: number,
   wordText: string,
   wordDefinition: string,
-  trx?: any
+  trx?: Transaction<EndeavorDB>
 ) {
   console.log(
     `removeWordFromCard: courseId = ${courseId}, lessonOrder = ${lessonOrder}, cardOrder = ${cardOrder}, wordText = ${wordText}, wordDefinition = ${wordDefinition}`
