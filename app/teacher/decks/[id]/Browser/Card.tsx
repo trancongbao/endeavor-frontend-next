@@ -156,8 +156,8 @@ export default function Card({ selectedCardRows }: { selectedCardRows: Row[] }) 
                             cardOrder,
                             text,
                             definition,
-                            startIndex: selectionPosition.startIndex,
-                            endIndex: selectionPosition.endIndex,
+                            startIndex: wordRow.wordStartIndex,
+                            endIndex: wordRow.wordEndIndex,
                           }
                         )
                       }}
@@ -300,13 +300,22 @@ function SuggestedWords({
             </Button>
           </DropdownMenuItem>
         ))}
-        <Button
-          variant="outline"
-          className="self-start w-20 bg-orange-400  text-white text-md hover:bg-orange-300 hover:text-black py-2 px-4 rounded"
-          onClick={() => onAddWord()}
-        >
-          Add Word
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            className="self-start w-20 bg-orange-400  text-white text-md hover:bg-orange-300 hover:text-black py-2 px-4 rounded"
+            onClick={() => onAddWord()}
+          >
+            Add Word
+          </Button>
+          <Button
+            variant="outline"
+            className="self-start w-20 bg-orange-400  text-white text-md hover:bg-orange-300 hover:text-black py-2 px-4 rounded"
+            onClick={() => onAddWord()}
+          >
+            See details
+          </Button>
+        </div>
       </DropdownMenuContent>
     </DropdownMenu>
   )

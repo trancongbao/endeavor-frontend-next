@@ -239,7 +239,6 @@ export async function addWord(formData: FormData) {
     .returningAll()
     .executeTakeFirstOrThrow()
 
-  revalidatePath('/teacher/decks/[id]', 'page')
   return addedWord
 }
 
@@ -259,7 +258,6 @@ export async function updateWord(formData: FormData) {
     .executeTakeFirst()
 
   if (updatedWord) {
-    revalidatePath('/teacher/decks/[id]', 'page')
     return { updatedWord }
   } else {
     console.log('Word does not exist in the database.')
