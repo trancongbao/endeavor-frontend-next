@@ -101,12 +101,13 @@ export async function addWordToCard(
   wordText: string,
   wordDefinition: string,
   startIndex: number,
-  endIndex: number
+  endIndex: number,
+  trx?: Transaction<EndeavorDB>
 ) {
   console.log(
     `addWordToCard: courseId = ${courseId}, lessonOrder = ${lessonOrder}, cardOrder = ${cardOrder}, wordText = ${wordText}, wordDefinition = ${wordDefinition}, startIndex = ${startIndex}, endIndex = ${endIndex}`
   )
-  const addedCardWord = await kysely
+  const addedCardWord = await (trx || kysely)
     .insertInto('card_word')
     .values({
       course_id: courseId,
@@ -134,7 +135,6 @@ export async function removeWordFromCard(
   console.log(
     `removeWordFromCard: courseId = ${courseId}, lessonOrder = ${lessonOrder}, cardOrder = ${cardOrder}, wordText = ${wordText}, wordDefinition = ${wordDefinition}`
   )
-  const db = trx || kysely
   const deletedCardWord = await (trx || kysely)
     .deleteFrom('card_word')
     .where('course_id', '=', courseId)
@@ -159,21 +159,16 @@ export async function replaceWordInCard(currentWord: any, newWord: any) {
       currentWord.definition,
       trx
     )
-
-    const addedCardWord = await trx
-      .insertInto('card_word')
-      .values({
-        course_id: newWord.courseId,
-        lesson_order: newWord.lessonOrder,
-        card_order: newWord.cardOrder,
-        word_text: newWord.text,
-        word_definition: newWord.definition,
-        start_index: newWord.startIndex,
-        end_index: newWord.endIndex,
-      })
-      .returningAll()
-      .executeTakeFirstOrThrow()
-    console.log('Added card word: ', addedCardWord)
+    addWordToCard(
+      newWord.courseId,
+      newWord.lessonOrder,
+      newWord.cardOrder,
+      newWord.text,
+      newWord.definition,
+      newWord.startIndex,
+      newWord.endIndex,
+      trx
+    )
   })
 
   revalidatePath('/teacher/decks/[id]', 'page')
