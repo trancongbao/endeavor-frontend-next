@@ -26,8 +26,7 @@ export default function Card({ selectedCardRows }: { selectedCardRows: Row[] }) 
   // TODO: selection state
   const [cardRows, setCardRows] =
     useState<(Row | { mode: string; wordStartIndex: number; wordEndIndex: number })[]>(selectedCardRows)
-  const [selection, setSelection] = useState<{ text: string } | null>(null)
-  const [selectionPosition, setSelectionPosition] = useState({ startIndex: 0, endIndex: 0 })
+  const [selection, setSelection] = useState<{ text: string; startIndex: number; endIndex: number } | null>(null)
   const [suggestedWords, setSuggestedWords] = useState([])
   const [suggestedWordsVisible, setSuggestedWordsVisible] = useState(false)
   const [suggestedWordsPosition, setSuggestedWordsPosition] = useState({ top: 0, left: 0 })
@@ -67,42 +66,43 @@ export default function Card({ selectedCardRows }: { selectedCardRows: Row[] }) 
            * Ref: https://javascript.info/selection-range
            */
           if (selectedText.length > 0 && !isOverlappingTargetWord(paragraph, selection)) {
-            setSelection({ text: selectedText })
+            setSelection({ text: selectedText, ...determineSelectionPosition(paragraph, selection) })
             fetchSuggestedWords(selectedText)
-            setSelectionPosition(determineSelectionPosition(paragraph, selection))
             setSuggestedWordsPosition(determineSuggestedWordsPosition(selection))
             setSuggestedWordsVisible(true)
           }
         }}
       ></p>
 
-      <SuggestedWords
-        open={suggestedWordsVisible}
-        onOpenChange={setSuggestedWordsVisible}
-        position={suggestedWordsPosition}
-        suggestedWords={suggestedWords}
-        onSelect={(wordText: string, wordDefinition: string) => {
-          addWordToCard(
-            courseId as number,
-            lessonOrder as number,
-            cardOrder as number,
-            wordText as string,
-            wordDefinition as string,
-            selectionPosition.startIndex,
-            selectionPosition.endIndex
-          )
-          setSuggestedWordsVisible(false)
-        }}
-        onAddWord={() => {
-          setCardRows((previousCardRows) =>
-            [
-              ...previousCardRows,
-              { mode: 'add', wordStartIndex: selectionPosition.startIndex, wordEndIndex: selectionPosition.endIndex },
-            ].sort((a, b) => (a.wordStartIndex as number) - (b.wordStartIndex as number))
-          )
-          setSuggestedWordsVisible(false)
-        }}
-      />
+      {selection && (
+        <SuggestedWords
+          open={suggestedWordsVisible}
+          onOpenChange={setSuggestedWordsVisible}
+          position={suggestedWordsPosition}
+          suggestedWords={suggestedWords}
+          onSelect={(wordText: string, wordDefinition: string) => {
+            addWordToCard(
+              courseId as number,
+              lessonOrder as number,
+              cardOrder as number,
+              wordText as string,
+              wordDefinition as string,
+              selection.startIndex,
+              selection.endIndex
+            )
+            setSuggestedWordsVisible(false)
+          }}
+          onAddWord={() => {
+            setCardRows((previousCardRows) =>
+              [
+                ...previousCardRows,
+                { mode: 'add', wordStartIndex: selection.startIndex, wordEndIndex: selection.endIndex },
+              ].sort((a, b) => (a.wordStartIndex as number) - (b.wordStartIndex as number))
+            )
+            setSuggestedWordsVisible(false)
+          }}
+        />
+      )}
 
       <Separator className="w-full h-1 bg-gray-200" />
 
@@ -125,8 +125,8 @@ export default function Card({ selectedCardRows }: { selectedCardRows: Row[] }) 
                           cardOrder as number,
                           text,
                           definition,
-                          selectionPosition.startIndex,
-                          selectionPosition.endIndex
+                          selection!.startIndex,
+                          selection!.endIndex
                         )
                       }}
                       onCancel={() => setCardRows(selectedCardRows)}
@@ -218,7 +218,6 @@ export default function Card({ selectedCardRows }: { selectedCardRows: Row[] }) 
     const endOffset = range.endOffset
     console.log('endOffset: ', endOffset)
 
-    let wordOrder = 0
     let startIndex = 0
     let endIndex = 0
 
@@ -230,7 +229,6 @@ export default function Card({ selectedCardRows }: { selectedCardRows: Row[] }) 
        * We only care about the startContainer, and not the endContainer, because in practice, only Firefox allows to select multiple ranges.
        */
       if (childNode !== startContainer) {
-        wordOrder++
         startIndex += childNode.textContent!.length
         endIndex += childNode.textContent!.length
       } else {
@@ -240,8 +238,8 @@ export default function Card({ selectedCardRows }: { selectedCardRows: Row[] }) 
       }
     }
 
-    console.log(`selectionPosition: wordOrder = ${wordOrder}, startIndex = ${startIndex}, endIndex = ${endIndex}`)
-    return { wordOrder, startIndex, endIndex }
+    console.log(`selectionPosition: startIndex = ${startIndex}, endIndex = ${endIndex}`)
+    return { startIndex, endIndex }
   }
 
   async function fetchSuggestedWords(selectedText: string) {
