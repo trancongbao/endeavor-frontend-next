@@ -84,7 +84,3 @@ export type SubdeckRow = DeckRow & {
   lessonOrder: number
   lessonTitle: string
 }
-
-export type GroupedSubdeckRows = {
-  [key: string]: DeckRow[]
-}

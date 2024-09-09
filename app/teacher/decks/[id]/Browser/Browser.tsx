@@ -1,8 +1,8 @@
 'use client'
 
-import _ from 'lodash'
+import _, { Dictionary } from 'lodash'
 import { useState } from 'react'
-import { DeckRow, GroupedSubdeckRows } from '../page'
+import { DeckRow, SubdeckRow } from '../page'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { useRef, useEffect } from 'react'
@@ -14,8 +14,8 @@ import CardList from './CardList'
 export default function Browser({ deckRows }: { deckRows: DeckRow[] }) {
   console.log('Browser: deckRows = ', deckRows)
   const { courseId } = deckRows[0]
-  const groupedSubdeckRows: GroupedSubdeckRows | undefined = hasSubdeck(deckRows)
-    ? _.groupBy(deckRows, 'lessonOrder')
+  const groupedSubdeckRows: Dictionary<SubdeckRow[]> | undefined = hasSubdeck(deckRows)
+    ? (_.groupBy(deckRows, 'lessonOrder') as Dictionary<SubdeckRow[]>)
     : undefined
   console.log('Browser: groupedSubdeckRows = ', groupedSubdeckRows)
 
@@ -36,7 +36,7 @@ export default function Browser({ deckRows }: { deckRows: DeckRow[] }) {
      * However, it would require a less straight-forward CSS layout method than `grid`.
      */
     <div className="grid grid-cols-[1fr_6fr] gap-2">
-      <div className="border-r-4 flex flex-col">
+      <div className="border-r-4 flex flex-col gap-4">
         {hasSubdeck(deckRows) && (
           <SubdeckList
             groupedSubdeckRows={groupedSubdeckRows!}
@@ -81,7 +81,7 @@ export default function Browser({ deckRows }: { deckRows: DeckRow[] }) {
 
 interface SubdecksProps {
   courseId: number
-  groupedSubdeckRows: GroupedSubdeckRows
+  groupedSubdeckRows: Dictionary<SubdeckRow[]>
   selectedSubdeckOrder: number
   setSelectedSubdeckOrder: (order: number) => void
 }
@@ -105,7 +105,7 @@ function SubdeckList({ groupedSubdeckRows, courseId, selectedSubdeckOrder, setSe
           >
             <SubdeckListItem
               subdeckOrder={parseInt(subdeckOrder)}
-              subdeckTitle={groupedSubdeckRows[subdeckOrder][0].lessonTitle as string}
+              subdeckTitle={groupedSubdeckRows[subdeckOrder][0].lessonTitle}
               setSelectedSubdeckOrder={setSelectedSubdeckOrder}
               editSubdeckTitle={(subdeckOrder, newSubdeckTitle) =>
                 editSubdeckTitle(courseId, subdeckOrder, newSubdeckTitle)
