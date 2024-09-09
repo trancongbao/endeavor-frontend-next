@@ -32,3 +32,13 @@ export type WordRow = CardRow & {
   wordText: string
   wordDefinition: string
 }
+
+export type AddWordFormRow = SubdeckRow & {
+  mode: 'add'
+  wordStartIndex: number
+  wordEndIndex: number
+}
+
+export type EditWordFormRow = WordRow & {
+  mode: 'edit'
+}

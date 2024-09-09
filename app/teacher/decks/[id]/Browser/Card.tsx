@@ -13,7 +13,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem } from '@/component
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Edit, XSquare } from 'react-feather'
-import { CardRow } from './types'
+import { AddWordFormRow, CardRow, EditWordFormRow, WordRow } from './types'
 import Image from 'next/image'
 
 type SelectionInfo = { text: string; startIndex: number; endIndex: number; position: { top: number; left: number } }
@@ -24,13 +24,14 @@ export default function Card({ selectedCardRows }: { selectedCardRows: CardRow[]
   console.log('Card: selectedCardRows=', selectedCardRows)
   const { courseId, lessonOrder, cardOrder, cardText } = selectedCardRows[0]
 
-  const [cardRows, setCardRows] =
-    useState<(CardRow | { mode: string; wordStartIndex: number; wordEndIndex: number })[]>(selectedCardRows)
+  const [wordRows, setWordRows] = useState<(WordRow | AddWordFormRow | EditWordFormRow)[]>(
+    selectedCardRows.filter((row) => row.wordStartIndex !== null) as WordRow[]
+  )
   const [selection, setSelection] = useState<SelectionInfo | null>(null)
   const [suggestedWordsVisible, setSuggestedWordsVisible] = useState(false)
 
   useEffect(() => {
-    setCardRows(selectedCardRows)
+    setWordRows(selectedCardRows.filter((row) => row.wordStartIndex !== null) as WordRow[])
   }, [selectedCardRows])
 
   return (
@@ -94,11 +95,16 @@ export default function Card({ selectedCardRows }: { selectedCardRows: CardRow[]
             setSuggestedWordsVisible(false)
           }}
           onAddWord={() => {
-            setCardRows((previousCardRows) =>
+            setWordRows((previousWordRows) =>
               [
-                ...previousCardRows,
-                { mode: 'add', wordStartIndex: selection!.startIndex, wordEndIndex: selection!.endIndex },
-              ].sort((a, b) => (a.wordStartIndex as number) - (b.wordStartIndex as number))
+                ...previousWordRows,
+                {
+                  ...selectedCardRows[0],
+                  mode: 'add' as 'add',
+                  wordStartIndex: selection!.startIndex,
+                  wordEndIndex: selection!.endIndex,
+                },
+              ].sort((a, b) => a.wordStartIndex - b.wordStartIndex)
             )
             setSuggestedWordsVisible(false)
           }}
@@ -110,7 +116,7 @@ export default function Card({ selectedCardRows }: { selectedCardRows: CardRow[]
       {/* List of words */}
       <div className="w-full flex flex-col items-center gap-3">
         {selectedCardRows[0].wordText !== null &&
-          cardRows
+          wordRows
             .sort((a, b) => (a.wordStartIndex as number) - (b.wordStartIndex as number))
             .map((wordRow, index) => {
               switch (wordRow.mode) {
@@ -130,7 +136,9 @@ export default function Card({ selectedCardRows }: { selectedCardRows: CardRow[]
                           selection!.endIndex
                         )
                       }}
-                      onCancel={() => setCardRows(selectedCardRows)}
+                      onCancel={() =>
+                        setWordRows(selectedCardRows.filter((row) => row.wordStartIndex !== null) as WordRow[])
+                      }
                     />
                   )
                 case 'edit':
@@ -140,7 +148,9 @@ export default function Card({ selectedCardRows }: { selectedCardRows: CardRow[]
                       mode="edit"
                       prefilledText={wordRow.wordText as string}
                       prefilledDefinition={wordRow.wordDefinition as string}
-                      onCancel={() => setCardRows(selectedCardRows)}
+                      onCancel={() =>
+                        setWordRows(selectedCardRows.filter((row) => row.wordStartIndex !== null) as WordRow[])
+                      }
                       onSave={async (text: string, definition: string) => {
                         await replaceWordInCard(
                           {
@@ -168,10 +178,10 @@ export default function Card({ selectedCardRows }: { selectedCardRows: CardRow[]
                     <Word
                       key={index}
                       wordRow={wordRow}
-                      onEdit={(updatedWordRow) => {
-                        setCardRows((previousCardRows) => {
-                          previousCardRows[index] = { ...updatedWordRow, mode: 'edit' }
-                          return [...previousCardRows]
+                      onEdit={(updatedWordRow: WordRow) => {
+                        setWordRows((previousWordRows) => {
+                          previousWordRows[index] = { ...updatedWordRow, mode: 'edit' }
+                          return [...previousWordRows]
                         })
                       }}
                     />
@@ -314,7 +324,7 @@ function SuggestedWords({
   )
 }
 
-function Word({ wordRow, onEdit }: { wordRow: CardRow }) {
+function Word({ wordRow, onEdit }: { wordRow: WordRow }) {
   console.log('Word: wordRow=', wordRow)
 
   const [isEditingWord, setIsEditingWord] = useState(false)
@@ -328,7 +338,7 @@ function Word({ wordRow, onEdit }: { wordRow: CardRow }) {
           <span className=""> :: {wordRow.wordDefinition}</span>
         </div>
         {wordRow.wordImageUri && (
-          <Image src={wordRow.wordImageUri} alt={wordRow.wordText as string} width={200} height={100}></Image>
+          <Image src={wordRow.wordImageUri} alt={wordRow.wordText} width={200} height={100}></Image>
         )}
       </div>
       <div className="flex flex-col">
@@ -342,8 +352,8 @@ function Word({ wordRow, onEdit }: { wordRow: CardRow }) {
               wordRow.courseId,
               wordRow.lessonOrder,
               wordRow.cardOrder,
-              wordRow.wordText as string,
-              wordRow.wordDefinition as string
+              wordRow.wordText,
+              wordRow.wordDefinition
             )
           }
         >
