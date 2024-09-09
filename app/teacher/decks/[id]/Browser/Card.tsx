@@ -13,19 +13,19 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem } from '@/component
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Edit, XSquare } from 'react-feather'
-import { Row } from '../page'
+import { DeckRow } from '../page'
 import Image from 'next/image'
 
 type SelectionInfo = { text: string; startIndex: number; endIndex: number; position: { top: number; left: number } }
 /*
  * Card is moved to its own file due to its complexity.
  */
-export default function Card({ selectedCardRows }: { selectedCardRows: Row[] }) {
+export default function Card({ selectedCardRows }: { selectedCardRows: DeckRow[] }) {
   console.log('Card: selectedCardRows=', selectedCardRows)
   const { courseId, lessonOrder, cardOrder } = selectedCardRows[0]
 
   const [cardRows, setCardRows] =
-    useState<(Row | { mode: string; wordStartIndex: number; wordEndIndex: number })[]>(selectedCardRows)
+    useState<(DeckRow | { mode: string; wordStartIndex: number; wordEndIndex: number })[]>(selectedCardRows)
   const [selection, setSelection] = useState<SelectionInfo | null>(null)
   const [suggestedWordsVisible, setSuggestedWordsVisible] = useState(false)
 
@@ -312,7 +312,7 @@ function SuggestedWords({
   )
 }
 
-function Word({ wordRow, onEdit }: { wordRow: Row }) {
+function Word({ wordRow, onEdit }: { wordRow: DeckRow }) {
   console.log('Word: wordRow=', wordRow)
 
   const [isEditingWord, setIsEditingWord] = useState(false)

@@ -3,7 +3,7 @@ import _ from 'lodash'
 import Browser from './Browser/Browser'
 
 export default async function Page({ params }: { params: { id: string } }) {
-  const deckRows: Row[] = await queryData(params.id)
+  const deckRows: DeckRow[] = await queryData(params.id)
   console.log('deckRows: ', deckRows)
   const { courseId, courseLevel, courseTitle } = deckRows[0]
 
@@ -62,7 +62,7 @@ async function queryData(id: string) {
     })
 }
 
-export type Row = {
+export type DeckRow = {
   courseId: number
   courseLevel: number
   courseTitle: string
@@ -73,18 +73,18 @@ export type Row = {
   wordStartIndex: number | null
   wordEndIndex: number | null
   wordText: string | null
-  wordDefinition: string | null
-  wordPhonetic: string | null
-  wordPartOfSpeech: string | null
+  wordDefinition?: string | null
+  wordPhonetic?: string | null
+  wordPartOfSpeech?: string | null
   wordAudioUri?: string | null
   wordImageUri?: string | null
 }
 
-export type SubdeckRow = Row & {
+export type SubdeckRow = DeckRow & {
   lessonOrder: number
   lessonTitle: string
 }
 
 export type GroupedSubdeckRows = {
-  [key: string]: Row[]
+  [key: string]: DeckRow[]
 }

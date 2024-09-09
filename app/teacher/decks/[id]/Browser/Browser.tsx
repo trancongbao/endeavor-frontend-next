@@ -2,7 +2,7 @@
 
 import _ from 'lodash'
 import { useState } from 'react'
-import { Row, GroupedSubdeckRows } from '../page'
+import { DeckRow, GroupedSubdeckRows } from '../page'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { useRef, useEffect } from 'react'
@@ -12,7 +12,7 @@ import { highlightTargetWords as highlightTargetWords } from './highlightTargetW
 import { Edit, Delete, XSquare } from 'react-feather'
 import Card from './Card'
 
-export default function Browser({ deckRows }: { deckRows: Row[] }) {
+export default function Browser({ deckRows }: { deckRows: DeckRow[] }) {
   const { courseId } = deckRows[0]
   const groupedSubdeckRows: GroupedSubdeckRows = _.groupBy(deckRows, 'lessonOrder')
   console.log('groupedSubdeckRows: ', groupedSubdeckRows)
@@ -247,7 +247,7 @@ function EditSubdeckTitleForm({
  * TODO: Determine if data rows should be passed down the tree or only the necessary data.
  * This requires experience working with many-to-many relationships, for example card-word.
  */
-function CardTextList({ selectedSubdeckRows }: { selectedSubdeckRows: Row[] }) {
+function CardTextList({ selectedSubdeckRows }: { selectedSubdeckRows: DeckRow[] }) {
   const { courseId, lessonOrder } = selectedSubdeckRows[0]
   console.log('CardList: selectedSubdeckRows = ', selectedSubdeckRows)
   console.log('CardList: hasCard = ', hasCard(selectedSubdeckRows))
@@ -316,14 +316,14 @@ function CardTextList({ selectedSubdeckRows }: { selectedSubdeckRows: Row[] }) {
 }
 
 type GroupedCardRows = {
-  [key: string]: Row[]
+  [key: string]: DeckRow[]
 }
 
 function getFirstCardOrder(groupedCardRows: GroupedCardRows) {
   return _.min(Object.keys(groupedCardRows).map(Number)) as number
 }
 
-function hasCard(selectedSubdeckRows: Row[]) {
+function hasCard(selectedSubdeckRows: DeckRow[]) {
   return selectedSubdeckRows[0]['cardOrder'] !== null
 }
 
