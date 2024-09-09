@@ -24,7 +24,7 @@ export default function Card({ selectedCardRows }: { selectedCardRows: CardRow[]
   console.log('Card: selectedCardRows=', selectedCardRows)
   const { courseId, lessonOrder, cardOrder, cardText } = selectedCardRows[0]
 
-  const [wordRows, setWordRows] = useState<(WordRow | AddWordFormRow | EditWordFormRow)[]>(
+  const [wordRows, setWordRows] = useState<WordRow[]>(
     selectedCardRows.filter((row) => row.wordStartIndex !== null) as WordRow[]
   )
   const [selection, setSelection] = useState<SelectionInfo | null>(null)
@@ -124,6 +124,7 @@ export default function Card({ selectedCardRows }: { selectedCardRows: CardRow[]
                   return (
                     <WordForm
                       key={index}
+                      mode="add"
                       prefilledText={selection!.text}
                       onSave={async (text: string, definition: string) => {
                         await addWordToCard(
@@ -178,9 +179,9 @@ export default function Card({ selectedCardRows }: { selectedCardRows: CardRow[]
                     <Word
                       key={index}
                       wordRow={wordRow}
-                      onEdit={(updatedWordRow: WordRow) => {
+                      onEdit={(wordRow: WordRow) => {
                         setWordRows((previousWordRows) => {
-                          previousWordRows[index] = { ...updatedWordRow, mode: 'edit' }
+                          previousWordRows[index] = { ...wordRow, mode: 'edit' }
                           return [...previousWordRows]
                         })
                       }}

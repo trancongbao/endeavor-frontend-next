@@ -26,7 +26,8 @@ export type CardRow = SubdeckRow & {
   cardText: string
 }
 
-export type WordRow = CardRow & {
+export type ViewWordRow = CardRow & {
+  mode: 'view'
   wordStartIndex: number
   wordEndIndex: number
   wordText: string
@@ -39,6 +40,12 @@ export type AddWordFormRow = SubdeckRow & {
   wordEndIndex: number
 }
 
-export type EditWordFormRow = WordRow & {
+export type EditWordFormRow = CardRow & {
   mode: 'edit'
+  wordStartIndex: number
+  wordEndIndex: number
+  wordText: string
+  wordDefinition: string
 }
+
+export type WordRow = ViewWordRow | AddWordFormRow | EditWordFormRow
