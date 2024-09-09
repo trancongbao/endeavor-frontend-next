@@ -127,8 +127,6 @@ export default function Card({ selectedCardRows }: { selectedCardRows: CardRow[]
                     <WordForm
                       key={index}
                       wordRow={wordRow}
-                      mode="add"
-                      prefilledText={selection!.text}
                       onSave={async (text: string, definition: string) => {
                         await addWordToCard(
                           courseId,
@@ -150,9 +148,6 @@ export default function Card({ selectedCardRows }: { selectedCardRows: CardRow[]
                     <WordForm
                       key={index}
                       wordRow={wordRow}
-                      mode="edit"
-                      prefilledText={wordRow.wordText as string}
-                      prefilledDefinition={wordRow.wordDefinition as string}
                       onCancel={() =>
                         setWordRows(selectedCardRows.filter((row) => row.wordStartIndex !== null) as WordRow[])
                       }
@@ -371,16 +366,10 @@ function Word({ wordRow, onEdit }: { wordRow: WordRow; onEdit: (wordRow: WordRow
 
 function WordForm({
   wordRow,
-  mode,
-  prefilledText,
-  prefilledDefinition,
   onSave,
   onCancel,
 }: {
   wordRow: WordRow
-  mode: string
-  prefilledText: string
-  prefilledDefinition?: string
   onSave: (text: string, definition: string) => void
   onCancel: () => void
 }) {
@@ -389,7 +378,7 @@ function WordForm({
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const [text, setText] = useState(wordRow.wordText.toLowerCase())
-  const [definition, setDefinition] = useState(prefilledDefinition ? prefilledDefinition.toLocaleLowerCase() : '')
+  const [definition, setDefinition] = useState(wordRow.wordDefinition.toLowerCase())
 
   useEffect(() => textInputRef.current!.focus(), [])
 
@@ -446,7 +435,7 @@ function WordForm({
       }
     }
     formData.append('definition', definitionInputRef.current!.value)
-    if (mode === 'add') {
+    if (wordRow.mode === 'add') {
       addWord(formData)
       onSave(text, definition)
     } else {
