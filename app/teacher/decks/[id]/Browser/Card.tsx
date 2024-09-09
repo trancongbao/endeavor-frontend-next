@@ -13,27 +13,21 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem } from '@/component
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Edit, XSquare } from 'react-feather'
-import { DeckRow } from './types'
+import { CardRow, DeckRow } from './types'
 import Image from 'next/image'
 
 type SelectionInfo = { text: string; startIndex: number; endIndex: number; position: { top: number; left: number } }
 /*
  * Card is moved to its own file due to its complexity.
  */
-export default function Card({ selectedCardRows }: { selectedCardRows: DeckRow[] }) {
+export default function Card({ selectedCardRows }: { selectedCardRows: CardRow[] }) {
   console.log('Card: selectedCardRows=', selectedCardRows)
-  const { courseId, lessonOrder, cardOrder } = selectedCardRows[0]
+  const { courseId, lessonOrder, cardOrder, cardText } = selectedCardRows[0]
 
   const [cardRows, setCardRows] =
     useState<(DeckRow | { mode: string; wordStartIndex: number; wordEndIndex: number })[]>(selectedCardRows)
   const [selection, setSelection] = useState<SelectionInfo | null>(null)
   const [suggestedWordsVisible, setSuggestedWordsVisible] = useState(false)
-
-  const targetWordPositions = selectedCardRows.map((row) => ({
-    start: row.wordStartIndex as number,
-    end: row.wordEndIndex as number,
-  }))
-  console.log('CardFront: targetWordPositions=', targetWordPositions)
 
   useEffect(() => {
     setCardRows(selectedCardRows)
@@ -44,7 +38,15 @@ export default function Card({ selectedCardRows }: { selectedCardRows: DeckRow[]
       <p
         className="text-center text-lg"
         dangerouslySetInnerHTML={{
-          __html: highlightTargetWords(selectedCardRows[0].cardText as string, targetWordPositions),
+          __html: highlightTargetWords(
+            cardText,
+            selectedCardRows
+              .filter((row) => row.wordText !== null)
+              .map((row) => ({
+                start: row.wordStartIndex as number,
+                end: row.wordEndIndex as number,
+              }))
+          ),
         }}
         /* TODO: select whole words: select to the nearst whitespaces */
         /*
