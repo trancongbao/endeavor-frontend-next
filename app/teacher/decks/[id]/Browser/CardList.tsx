@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { DeckRow } from '../page'
+import { DeckRow } from './types'
 import { addCard, deleteCard, editCardText } from '@/app/actions'
 import { highlightTargetWords } from './highlightTargetWords'
 import KebabMenu from './KebabMenu'

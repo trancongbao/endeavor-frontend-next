@@ -1,6 +1,7 @@
 import { kysely } from '../../../db/kysely'
 import _ from 'lodash'
 import Browser from './Browser/Browser'
+import { DeckRow } from './Browser/types'
 
 export default async function Page({ params }: { params: { id: string } }) {
   const deckRows: DeckRow[] = await queryData(params.id)
@@ -60,27 +61,4 @@ async function queryData(id: string) {
     .then((rows) => {
       return rows
     })
-}
-
-export type DeckRow = {
-  courseId: number
-  courseLevel: number
-  courseTitle: string
-  lessonOrder: number | null
-  lessonTitle: string | null
-  cardOrder: number | null
-  cardText: string | null
-  wordStartIndex: number | null
-  wordEndIndex: number | null
-  wordText: string | null
-  wordDefinition?: string | null
-  wordPhonetic?: string | null
-  wordPartOfSpeech?: string | null
-  wordAudioUri?: string | null
-  wordImageUri?: string | null
-}
-
-export type SubdeckRow = DeckRow & {
-  lessonOrder: number
-  lessonTitle: string
 }

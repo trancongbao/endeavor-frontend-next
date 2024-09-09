@@ -2,7 +2,7 @@
 
 import _, { Dictionary } from 'lodash'
 import { useState } from 'react'
-import { DeckRow, SubdeckRow } from '../page'
+import { DeckRow, SubdeckRow } from './types'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { useRef, useEffect } from 'react'
