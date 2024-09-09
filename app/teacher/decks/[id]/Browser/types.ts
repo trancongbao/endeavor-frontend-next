@@ -20,3 +20,8 @@ export type SubdeckRow = DeckRow & {
   lessonOrder: number
   lessonTitle: string
 }
+
+export type CardRow = SubdeckRow & {
+  cardOrder: number
+  cardText: string
+}

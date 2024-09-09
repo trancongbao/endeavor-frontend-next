@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { DeckRow } from './types'
+import { CardRow, DeckRow, SubdeckRow } from './types'
 import { addCard, deleteCard, editCardText } from '@/app/actions'
 import { highlightTargetWords } from './highlightTargetWords'
 import KebabMenu from './KebabMenu'
@@ -7,16 +7,18 @@ import { Edit, XSquare } from 'react-feather'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import Card from './Card'
-import _ from 'lodash'
+import _, { Dictionary } from 'lodash'
 
 /*
  * CardList is moved to its own file due to its complexity.
  */
-export default function CardList({ selectedSubdeckRows }: { selectedSubdeckRows: DeckRow[] }) {
+export default function CardList({ selectedSubdeckRows }: { selectedSubdeckRows: SubdeckRow[] }) {
   const { courseId, lessonOrder } = selectedSubdeckRows[0]
   console.log('CardList: selectedSubdeckRows = ', selectedSubdeckRows)
   console.log('CardList: hasCard = ', hasCard(selectedSubdeckRows))
-  const groupedCardRows = hasCard(selectedSubdeckRows) ? _.groupBy(selectedSubdeckRows, 'cardOrder') : undefined
+  const groupedCardRows = hasCard(selectedSubdeckRows)
+    ? (_.groupBy(selectedSubdeckRows, 'cardOrder') as Dictionary<CardRow[]>)
+    : undefined
   console.log('CardList: groupedCardRows = ', groupedCardRows)
   /*
    * Using selectedCardRows as state necessitates updating it when deckRows changes, even when selectedCardOrder does not.
@@ -40,7 +42,7 @@ export default function CardList({ selectedSubdeckRows }: { selectedSubdeckRows:
             {Object.keys(groupedCardRows).map((cardOrder) => (
               <CardTextListItem
                 key={cardOrder}
-                cardText={groupedCardRows[cardOrder][0].cardText as string}
+                cardText={groupedCardRows[cardOrder][0].cardText}
                 targetWordPositions={groupedCardRows[cardOrder].map((row) => ({
                   start: row.wordStartIndex as number,
                   end: row.wordEndIndex as number,
@@ -55,10 +57,10 @@ export default function CardList({ selectedSubdeckRows }: { selectedSubdeckRows:
                       setSelectedCardOrder(getFirstCardOrder(groupedCardRows))
                     }
                   }
-                  deleteCard(courseId, lessonOrder as number, parseInt(cardOrder))
+                  deleteCard(courseId, lessonOrder, parseInt(cardOrder))
                 }}
                 editCardText={(newCardText: string) => {
-                  editCardText(courseId, lessonOrder as number, parseInt(cardOrder), newCardText)
+                  editCardText(courseId, lessonOrder, parseInt(cardOrder), newCardText)
                 }}
               />
             ))}
@@ -69,7 +71,7 @@ export default function CardList({ selectedSubdeckRows }: { selectedSubdeckRows:
         ) : (
           <AddCardForm
             courseId={courseId}
-            lessonOrder={lessonOrder as number}
+            lessonOrder={lessonOrder}
             order={groupedCardRows ? Object.keys(groupedCardRows).length : 0}
             setIsAddingCard={setIsAddingCard}
           />
@@ -121,7 +123,7 @@ function CardTextListItem({
           <p
             onClick={() => onClick()}
             dangerouslySetInnerHTML={{
-              __html: highlightTargetWords(cardText as string, targetWordPositions),
+              __html: highlightTargetWords(cardText, targetWordPositions),
             }}
           ></p>
           <KebabMenu
@@ -180,7 +182,7 @@ function AddCardForm({ courseId, lessonOrder, order, setIsAddingCard }: AddCardF
     <div>
       <form action={addCard} onSubmit={() => setIsAddingCard(false)}>
         <Input type="hidden" name="courseId" value={courseId} />
-        <Input type="hidden" name="lessonOrder" value={lessonOrder as number} />
+        <Input type="hidden" name="lessonOrder" value={lessonOrder} />
         <Input type="hidden" name="order" value={order} />
         <Input name="text" ref={cardTextInputRef} placeholder="Enter the card text and press Return." />
       </form>
