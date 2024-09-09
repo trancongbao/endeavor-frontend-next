@@ -46,7 +46,13 @@ export default function Browser({ deckRows }: { deckRows: DeckRow[] }) {
         />
 
         {!isAddingSubdeck ? (
-          <AddSubdeckButton setIsAddingSubdeck={setIsAddingSubdeck} />
+          <Button
+            variant="outline"
+            className="w-36 bg-orange-400  text-white text-md hover:bg-orange-300 hover:text-black py-2 px-4 rounded"
+            onClick={() => setIsAddingSubdeck(true)}
+          >
+            Add subdeck
+          </Button>
         ) : (
           <AddSubdeckForm
             courseId={courseId}
@@ -112,22 +118,6 @@ function SubdeckList({ groupedSubdeckRows, courseId, selectedSubdeckOrder, setSe
           )
         })}
     </div>
-  )
-}
-
-function AddSubdeckButton({
-  setIsAddingSubdeck,
-}: {
-  setIsAddingSubdeck: React.Dispatch<React.SetStateAction<boolean>>
-}) {
-  return (
-    <Button
-      variant="outline"
-      className="w-36 bg-orange-400  text-white text-md hover:bg-orange-300 hover:text-black py-2 px-4 rounded"
-      onClick={() => setIsAddingSubdeck(true)}
-    >
-      Add subdeck
-    </Button>
   )
 }
 
