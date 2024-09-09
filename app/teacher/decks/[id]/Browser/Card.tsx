@@ -13,7 +13,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem } from '@/component
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Edit, XSquare } from 'react-feather'
-import { AddWordFormRow, CardRow, EditWordFormRow, WordRow, WordRowMode } from './types'
+import { CardRow, WordRow, WordRowMode } from './types'
 import Image from 'next/image'
 
 type SelectionInfo = { text: string; startIndex: number; endIndex: number; position: { top: number; left: number } }
@@ -327,7 +327,7 @@ function SuggestedWords({
   )
 }
 
-function Word({ wordRow, onEdit }: { wordRow: WordRow }) {
+function Word({ wordRow, onEdit }: { wordRow: WordRow; onEdit: (wordRow: WordRow) => void }) {
   console.log('Word: wordRow=', wordRow)
 
   const [isEditingWord, setIsEditingWord] = useState(false)
