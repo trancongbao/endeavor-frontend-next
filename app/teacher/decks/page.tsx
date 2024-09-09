@@ -23,7 +23,7 @@ async function getDecks() {
   return await kysely
     .selectFrom('teacher_course')
     .innerJoin('course', 'course.id', 'teacher_course.course_id')
-    .innerJoin('lesson', 'lesson.course_id', 'course.id')
+    .leftJoin('lesson', 'lesson.course_id', 'course.id')
     .select([
       'course.id as course_id',
       'course.level as course_level',

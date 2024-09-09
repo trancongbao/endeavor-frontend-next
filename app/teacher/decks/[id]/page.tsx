@@ -80,6 +80,11 @@ export type Row = {
   wordImageUri?: string | null
 }
 
+export type SubdeckRow = Row & {
+  lessonOrder: number
+  lessonTitle: string
+}
+
 export type GroupedSubdeckRows = {
   [key: string]: Row[]
 }
