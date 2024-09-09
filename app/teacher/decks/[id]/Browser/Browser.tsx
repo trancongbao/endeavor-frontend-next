@@ -9,23 +9,26 @@ import { useRef, useEffect } from 'react'
 import { addCard, addSubdeck, deleteCard, deleteSubdeck, editCardText, editSubdeckTitle } from '@/app/actions'
 import KebabMenu from './KebabMenu'
 import { highlightTargetWords as highlightTargetWords } from './highlightTargetWords'
-import { Edit, Delete, XSquare } from 'react-feather'
+import { Edit, XSquare } from 'react-feather'
 import Card from './Card'
 
 export default function Browser({ deckRows }: { deckRows: DeckRow[] }) {
+  console.log('Browser: deckRows = ', deckRows)
   const { courseId } = deckRows[0]
-  const groupedSubdeckRows: GroupedSubdeckRows = _.groupBy(deckRows, 'lessonOrder')
-  console.log('groupedSubdeckRows: ', groupedSubdeckRows)
-  /*
-   * Subdeck with the lowest order is selected by default.
-   */
-  const minSubdeckOrder = _.min(Object.keys(groupedSubdeckRows).map(Number)) as number
+  const groupedSubdeckRows: GroupedSubdeckRows | undefined = hasSubdeck(deckRows)
+    ? _.groupBy(deckRows, 'lessonOrder')
+    : undefined
+  console.log('Browser: groupedSubdeckRows = ', groupedSubdeckRows)
+
   /*
    * Using selectedSubdeckRows as state necessitates updating it when deckRows changes, even when selectedSubdeckOrder does not.
    * An example is when a card is added, which changes deckRows, which causes rerendering even though selectedSubdeckOrder stays the same.
+   * Subdeck with the lowest order is selected by default.
    */
-  const [selectedSubdeckOrder, setSelectedSubdeckOrder] = useState(minSubdeckOrder)
-  console.log('selectedSubdeckOrder: ', selectedSubdeckOrder)
+  const [selectedSubdeckOrder, setSelectedSubdeckOrder] = useState(
+    hasSubdeck(deckRows) ? (_.min(Object.keys(groupedSubdeckRows!).map(Number)) as number) : undefined
+  )
+  const [isAddingSubdeck, setIsAddingSubdeck] = useState(false)
 
   return (
     /*
@@ -34,27 +37,48 @@ export default function Browser({ deckRows }: { deckRows: DeckRow[] }) {
      * However, it would require a less straight-forward CSS layout method than `grid`.
      */
     <div className="grid grid-cols-[1fr_6fr] gap-2">
-      <SubdeckList
-        groupedSubdeckRows={groupedSubdeckRows}
-        courseId={courseId}
-        selectedSubdeckOrder={selectedSubdeckOrder}
-        setSelectedSubdeckOrder={setSelectedSubdeckOrder}
-      />
+      <div className="border-r-4 flex flex-col">
+        <SubdeckList
+          groupedSubdeckRows={groupedSubdeckRows}
+          courseId={courseId}
+          selectedSubdeckOrder={selectedSubdeckOrder}
+          setSelectedSubdeckOrder={setSelectedSubdeckOrder}
+        />
+
+        {!isAddingSubdeck ? (
+          <AddSubdeckButton setIsAddingSubdeck={setIsAddingSubdeck} />
+        ) : (
+          <AddSubdeckForm
+            courseId={courseId}
+            order={groupedSubdeckRows ? Object.keys(groupedSubdeckRows).length : 0}
+            setIsAddingSubdeck={setIsAddingSubdeck}
+          />
+        )}
+      </div>
 
       {/* 
         We want to reset states (selectedCardRows, specifically) in CardList when selectedSubdeckRows changes without using useEffect.
         Ref: https://react.dev/learn/you-might-not-need-an-effect#resetting-all-state-when-a-prop-changes
         Ref: https://react.dev/learn/preserving-and-resetting-state#option-2-resetting-state-with-a-key
       */}
-      <CardTextList key={selectedSubdeckOrder} selectedSubdeckRows={groupedSubdeckRows[selectedSubdeckOrder]} />
+      {groupedSubdeckRows !== undefined && selectedSubdeckOrder !== undefined && (
+        <CardTextList
+          key={selectedSubdeckOrder}
+          selectedSubdeckRows={groupedSubdeckRows[selectedSubdeckOrder as number]}
+        />
+      )}
     </div>
   )
+
+  function hasSubdeck(deckRows: DeckRow[]) {
+    return deckRows[0].lessonOrder !== null
+  }
 }
 
 interface SubdecksProps {
   courseId: number
-  groupedSubdeckRows: GroupedSubdeckRows
-  selectedSubdeckOrder: number
+  groupedSubdeckRows: GroupedSubdeckRows | undefined
+  selectedSubdeckOrder: number | undefined
   setSelectedSubdeckOrder: (order: number) => void
 }
 
@@ -66,12 +90,10 @@ interface SubdecksProps {
  * We decided to used the latter approach.
  */
 function SubdeckList({ groupedSubdeckRows, courseId, selectedSubdeckOrder, setSelectedSubdeckOrder }: SubdecksProps) {
-  const [isAddingSubdeck, setIsAddingSubdeck] = useState(false)
-
   return (
-    <div className="basis-80 border-r-4 flex flex-col gap-4">
-      <div className="flex flex-col gap-2">
-        {Object.keys(groupedSubdeckRows).map((subdeckOrder) => {
+    <div className="flex flex-col gap-2">
+      {groupedSubdeckRows &&
+        Object.keys(groupedSubdeckRows).map((subdeckOrder) => {
           return (
             <div
               key={subdeckOrder}
@@ -89,16 +111,6 @@ function SubdeckList({ groupedSubdeckRows, courseId, selectedSubdeckOrder, setSe
             </div>
           )
         })}
-      </div>
-      {!isAddingSubdeck ? (
-        <AddSubdeckButton setIsAddingSubdeck={setIsAddingSubdeck} />
-      ) : (
-        <AddSubdeckForm
-          courseId={courseId}
-          order={Object.keys(groupedSubdeckRows).length}
-          setIsAddingSubdeck={setIsAddingSubdeck}
-        />
-      )}
     </div>
   )
 }
@@ -248,7 +260,6 @@ function EditSubdeckTitleForm({
  * This requires experience working with many-to-many relationships, for example card-word.
  */
 function CardTextList({ selectedSubdeckRows }: { selectedSubdeckRows: DeckRow[] }) {
-  const { courseId, lessonOrder } = selectedSubdeckRows[0]
   console.log('CardList: selectedSubdeckRows = ', selectedSubdeckRows)
   console.log('CardList: hasCard = ', hasCard(selectedSubdeckRows))
   const groupedCardRows = hasCard(selectedSubdeckRows) ? _.groupBy(selectedSubdeckRows, 'cardOrder') : undefined
