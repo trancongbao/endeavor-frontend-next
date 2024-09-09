@@ -12,10 +12,6 @@ import _ from 'lodash'
 /*
  * CardList is moved to its own file due to its complexity.
  */
-/*
- * TODO: Determine if data rows should be passed down the tree or only the necessary data.
- * This requires experience working with many-to-many relationships, for example card-word.
- */
 export default function CardList({ selectedSubdeckRows }: { selectedSubdeckRows: DeckRow[] }) {
   const { courseId, lessonOrder } = selectedSubdeckRows[0]
   console.log('CardList: selectedSubdeckRows = ', selectedSubdeckRows)

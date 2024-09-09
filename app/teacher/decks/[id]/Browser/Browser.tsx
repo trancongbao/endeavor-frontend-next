@@ -91,7 +91,8 @@ interface SubdecksProps {
  * Operations on Subdeck, in turn, are traversed as well as authorized via Course.
  * One approach is to pass Course Id and Lesson Order down the tree to the component where the operations are executed.
  * Another approach is to treat Course as an aggregate root (DDD), and operations are called back the tree.
- * We decided to used the latter approach.
+ * The latter approach is used here as an experiment.
+ * But the former approach seems to be easier, and is used in other places.
  */
 function SubdeckList({ groupedSubdeckRows, courseId, selectedSubdeckOrder, setSelectedSubdeckOrder }: SubdecksProps) {
   return (
