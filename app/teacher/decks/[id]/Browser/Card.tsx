@@ -25,7 +25,7 @@ export default function Card({ selectedCardRows }: { selectedCardRows: CardRow[]
   const { courseId, lessonOrder, cardOrder, cardText } = selectedCardRows[0]
 
   const [cardRows, setCardRows] =
-    useState<(DeckRow | { mode: string; wordStartIndex: number; wordEndIndex: number })[]>(selectedCardRows)
+    useState<(CardRow | { mode: string; wordStartIndex: number; wordEndIndex: number })[]>(selectedCardRows)
   const [selection, setSelection] = useState<SelectionInfo | null>(null)
   const [suggestedWordsVisible, setSuggestedWordsVisible] = useState(false)
 
@@ -83,11 +83,11 @@ export default function Card({ selectedCardRows }: { selectedCardRows: CardRow[]
           onOpenChange={setSuggestedWordsVisible}
           onSelect={(wordText: string, wordDefinition: string) => {
             addWordToCard(
-              courseId as number,
-              lessonOrder as number,
-              cardOrder as number,
-              wordText as string,
-              wordDefinition as string,
+              courseId,
+              lessonOrder,
+              cardOrder,
+              wordText,
+              wordDefinition,
               selection!.startIndex,
               selection!.endIndex
             )
@@ -122,8 +122,8 @@ export default function Card({ selectedCardRows }: { selectedCardRows: CardRow[]
                       onSave={async (text: string, definition: string) => {
                         await addWordToCard(
                           courseId,
-                          lessonOrder as number,
-                          cardOrder as number,
+                          lessonOrder,
+                          cardOrder,
                           text,
                           definition,
                           selection!.startIndex,
@@ -314,7 +314,7 @@ function SuggestedWords({
   )
 }
 
-function Word({ wordRow, onEdit }: { wordRow: DeckRow }) {
+function Word({ wordRow, onEdit }: { wordRow: CardRow }) {
   console.log('Word: wordRow=', wordRow)
 
   const [isEditingWord, setIsEditingWord] = useState(false)
@@ -340,8 +340,8 @@ function Word({ wordRow, onEdit }: { wordRow: DeckRow }) {
           onClick={() =>
             removeWordFromCard(
               wordRow.courseId,
-              wordRow.lessonOrder as number,
-              wordRow.cardOrder as number,
+              wordRow.lessonOrder,
+              wordRow.cardOrder,
               wordRow.wordText as string,
               wordRow.wordDefinition as string
             )
