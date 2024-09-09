@@ -9,7 +9,7 @@ export type DeckRow = {
   wordStartIndex: number | null
   wordEndIndex: number | null
   wordText: string | null
-  wordDefinition?: string | null
+  wordDefinition: string | null
   wordPhonetic?: string | null
   wordPartOfSpeech?: string | null
   wordAudioUri?: string | null
@@ -24,4 +24,11 @@ export type SubdeckRow = DeckRow & {
 export type CardRow = SubdeckRow & {
   cardOrder: number
   cardText: string
+}
+
+export type WordRow = CardRow & {
+  wordStartIndex: number
+  wordEndIndex: number
+  wordText: string
+  wordDefinition: string
 }
