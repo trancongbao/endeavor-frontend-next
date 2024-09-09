@@ -43,10 +43,12 @@ export default function CardList({ selectedSubdeckRows }: { selectedSubdeckRows:
               <CardTextListItem
                 key={cardOrder}
                 cardText={groupedCardRows[cardOrder][0].cardText}
-                targetWordPositions={groupedCardRows[cardOrder].map((row) => ({
-                  start: row.wordStartIndex as number,
-                  end: row.wordEndIndex as number,
-                }))}
+                targetWordPositions={groupedCardRows[cardOrder]
+                  .filter((row) => row.wordText !== null)
+                  .map((row) => ({
+                    start: row.wordStartIndex as number,
+                    end: row.wordEndIndex as number,
+                  }))}
                 isSelected={selectedCardOrder === parseInt(cardOrder)}
                 onClick={() => setSelectedCardOrder(parseInt(cardOrder))}
                 deleteCard={() => {
@@ -111,6 +113,7 @@ function CardTextListItem({
   deleteCard,
   editCardText,
 }: CardTextListItemProps) {
+  console.log(`CardTextListItem: cardText = ${cardText}, targetWordPositions=${JSON.stringify(targetWordPositions)}`)
   const [isEditingCardText, setIsEditingCardText] = useState(false)
 
   return (
