@@ -25,11 +25,11 @@ async function getDecks() {
     .innerJoin('course', 'course.id', 'teacher_course.course_id')
     .leftJoin('lesson', 'lesson.course_id', 'course.id')
     .select([
-      'course.id as course_id',
-      'course.level as course_level',
-      'course.title as course_title',
-      'lesson.order',
-      'lesson.title as lesson_title',
+      'course.id as courseId',
+      'course.level as courseLevel',
+      'course.title as courseTitle',
+      'lesson.order as lessonOrder',
+      'lesson.title as lessonTitle',
     ])
     .where('teacher_course.teacher_username', '=', username)
     .execute()
@@ -40,21 +40,32 @@ async function getDecks() {
         title: string
         subdecks: { order: number; title: string }[]
       }[] = []
-      rows.forEach(({ course_id, course_level, course_title, lesson_order, lesson_title }) => {
-        const course = courses.find((course) => course.id === course_id)
-        const lesson = {
-          order: lesson_order,
-          title: lesson_title,
-        }
-        if (course === undefined) {
-          courses.push({
-            id: course_id,
-            level: course_level,
-            title: course_title,
-            subdecks: [lesson],
-          })
+      rows.forEach(({ courseId, courseLevel, courseTitle, lessonOrder, lessonTitle }) => {
+        const course = courses.find((course) => course.id === courseId)
+        if (lessonOrder !== null && lessonTitle !== null) {
+          const lesson = {
+            order: lessonOrder,
+            title: lessonTitle,
+          }
+          if (course === undefined) {
+            courses.push({
+              id: courseId,
+              level: courseLevel,
+              title: courseTitle,
+              subdecks: [lesson],
+            })
+          } else {
+            course.subdecks.push(lesson)
+          }
         } else {
-          course.subdecks.push(lesson)
+          if (course === undefined) {
+            courses.push({
+              id: courseId,
+              level: courseLevel,
+              title: courseTitle,
+              subdecks: [],
+            })
+          }
         }
       })
 
