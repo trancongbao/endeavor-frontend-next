@@ -37,12 +37,14 @@ export default function Browser({ deckRows }: { deckRows: DeckRow[] }) {
      */
     <div className="grid grid-cols-[1fr_6fr] gap-2">
       <div className="border-r-4 flex flex-col">
-        <SubdeckList
-          groupedSubdeckRows={groupedSubdeckRows}
-          courseId={courseId}
-          selectedSubdeckOrder={selectedSubdeckOrder}
-          setSelectedSubdeckOrder={setSelectedSubdeckOrder}
-        />
+        {hasSubdeck(deckRows) && (
+          <SubdeckList
+            groupedSubdeckRows={groupedSubdeckRows!}
+            courseId={courseId}
+            selectedSubdeckOrder={selectedSubdeckOrder!}
+            setSelectedSubdeckOrder={setSelectedSubdeckOrder}
+          />
+        )}
 
         {!isAddingSubdeck ? (
           <Button
@@ -66,8 +68,8 @@ export default function Browser({ deckRows }: { deckRows: DeckRow[] }) {
         Ref: https://react.dev/learn/you-might-not-need-an-effect#resetting-all-state-when-a-prop-changes
         Ref: https://react.dev/learn/preserving-and-resetting-state#option-2-resetting-state-with-a-key
       */}
-      {groupedSubdeckRows !== undefined && selectedSubdeckOrder !== undefined && (
-        <CardList key={selectedSubdeckOrder} selectedSubdeckRows={groupedSubdeckRows[selectedSubdeckOrder as number]} />
+      {hasSubdeck(deckRows) && (
+        <CardList key={selectedSubdeckOrder} selectedSubdeckRows={groupedSubdeckRows![selectedSubdeckOrder!]} />
       )}
     </div>
   )
@@ -79,8 +81,8 @@ export default function Browser({ deckRows }: { deckRows: DeckRow[] }) {
 
 interface SubdecksProps {
   courseId: number
-  groupedSubdeckRows: GroupedSubdeckRows | undefined
-  selectedSubdeckOrder: number | undefined
+  groupedSubdeckRows: GroupedSubdeckRows
+  selectedSubdeckOrder: number
   setSelectedSubdeckOrder: (order: number) => void
 }
 
@@ -94,25 +96,24 @@ interface SubdecksProps {
 function SubdeckList({ groupedSubdeckRows, courseId, selectedSubdeckOrder, setSelectedSubdeckOrder }: SubdecksProps) {
   return (
     <div className="flex flex-col gap-2">
-      {groupedSubdeckRows &&
-        Object.keys(groupedSubdeckRows).map((subdeckOrder) => {
-          return (
-            <div
-              key={subdeckOrder}
-              className={`${parseInt(subdeckOrder) === selectedSubdeckOrder ? 'bg-orange-200' : 'hover:bg-orange-100'}`}
-            >
-              <SubdeckListItem
-                subdeckOrder={parseInt(subdeckOrder)}
-                subdeckTitle={groupedSubdeckRows[subdeckOrder][0].lessonTitle as string}
-                setSelectedSubdeckOrder={setSelectedSubdeckOrder}
-                editSubdeckTitle={(subdeckOrder, newSubdeckTitle) =>
-                  editSubdeckTitle(courseId, subdeckOrder, newSubdeckTitle)
-                }
-                deleteSubdeck={(order) => deleteSubdeck(courseId, order)}
-              />
-            </div>
-          )
-        })}
+      {Object.keys(groupedSubdeckRows).map((subdeckOrder) => {
+        return (
+          <div
+            key={subdeckOrder}
+            className={`${parseInt(subdeckOrder) === selectedSubdeckOrder ? 'bg-orange-200' : 'hover:bg-orange-100'}`}
+          >
+            <SubdeckListItem
+              subdeckOrder={parseInt(subdeckOrder)}
+              subdeckTitle={groupedSubdeckRows[subdeckOrder][0].lessonTitle as string}
+              setSelectedSubdeckOrder={setSelectedSubdeckOrder}
+              editSubdeckTitle={(subdeckOrder, newSubdeckTitle) =>
+                editSubdeckTitle(courseId, subdeckOrder, newSubdeckTitle)
+              }
+              deleteSubdeck={(order) => deleteSubdeck(courseId, order)}
+            />
+          </div>
+        )
+      })}
     </div>
   )
 }
