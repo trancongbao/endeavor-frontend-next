@@ -13,7 +13,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem } from '@/component
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Edit, XSquare } from 'react-feather'
-import { AddWordFormRow, CardRow, EditWordFormRow, WordRow } from './types'
+import { AddWordFormRow, CardRow, EditWordFormRow, WordRow, WordRowMode } from './types'
 import Image from 'next/image'
 
 type SelectionInfo = { text: string; startIndex: number; endIndex: number; position: { top: number; left: number } }
@@ -25,7 +25,7 @@ export default function Card({ selectedCardRows }: { selectedCardRows: CardRow[]
   const { courseId, lessonOrder, cardOrder, cardText } = selectedCardRows[0]
 
   const [wordRows, setWordRows] = useState<WordRow[]>(
-    selectedCardRows.filter((row) => row.wordStartIndex !== null) as WordRow[]
+    selectedCardRows.filter((row) => row.wordStartIndex !== null).map((row) => ({ ...row, mode: 'view' })) as WordRow[]
   )
   const [selection, setSelection] = useState<SelectionInfo | null>(null)
   const [suggestedWordsVisible, setSuggestedWordsVisible] = useState(false)
@@ -100,7 +100,9 @@ export default function Card({ selectedCardRows }: { selectedCardRows: CardRow[]
                 ...previousWordRows,
                 {
                   ...selectedCardRows[0],
-                  mode: 'add' as 'add',
+                  mode: 'add' as WordRowMode,
+                  wordText: selection!.text,
+                  wordDefinition: '',
                   wordStartIndex: selection!.startIndex,
                   wordEndIndex: selection!.endIndex,
                 },
