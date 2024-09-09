@@ -126,6 +126,7 @@ export default function Card({ selectedCardRows }: { selectedCardRows: CardRow[]
                   return (
                     <WordForm
                       key={index}
+                      wordRow={wordRow}
                       mode="add"
                       prefilledText={selection!.text}
                       onSave={async (text: string, definition: string) => {
@@ -148,6 +149,7 @@ export default function Card({ selectedCardRows }: { selectedCardRows: CardRow[]
                   return (
                     <WordForm
                       key={index}
+                      wordRow={wordRow}
                       mode="edit"
                       prefilledText={wordRow.wordText as string}
                       prefilledDefinition={wordRow.wordDefinition as string}
@@ -368,12 +370,14 @@ function Word({ wordRow, onEdit }: { wordRow: WordRow; onEdit: (wordRow: WordRow
 }
 
 function WordForm({
+  wordRow,
   mode,
   prefilledText,
   prefilledDefinition,
   onSave,
   onCancel,
 }: {
+  wordRow: WordRow
   mode: string
   prefilledText: string
   prefilledDefinition?: string
@@ -384,7 +388,7 @@ function WordForm({
   const definitionInputRef = useRef<HTMLInputElement>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  const [text, setText] = useState(prefilledText.toLowerCase())
+  const [text, setText] = useState(wordRow.wordText.toLowerCase())
   const [definition, setDefinition] = useState(prefilledDefinition ? prefilledDefinition.toLocaleLowerCase() : '')
 
   useEffect(() => textInputRef.current!.focus(), [])
