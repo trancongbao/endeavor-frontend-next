@@ -6,7 +6,7 @@ export default async function Decks() {
   console.log('decks: ', decks)
 
   return (
-    <div className="grid gap-4">
+    <div className="grid gap-4 grid-cols-[repeat(auto-fill,minmax(250px,1fr))]">
       {decks.map((deck) => {
         return <DeckTile key={deck.id} deck={deck} />
       })}
