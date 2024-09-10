@@ -50,6 +50,7 @@ export default function Card({ selectedCardRows }: { selectedCardRows: CardRow[]
           ),
         }}
         /* TODO: select whole words: select to the nearst whitespaces */
+
         /*
          * We want to show suggested words only when the user finishes selecting a text.
          * Therefore, onMouseUp is used instead of onSelectChange.
@@ -211,6 +212,37 @@ export default function Card({ selectedCardRows }: { selectedCardRows: CardRow[]
     return isOverlappingTargetWord
   }
 
+  function extendSelectionToWordBoundaries(range: Range) {
+    const textContent = range.commonAncestorContainer.textContent!
+    const startOffset = range.startOffset
+    const endOffset = range.endOffset
+
+    // Use regex to extend to word boundaries
+    const wordBoundaryRegex = /\b/
+
+    // Move start to the nearest word boundary
+    let newStartOffset = startOffset
+    while (newStartOffset > 0 && !wordBoundaryRegex.test(textContent[newStartOffset - 1])) {
+      newStartOffset--
+    }
+
+    // Move end to the nearest word boundary
+    let newEndOffset = endOffset
+    while (newEndOffset < textContent.length && !wordBoundaryRegex.test(textContent[newEndOffset])) {
+      newEndOffset++
+    }
+
+    // Adjust the range
+    range.setStart(range.startContainer, newStartOffset)
+    range.setEnd(range.endContainer, newEndOffset)
+
+    // Return the adjusted range and the extended selected text
+    return {
+      extendedRange: range,
+      extendedText: range.toString(),
+    }
+  }
+
   function determineSelectionPosition(paragraph: EventTarget & HTMLParagraphElement, selection: Selection) {
     /*
      * We traverse the paragragh's child nodes to find the start/end indices of the selection, and the word order.
@@ -237,7 +269,7 @@ export default function Card({ selectedCardRows }: { selectedCardRows: CardRow[]
       /*
        * If the child node is not the startContainer, we add the text length of the node to the startIndex and endIndex,and increment wordOrder.
        * If the child node is the startContainer, we add the startOffset to the startIndex and endOffset to endIndex, and stop the loop.
-       * We only care about the startContainer, and not the endContainer, because in practice, only Firefox allows to select multiple ranges.
+       * We only care about the startContainer, and not the endContainer, because there won't be overlaps with any target words.
        */
       if (childNode !== startContainer) {
         startIndex += childNode.textContent!.length
