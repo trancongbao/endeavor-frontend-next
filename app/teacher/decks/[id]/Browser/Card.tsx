@@ -60,6 +60,10 @@ export default function Card({ selectedCardRows }: { selectedCardRows: CardRow[]
           const paragraph = event.currentTarget
           const selection = window.getSelection()!
           const selectedText = selection.toString()
+          const range = selection.getRangeAt(0)
+          const { extendedRange, extendedText } = extendSelectionToWordBoundaries(range)
+          console.log(`extendedText: ${extendedText}`)
+
           console.log(`onMouseUp: paragraph=${paragraph}, selection=${selection}, selectedText=${selectedText}`)
 
           /*
@@ -67,11 +71,11 @@ export default function Card({ selectedCardRows }: { selectedCardRows: CardRow[]
            * We ignore the case where the selection overlaps with a target word.
            * Ref: https://javascript.info/selection-range
            */
-          if (selectedText.length > 0 && !isOverlappingTargetWord(paragraph, selection)) {
+          if (extendedText.length > 0 && !isOverlappingTargetWord(paragraph, extendedRange)) {
             setSelection({
-              text: selectedText,
-              ...determineSelectionPosition(paragraph, selection),
-              position: determineSuggestedWordsPosition(selection),
+              text: extendedText,
+              ...determineSelectionPosition(paragraph, extendedRange),
+              position: determineSuggestedWordsPosition(extendedRange),
             })
             setSuggestedWordsVisible(true)
           }
@@ -193,10 +197,10 @@ export default function Card({ selectedCardRows }: { selectedCardRows: CardRow[]
     </div>
   )
 
-  function isOverlappingTargetWord(paragraph: HTMLParagraphElement, selection: Selection) {
+  function isOverlappingTargetWord(paragraph: HTMLParagraphElement, range: Range) {
     let isOverlappingTargetWord = false
 
-    const selectionRect = selection.getRangeAt(0).getBoundingClientRect()
+    const selectionRect = range.getBoundingClientRect()
     paragraph.querySelectorAll('b').forEach((boldElement) => {
       const targetWordRect = boldElement.getBoundingClientRect()
       if (
@@ -216,19 +220,24 @@ export default function Card({ selectedCardRows }: { selectedCardRows: CardRow[]
     const textContent = range.commonAncestorContainer.textContent!
     const startOffset = range.startOffset
     const endOffset = range.endOffset
+    console.log(
+      `extendSelectionToWordBoundaries: textContent=${textContent}, startOffset=${startOffset}, endOffset=${endOffset}`
+    )
 
     // Use regex to extend to word boundaries
-    const wordBoundaryRegex = /\b/
+    const wordBoundaryRegex = /\w/
 
     // Move start to the nearest word boundary
     let newStartOffset = startOffset
-    while (newStartOffset > 0 && !wordBoundaryRegex.test(textContent[newStartOffset - 1])) {
+    console.log(`newStartOffset test: ${wordBoundaryRegex.test(textContent[newStartOffset - 1])}`)
+    while (newStartOffset > 0 && wordBoundaryRegex.test(textContent[newStartOffset - 1])) {
       newStartOffset--
+      console.log(`newStartOffset: ${newStartOffset}`)
     }
 
     // Move end to the nearest word boundary
     let newEndOffset = endOffset
-    while (newEndOffset < textContent.length && !wordBoundaryRegex.test(textContent[newEndOffset])) {
+    while (newEndOffset < textContent.length && wordBoundaryRegex.test(textContent[newEndOffset])) {
       newEndOffset++
     }
 
@@ -243,7 +252,7 @@ export default function Card({ selectedCardRows }: { selectedCardRows: CardRow[]
     }
   }
 
-  function determineSelectionPosition(paragraph: EventTarget & HTMLParagraphElement, selection: Selection) {
+  function determineSelectionPosition(paragraph: EventTarget & HTMLParagraphElement, range: Range) {
     /*
      * We traverse the paragragh's child nodes to find the start/end indices of the selection, and the word order.
      * If the child node is not the startContainer, we add the text length of the node to the startIndex and endIndex,and increment wordOrder.
@@ -252,8 +261,8 @@ export default function Card({ selectedCardRows }: { selectedCardRows: CardRow[]
      */
     const childNodes = paragraph.childNodes
     console.log('childNodes: ', childNodes.values())
-    const range = selection.getRangeAt(0)
-    console.log('range: ', range)
+    // const range = selection.getRangeAt(0)
+    // console.log('range: ', range)
     const startContainer = range.startContainer
     console.log('startContainer: ', startContainer)
     const startOffset = range.startOffset
@@ -285,8 +294,8 @@ export default function Card({ selectedCardRows }: { selectedCardRows: CardRow[]
     return { startIndex, endIndex }
   }
 
-  function determineSuggestedWordsPosition(selection: Selection) {
-    const range = selection.getRangeAt(0)
+  function determineSuggestedWordsPosition(range: Range) {
+    // const range = selection.getRangeAt(0)
     const boundingClientRect = range.getBoundingClientRect()
     console.log('boundingClientRect: ', boundingClientRect)
     return {
