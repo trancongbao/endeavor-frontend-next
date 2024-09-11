@@ -113,7 +113,10 @@ export default function Card({ selectedCardRows }: { selectedCardRows: CardRow[]
             )
             setSuggestedWordsVisible(false)
           }}
-          onSeeOccurencesClicked={() => setOccurencesVisible(true)}
+          onSeeOccurencesClicked={() => {
+            setSuggestedWordsVisible(false)
+            setOccurencesVisible(true)
+          }}
         />
       )}
 
