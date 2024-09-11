@@ -6,7 +6,7 @@ export async function GET(request: NextRequest, { params }: { params: { text: st
   console.log('params: ', params)
   const response = await kysely
     .selectFrom('lesson')
-    .selectAll()
+    .select(sql`ts_headline(content, to_tsquery(${params.text}), 'StartSel=<b>, StopSel=</b>')`.as('snippet'))
     .where(sql`to_tsvector(content)`, '@@', sql`to_tsquery(${params.text})`)
     .execute()
 
