@@ -325,10 +325,14 @@ function SuggestedWords({
   return (
     suggestedWords !== null && (
       <DropdownMenu open={open} onOpenChange={onOpenChange}>
-        <DropdownMenuContent className={`fixed bg-white border border-gray-500`} style={selectionInfo.position}>
+        <DropdownMenuContent className={`fixed bg-primary-50 border border-gray-500`} style={selectionInfo.position}>
           {suggestedWords.map(({ text, definition }, index) => (
-            <DropdownMenuItem key={index} onSelect={() => onSelect(text, definition)}>
-              <Button variant="ghost" className="flex items-center gap-2">
+            <DropdownMenuItem
+              key={index}
+              onSelect={() => onSelect(text, definition)}
+              className="w-full px-1 py-0 border-solid border-b-2  hover:bg-primary-300"
+            >
+              <Button variant="ghost" className="px-1 py-0 hover:bg-primary-300">
                 <span>{`${text} :: ${definition}`}</span>
               </Button>
             </DropdownMenuItem>
@@ -346,7 +350,7 @@ function SuggestedWords({
               className="self-start w-20 bg-orange-400  text-white text-md hover:bg-orange-300 hover:text-black py-2 px-4 rounded"
               onClick={() => onAddWord()}
             >
-              See details
+              See occurrences
             </Button>
           </div>
         </DropdownMenuContent>
@@ -357,8 +361,6 @@ function SuggestedWords({
 
 function Word({ wordRow, onEdit }: { wordRow: WordRow; onEdit: (wordRow: WordRow) => void }) {
   console.log('Word: wordRow=', wordRow)
-
-  const [isEditingWord, setIsEditingWord] = useState(false)
 
   return (
     <div className="w-full grid grid-cols-[1fr_8fr_1fr] items-start">
