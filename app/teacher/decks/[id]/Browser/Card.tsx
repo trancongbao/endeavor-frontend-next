@@ -15,6 +15,7 @@ import { Input } from '@/components/ui/input'
 import { Edit, XSquare } from 'react-feather'
 import { CardRow, WordRow, WordRowMode } from './types'
 import Image from 'next/image'
+import { set } from 'lodash'
 
 type SelectionInfo = { text: string; startIndex: number; endIndex: number; position: { top: number; left: number } }
 /*
@@ -29,6 +30,7 @@ export default function Card({ selectedCardRows }: { selectedCardRows: CardRow[]
   )
   const [selectionInfo, setSelectionInfo] = useState<SelectionInfo | null>(null)
   const [suggestedWordsVisible, setSuggestedWordsVisible] = useState(false)
+  const [occurencesVisible, setOccurencesVisible] = useState(false)
 
   useEffect(() => {
     setWordRows(selectedCardRows.filter((row) => row.wordStartIndex !== null) as WordRow[])
@@ -111,6 +113,7 @@ export default function Card({ selectedCardRows }: { selectedCardRows: CardRow[]
             )
             setSuggestedWordsVisible(false)
           }}
+          onSeeOccurencesClicked={() => setOccurencesVisible(true)}
         />
       )}
 
@@ -190,6 +193,7 @@ export default function Card({ selectedCardRows }: { selectedCardRows: CardRow[]
               }
             })}
       </div>
+      {occurencesVisible && <Occurrences text={selectionInfo!.text} />}
     </div>
   )
 
@@ -301,12 +305,14 @@ function SuggestedWords({
   onOpenChange,
   onSelect,
   onAddWord,
+  onSeeOccurencesClicked,
 }: {
   selectionInfo: SelectionInfo
   open: boolean
   onOpenChange: (value: boolean) => void
   onSelect: (wordText: string, wordDefinition: string) => void
   onAddWord: () => void
+  onSeeOccurencesClicked: () => void
 }) {
   const [suggestedWords, setSuggestedWords] = useState<{ text: string; definition: string }[] | null>(null)
 
@@ -348,7 +354,7 @@ function SuggestedWords({
             <Button
               variant="outline"
               className="self-start w-20 bg-orange-400  text-white text-md hover:bg-orange-300 hover:text-black py-2 px-4 rounded"
-              onClick={() => onAddWord()}
+              onClick={onSeeOccurencesClicked}
             >
               See occurrences
             </Button>
@@ -356,6 +362,31 @@ function SuggestedWords({
         </DropdownMenuContent>
       </DropdownMenu>
     )
+  )
+}
+
+function Occurrences({ text }: { text: string }) {
+  const [occurences, setOccurences] = useState<{ snippet: string }[] | null>(null)
+
+  useEffect(() => {
+    fetch(`/api/word/${encodeURIComponent(text)}/occurences`).then(async (response) => {
+      if (response.ok) {
+        const occurences = await response.json()
+        console.log('occurences: ', occurences)
+        setOccurences(occurences)
+      } else {
+        console.error('Failed to fetch occurences')
+      }
+    })
+  }, [text])
+
+  return (
+    <ol>
+      {occurences !== null &&
+        occurences.map((occurence, index) => (
+          <li key={index} dangerouslySetInnerHTML={{ __html: occurence.snippet }}></li>
+        ))}
+    </ol>
   )
 }
 
