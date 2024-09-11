@@ -15,7 +15,6 @@ import { Input } from '@/components/ui/input'
 import { Edit, XSquare } from 'react-feather'
 import { CardRow, WordRow, WordRowMode } from './types'
 import Image from 'next/image'
-import { set } from 'lodash'
 
 type SelectionInfo = { text: string; startIndex: number; endIndex: number; position: { top: number; left: number } }
 /*
