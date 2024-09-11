@@ -311,7 +311,7 @@ function SuggestedWords({
   const [suggestedWords, setSuggestedWords] = useState<{ text: string; definition: string }[] | null>(null)
 
   useEffect(() => {
-    fetch(`/api/word/search?query=${encodeURIComponent(selectionInfo.text)}`).then(async (response) => {
+    fetch(`/api/word/${encodeURIComponent(selectionInfo.text)}/word-search`).then(async (response) => {
       if (response.ok) {
         const suggestedWords = await response.json()
         console.log('suggestedWords: ', suggestedWords)
