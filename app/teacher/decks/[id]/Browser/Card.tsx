@@ -27,7 +27,7 @@ export default function Card({ selectedCardRows }: { selectedCardRows: CardRow[]
   const [wordRows, setWordRows] = useState<WordRow[]>(
     selectedCardRows.filter((row) => row.wordStartIndex !== null).map((row) => ({ ...row, mode: 'view' })) as WordRow[]
   )
-  const [selection, setSelection] = useState<SelectionInfo | null>(null)
+  const [selectionInfo, setSelectionInfo] = useState<SelectionInfo | null>(null)
   const [suggestedWordsVisible, setSuggestedWordsVisible] = useState(false)
 
   useEffect(() => {
@@ -49,33 +49,29 @@ export default function Card({ selectedCardRows }: { selectedCardRows: CardRow[]
               }))
           ),
         }}
-        /* TODO: select whole words: select to the nearst whitespaces */
-
         /*
          * We want to show suggested words only when the user finishes selecting a text.
          * Therefore, onMouseUp is used instead of onSelectChange.
-         * Also, we need to check for selected text length, to account for the double-click selection.
          */
         onMouseUp={(event) => {
           const paragraph = event.currentTarget
-          const selection = window.getSelection()!
-          const selectedText = selection.toString()
-          const range = selection.getRangeAt(0)
-          const { extendedRange, extendedText } = extendSelectionToWordBoundaries(range)
-          console.log(`extendedText: ${extendedText}`)
-
-          console.log(`onMouseUp: paragraph=${paragraph}, selection=${selection}, selectedText=${selectedText}`)
+          /*
+           * We are using Selection and Range API. Ref: https://javascript.info/selection-range
+           */
+          const range = window.getSelection()!.getRangeAt(0)
+          console.log(`onMouseUp: paragraph=${paragraph}, selection=${range}`)
 
           /*
-           * For each of the target words, there is a <b> node nested within a <p> node.
-           * We ignore the case where the selection overlaps with a target word.
-           * Ref: https://javascript.info/selection-range
+           * We need to check for selected text length, to account for the double-click selection.
+           * Also, We need to ignore the case where the selection overlaps with a target word.
            */
-          if (extendedText.length > 0 && !isOverlappingTargetWord(paragraph, extendedRange)) {
-            setSelection({
-              text: extendedText,
-              ...determineSelectionPosition(paragraph, extendedRange),
-              position: determineSuggestedWordsPosition(extendedRange),
+          if (range.toString().length > 0 && !isOverlappingTargetWord(paragraph, range)) {
+            /* The range is extended to select whole words */
+            extendSelectionToWordBoundaries(range)
+            setSelectionInfo({
+              text: range.toString(),
+              ...determineSelectionPosition(paragraph, range),
+              position: determineSuggestedWordsPosition(range),
             })
             setSuggestedWordsVisible(true)
           }
@@ -84,7 +80,7 @@ export default function Card({ selectedCardRows }: { selectedCardRows: CardRow[]
 
       {suggestedWordsVisible && (
         <SuggestedWords
-          selection={selection!}
+          selectionInfo={selectionInfo!}
           open={suggestedWordsVisible}
           onOpenChange={setSuggestedWordsVisible}
           onSelect={(wordText: string, wordDefinition: string) => {
@@ -94,8 +90,8 @@ export default function Card({ selectedCardRows }: { selectedCardRows: CardRow[]
               cardOrder,
               wordText,
               wordDefinition,
-              selection!.startIndex,
-              selection!.endIndex
+              selectionInfo!.startIndex,
+              selectionInfo!.endIndex
             )
             setSuggestedWordsVisible(false)
           }}
@@ -106,10 +102,10 @@ export default function Card({ selectedCardRows }: { selectedCardRows: CardRow[]
                 {
                   ...selectedCardRows[0],
                   mode: 'add' as WordRowMode,
-                  wordText: selection!.text,
+                  wordText: selectionInfo!.text,
                   wordDefinition: '',
-                  wordStartIndex: selection!.startIndex,
-                  wordEndIndex: selection!.endIndex,
+                  wordStartIndex: selectionInfo!.startIndex,
+                  wordEndIndex: selectionInfo!.endIndex,
                 },
               ].sort((a, b) => a.wordStartIndex - b.wordStartIndex)
             )
@@ -139,8 +135,8 @@ export default function Card({ selectedCardRows }: { selectedCardRows: CardRow[]
                           cardOrder,
                           text,
                           definition,
-                          selection!.startIndex,
-                          selection!.endIndex
+                          selectionInfo!.startIndex,
+                          selectionInfo!.endIndex
                         )
                       }}
                       onCancel={() =>
@@ -200,6 +196,7 @@ export default function Card({ selectedCardRows }: { selectedCardRows: CardRow[]
   function isOverlappingTargetWord(paragraph: HTMLParagraphElement, range: Range) {
     let isOverlappingTargetWord = false
 
+    /* For each of the target words, there is a <b> node nested within a <p> node. */
     const selectionRect = range.getBoundingClientRect()
     paragraph.querySelectorAll('b').forEach((boldElement) => {
       const targetWordRect = boldElement.getBoundingClientRect()
@@ -232,7 +229,6 @@ export default function Card({ selectedCardRows }: { selectedCardRows: CardRow[]
     console.log(`newStartOffset test: ${wordBoundaryRegex.test(textContent[newStartOffset - 1])}`)
     while (newStartOffset > 0 && wordBoundaryRegex.test(textContent[newStartOffset - 1])) {
       newStartOffset--
-      console.log(`newStartOffset: ${newStartOffset}`)
     }
 
     // Move end to the nearest word boundary
@@ -244,12 +240,6 @@ export default function Card({ selectedCardRows }: { selectedCardRows: CardRow[]
     // Adjust the range
     range.setStart(range.startContainer, newStartOffset)
     range.setEnd(range.endContainer, newEndOffset)
-
-    // Return the adjusted range and the extended selected text
-    return {
-      extendedRange: range,
-      extendedText: range.toString(),
-    }
   }
 
   function determineSelectionPosition(paragraph: EventTarget & HTMLParagraphElement, range: Range) {
@@ -306,13 +296,13 @@ export default function Card({ selectedCardRows }: { selectedCardRows: CardRow[]
 }
 
 function SuggestedWords({
-  selection,
+  selectionInfo,
   open,
   onOpenChange,
   onSelect,
   onAddWord,
 }: {
-  selection: SelectionInfo
+  selectionInfo: SelectionInfo
   open: boolean
   onOpenChange: (value: boolean) => void
   onSelect: (wordText: string, wordDefinition: string) => void
@@ -321,7 +311,7 @@ function SuggestedWords({
   const [suggestedWords, setSuggestedWords] = useState<{ text: string; definition: string }[] | null>(null)
 
   useEffect(() => {
-    fetch(`/api/word/search?query=${encodeURIComponent(selection.text)}`).then(async (response) => {
+    fetch(`/api/word/search?query=${encodeURIComponent(selectionInfo.text)}`).then(async (response) => {
       if (response.ok) {
         const suggestedWords = await response.json()
         console.log('suggestedWords: ', suggestedWords)
@@ -330,12 +320,12 @@ function SuggestedWords({
         console.error('Failed to fetch suggestions')
       }
     })
-  }, [selection.text])
+  }, [selectionInfo.text])
 
   return (
     suggestedWords !== null && (
       <DropdownMenu open={open} onOpenChange={onOpenChange}>
-        <DropdownMenuContent className={`fixed bg-white border border-gray-500`} style={selection.position}>
+        <DropdownMenuContent className={`fixed bg-white border border-gray-500`} style={selectionInfo.position}>
           {suggestedWords.map(({ text, definition }, index) => (
             <DropdownMenuItem key={index} onSelect={() => onSelect(text, definition)}>
               <Button variant="ghost" className="flex items-center gap-2">
